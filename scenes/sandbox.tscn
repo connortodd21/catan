@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://nrra1os0ouwa"]
+
+[ext_resource type="Script" uid="uid://dki4wrvob0qh6" path="res://scripts/sandbox.gd" id="1_2ddto"]
+[ext_resource type="PackedScene" uid="uid://c6wibgefnb7rt" path="res://scenes/hex.tscn" id="2_rgld7"]
+
+[node name="Sandbox" type="Node2D" unique_id=918824834]
+script = ExtResource("1_2ddto")
+hex_scene = ExtResource("2_rgld7")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=402234304]

@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://c6wibgefnb7rt"]
+
+[ext_resource type="Script" uid="uid://g4hrvr5rv3n5" path="res://scripts/hex.gd" id="1_b6u1t"]
+[ext_resource type="Script" uid="uid://s3mk0g728fmm" path="res://resources/terrain_database_resource.gd" id="2_tqp3w"]
+[ext_resource type="Script" uid="uid://b4eyx7s7pvccf" path="res://resources/terrain_data_resource.gd" id="3_yklne"]
+[ext_resource type="Texture2D" uid="uid://dcj4agtem6sy" path="res://assets/tiles/brick.png" id="5_kl320"]
+[ext_resource type="Texture2D" uid="uid://1s5wq04o1dmg" path="res://assets/tiles/desert.png" id="6_l3gld"]
+[ext_resource type="Texture2D" uid="uid://dulh77oswn8pj" path="res://assets/tiles/rock.png" id="7_3u7x0"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_li53k"]
+load_path = "res://.godot/imported/wood.png-edff8c2493a3b740984a0fbc323bf282.ctex"
+
+[sub_resource type="Resource" id="Resource_sx706"]
+script = ExtResource("3_yklne")
+texture = SubResource("CompressedTexture2D_li53k")
+metadata/_custom_type_script = "uid://b4eyx7s7pvccf"
+
+[sub_resource type="Resource" id="Resource_5gvxy"]
+script = ExtResource("3_yklne")
+type = 1
+texture = ExtResource("5_kl320")
+metadata/_custom_type_script = "uid://b4eyx7s7pvccf"
+
+[sub_resource type="Resource" id="Resource_tdwt6"]
+script = ExtResource("3_yklne")
+type = 5
+texture = ExtResource("6_l3gld")
+metadata/_custom_type_script = "uid://b4eyx7s7pvccf"
+
+[sub_resource type="Resource" id="Resource_klanx"]
+script = ExtResource("3_yklne")
+type = 4
+texture = ExtResource("7_3u7x0")
+metadata/_custom_type_script = "uid://b4eyx7s7pvccf"
+
+[sub_resource type="Resource" id="Resource_ofk87"]
+script = ExtResource("2_tqp3w")
+terrain_textures = Array[ExtResource("3_yklne")]([SubResource("Resource_sx706"), SubResource("Resource_5gvxy"), SubResource("Resource_tdwt6"), SubResource("Resource_klanx")])
+metadata/_custom_type_script = "uid://s3mk0g728fmm"
+
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_tqp3w"]
+
+[node name="Hex" type="Node2D" unique_id=567540526]
+script = ExtResource("1_b6u1t")
+terrain_database = SubResource("Resource_ofk87")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1969081866]
+
+[node name="Area2D" type="Area2D" parent="." unique_id=957910917]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=949173931]
+shape = SubResource("ConvexPolygonShape2D_tqp3w")

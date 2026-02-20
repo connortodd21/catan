@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://sdgohaew6dy8"]
+
+[ext_resource type="Script" uid="uid://c6cgybd24an4s" path="res://scripts/board_editor/board_editor.gd" id="1_oscse"]
+[ext_resource type="PackedScene" uid="uid://c6wibgefnb7rt" path="res://scenes/hex.tscn" id="2_p4oru"]
+
+[node name="board_editor" type="Node2D" unique_id=268842270]
+script = ExtResource("1_oscse")
+hex_scene = ExtResource("2_p4oru")
+
+[node name="tile_container" type="Node2D" parent="." unique_id=609158274]
+
+[node name="ghost_tile" parent="." unique_id=567540526 instance=ExtResource("2_p4oru")]

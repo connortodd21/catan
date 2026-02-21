@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bmtgotvhgtdp4"]
+
+[ext_resource type="Script" uid="uid://cde7ufcdv2skb" path="res://scripts/board_editor/hex_outline.gd" id="1_gvg5w"]
+
+[node name="hex_outline" type="Node2D" unique_id=1460846858]
+script = ExtResource("1_gvg5w")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=238681447]

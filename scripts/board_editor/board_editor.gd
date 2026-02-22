@@ -3,7 +3,7 @@ extends Node2D
 @export var hex_scene: PackedScene
 @export var hex_outline_scene: PackedScene
 
-@export var board_radius: int = 20
+@export var board_radius: int = 50
 @export var board_size: Vector2i = Vector2i(1200, 1000)
 var board_rect : Rect2
 
@@ -15,11 +15,19 @@ var tiles := {} # HexAxial : HexTile
 var grid_slots := {} # HexAxial : HexOutline
 
 var board_center: Vector2
+var hex_size : Vector2
+var hex_radius : float
+var hex_width : float
 
 func _ready():
 	var viewport_center = get_viewport_rect().size / 2
 	board_rect = Rect2(viewport_center - board_size / 2.0, board_size)
 	board_center = board_rect.position + board_rect.size / 2
+	
+	hex_size = get_hex_size()
+	hex_radius = hex_size.y / 2.0
+	hex_width = hex_size.x
+	
 	fill_editor_rect()
 	draw_rect(board_rect, Color(0.6, 0, 0.8, 1), false, 4)
 
@@ -31,7 +39,8 @@ func _process(_delta: float) -> void:
 func _input(event):
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			place_tile_at_mouse()
+			#place_tile_at_mouse()
+			pass
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			remove_tile_at_mouse()
 
@@ -70,10 +79,10 @@ func remove_tile_at_mouse():
 #############################################
 func mouse_to_hex() -> HexAxial:
 	var mouse_local = tile_container.to_local(get_global_mouse_position())
-	return HexUtils.pixel_to_pointy_hex(mouse_local, HexConstants.HEX_RADIUS)
+	return HexUtils.pixel_to_pointy_hex(mouse_local, hex_radius)
 
 func hex_to_world(hex: HexAxial) -> Vector2:
-	return HexUtils.pointy_hex_to_pixel(hex, HexConstants.HEX_RADIUS)
+	return hex.pointy_hex_to_pixel(hex_radius)
 
 #############################################
 ### HEX METHODS
@@ -89,29 +98,30 @@ func spawn_hex(hex_coord: HexAxial, terrain_type: TerrainTypes.Type, number:int 
 	tile_container.add_child(hex)
 
 
+func get_hex_size() -> Vector2:
+	var temp_hex = hex_scene.instantiate()
+	var temp_hex_size = temp_hex.get_hex_dimensions()
+	temp_hex.queue_free()
+	return temp_hex_size
+
+
 #############################################
 ### GRID METHODS
 #############################################
 func fill_editor_rect() -> void:
-	var hex_width = sqrt(3) * HexConstants.HEX_RADIUS
-	var v_step = 1.5 * HexConstants.HEX_RADIUS
-	
-	var r_min = floor(board_rect.position.y / v_step) - 2
-	var r_max = ceil(board_rect.end.y / v_step) + 2
-	
-	for r in range(r_min, r_max):
-		var row_offset = HexConstants.HEX_WIDTH * (r * 0.5)
-		var q_min = floor((board_rect.position.x - row_offset) / hex_width) - 2
-		var q_max = ceil((board_rect.end.x - row_offset) / hex_width) + 2
-		for q in range(q_min, q_max):
+	var search_radius = board_radius
+
+	for q in range(-search_radius, search_radius + 1):
+		for r in range(-search_radius, search_radius + 1):
 			var hex_axial = HexAxial.new(q, r)
-			if can_draw_hex(hex_axial):
-				var hex_outline = hex_outline_scene.instantiate()
-				hex_outline.set_coord(hex_axial)
-				hex_outline.position = hex_axial.pointy_hex_to_pixel(HexConstants.HEX_RADIUS) + board_rect.position
-				hex_outline.connect("clicked", Callable(self, "_on_slot_clicked"))
-				grid_container.add_child(hex_outline)
-				grid_slots[hex_axial] = hex_outline
+			var world_pos = hex_to_world(hex_axial) + board_rect.position
+
+			if board_rect.has_point(world_pos):
+				var hex = hex_scene.instantiate()
+				hex.initialize(hex_axial, TerrainTypes.Type.WOOD, 0)
+				hex.position = world_pos.round() # optional pixel snap
+				grid_container.add_child(hex)
+				grid_slots[hex_axial] = hex
 
 
 func can_draw_hex(hex_axial: HexAxial) -> bool:

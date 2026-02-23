@@ -2,17 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cc6kj3nvq0hxc" path="res://assets/custom_tiles/tree_animated.png" id="1_errlg"]
 [ext_resource type="Texture2D" uid="uid://ci28boyssuy8b" path="res://assets/tiles/tileset.png" id="2_bl13t"]
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_errlg"]
-texture = ExtResource("1_errlg")
-texture_region_size = Vector2i(120, 120)
-0:0/animation_columns = 4
-0:0/animation_speed = 4.0
-0:0/animation_frame_0/duration = 1.0
-0:0/animation_frame_1/duration = 1.0
-0:0/animation_frame_2/duration = 1.0
-0:0/animation_frame_3/duration = 1.0
-0:0/0 = 0
+[ext_resource type="Texture2D" uid="uid://krlj4euuliu4" path="res://assets/custom_tiles/water_animated.png" id="3_iyx0m"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_iyx0m"]
 texture = ExtResource("2_bl13t")
@@ -24,11 +14,32 @@ texture_region_size = Vector2i(120, 120)
 0:0/animation_frame_3/duration = 1.0
 0:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_74lek"]
+texture = ExtResource("3_iyx0m")
+texture_region_size = Vector2i(104, 120)
+0:0/animation_columns = 4
+0:0/animation_frame_0/duration = 1.0
+0:0/animation_frame_1/duration = 1.0
+0:0/animation_frame_2/duration = 1.0
+0:0/animation_frame_3/duration = 1.0
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j5jx5"]
+texture = ExtResource("1_errlg")
+texture_region_size = Vector2i(104, 120)
+0:0/animation_columns = 4
+0:0/animation_frame_0/duration = 1.0
+0:0/animation_frame_1/duration = 1.0
+0:0/animation_frame_2/duration = 1.0
+0:0/animation_frame_3/duration = 1.0
+0:0/0 = 0
+
 [sub_resource type="TileSet" id="TileSet_iyx0m"]
 tile_shape = 3
-tile_size = Vector2i(106, 119)
-sources/1 = SubResource("TileSetAtlasSource_errlg")
+tile_size = Vector2i(104, 120)
 sources/2 = SubResource("TileSetAtlasSource_iyx0m")
+sources/4 = SubResource("TileSetAtlasSource_74lek")
+sources/5 = SubResource("TileSetAtlasSource_j5jx5")
 
 [node name="test" type="Node2D" unique_id=844079791]
 
@@ -41,7 +52,7 @@ color = Color(1, 0.89411765, 0.47058824, 1)
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1213624049]
 texture_filter = 1
-tile_map_data = PackedByteArray("AAAGAAMAAQAAAAAAAAAFAAMAAQAAAAAAAAAGAAQAAQAAAAAAAAAHAAQAAQAAAAAAAAAHAAMAAQAAAAAAAAAFAAQAAQAAAAAAAAAEAAMAAQAAAAAAAAAFAAIAAQAAAAAAAAAGAAIAAQAAAAAAAAAHAAIAAQAAAAAAAAAIAAIAAQAAAAAAAAAIAAQAAQAAAAAAAAAGAAUAAQAAAAAAAAAHAAUAAQAAAAAAAAAEAAUAAQAAAAAAAAAEAAQAAQAAAAAAAAAFAAUAAQAAAAAAAAAIAAUAAQAAAAAAAAAIAAMAAQAAAAAAAAAEAAIAAQAAAAAAAAADAAMAAQAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAEAAIABAAAAAAAAAAEAAMABAAAAAAAAAAEAAQABAAAAAAAAAAEAAUABAAAAAAAAAAFAAIABAAAAAAAAAAFAAMABQAAAAAAAAAFAAQABAAAAAAAAAAFAAUABAAAAAAAAAAGAAIABAAAAAAAAAAGAAMABAAAAAAAAAAGAAQABQAAAAAAAAAGAAUABAAAAAAAAAAHAAIABAAAAAAAAAAHAAMABAAAAAAAAAAHAAQABQAAAAAAAAAHAAUABAAAAAAAAAAIAAIABAAAAAAAAAAIAAMABAAAAAAAAAAIAAQABAAAAAAAAAAIAAUABAAAAAAAAAA=")
 tile_set = SubResource("TileSet_iyx0m")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1815354332]

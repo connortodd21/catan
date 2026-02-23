@@ -2,37 +2,38 @@
 
 [ext_resource type="Script" uid="uid://s3mk0g728fmm" path="res://resources/terrain_database_resource.gd" id="1_wectp"]
 [ext_resource type="Script" uid="uid://b4eyx7s7pvccf" path="res://resources/terrain_data_resource.gd" id="2_6b4hj"]
+[ext_resource type="Texture2D" uid="uid://vsum5t28610t" path="res://assets/tiles/wood.png" id="3_6b4hj"]
 [ext_resource type="Texture2D" uid="uid://dcj4agtem6sy" path="res://assets/tiles/brick.png" id="3_x4mmk"]
 [ext_resource type="Texture2D" uid="uid://1s5wq04o1dmg" path="res://assets/tiles/desert.png" id="4_v8uf6"]
 [ext_resource type="Texture2D" uid="uid://dulh77oswn8pj" path="res://assets/tiles/rock.png" id="5_wbt63"]
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_li53k"]
-load_path = "res://.godot/imported/wood.png-edff8c2493a3b740984a0fbc323bf282.ctex"
-
-[sub_resource type="Resource" id="Resource_sx706"]
+[sub_resource type="Resource" id="Resource_x4mmk"]
 script = ExtResource("2_6b4hj")
-texture = SubResource("CompressedTexture2D_li53k")
+texture = ExtResource("3_6b4hj")
+atlas_coords = Vector2i(3, 0)
 metadata/_custom_type_script = "uid://b4eyx7s7pvccf"
 
-[sub_resource type="Resource" id="Resource_5gvxy"]
+[sub_resource type="Resource" id="Resource_v8uf6"]
 script = ExtResource("2_6b4hj")
 type = 1
 texture = ExtResource("3_x4mmk")
 metadata/_custom_type_script = "uid://b4eyx7s7pvccf"
 
-[sub_resource type="Resource" id="Resource_tdwt6"]
-script = ExtResource("2_6b4hj")
-type = 5
-texture = ExtResource("4_v8uf6")
-metadata/_custom_type_script = "uid://b4eyx7s7pvccf"
-
-[sub_resource type="Resource" id="Resource_klanx"]
+[sub_resource type="Resource" id="Resource_wbt63"]
 script = ExtResource("2_6b4hj")
 type = 4
 texture = ExtResource("5_wbt63")
+atlas_coords = Vector2i(2, 0)
+metadata/_custom_type_script = "uid://b4eyx7s7pvccf"
+
+[sub_resource type="Resource" id="Resource_fl2t8"]
+script = ExtResource("2_6b4hj")
+type = 5
+texture = ExtResource("4_v8uf6")
+atlas_coords = Vector2i(1, 0)
 metadata/_custom_type_script = "uid://b4eyx7s7pvccf"
 
 [resource]
 script = ExtResource("1_wectp")
-terrain_textures = Array[ExtResource("2_6b4hj")]([SubResource("Resource_sx706"), SubResource("Resource_5gvxy"), SubResource("Resource_tdwt6"), SubResource("Resource_klanx")])
+terrain_data = Array[ExtResource("2_6b4hj")]([SubResource("Resource_x4mmk"), SubResource("Resource_v8uf6"), SubResource("Resource_wbt63"), SubResource("Resource_fl2t8")])
 metadata/_custom_type_script = "uid://s3mk0g728fmm"

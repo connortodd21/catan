@@ -3,11 +3,8 @@
 [ext_resource type="Script" uid="uid://bnr7laywjc0m7" path="res://scripts/board_editor_v2/board_editor_v_2.gd" id="1_nxk3t"]
 [ext_resource type="Texture2D" uid="uid://ci28boyssuy8b" path="res://assets/tiles/tileset.png" id="2_l7pyh"]
 [ext_resource type="Script" uid="uid://o2n5nbiye1b3" path="res://scripts/board_editor_v2/camera.gd" id="3_l7pyh"]
-[ext_resource type="Texture2D" uid="uid://vsum5t28610t" path="res://assets/tiles/wood.png" id="4_c65gf"]
-[ext_resource type="Texture2D" uid="uid://dulh77oswn8pj" path="res://assets/tiles/rock.png" id="5_l2hcv"]
-[ext_resource type="Texture2D" uid="uid://im3e5o01dctl" path="res://assets/tiles/border.png" id="6_k17ee"]
-[ext_resource type="Texture2D" uid="uid://dcj4agtem6sy" path="res://assets/tiles/brick.png" id="6_m4gbs"]
-[ext_resource type="Texture2D" uid="uid://1s5wq04o1dmg" path="res://assets/tiles/desert.png" id="8_u7doq"]
+[ext_resource type="Script" uid="uid://de65uyhbhanyc" path="res://scripts/board_editor_v2/editor_panel.gd" id="4_k17ee"]
+[ext_resource type="Resource" uid="uid://i0k4rjpemdnx" path="res://resources/terrain_database.tres" id="5_u7doq"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ox4m1"]
 texture = ExtResource("2_l7pyh")
@@ -57,6 +54,8 @@ scroll_speed = 1.5
 min_zoom = 0.5
 
 [node name="EditorPanel" type="CanvasLayer" parent="." unique_id=2126564521]
+script = ExtResource("4_k17ee")
+terrain_database = ExtResource("5_u7doq")
 
 [node name="PanelContainer" type="PanelContainer" parent="EditorPanel" unique_id=1143009052]
 custom_minimum_size = Vector2(150, 0)
@@ -114,31 +113,9 @@ vertical_alignment = 1
 
 [node name="GridContainer" type="GridContainer" parent="EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer" unique_id=839705173]
 layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 5
 columns = 3
-
-[node name="WoodButton" type="TextureButton" parent="EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer/GridContainer" unique_id=1397744319]
-layout_mode = 2
-texture_normal = ExtResource("4_c65gf")
-
-[node name="BrickButton" type="TextureButton" parent="EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer/GridContainer" unique_id=167626731]
-layout_mode = 2
-texture_normal = ExtResource("6_m4gbs")
-
-[node name="SheepButton" type="TextureButton" parent="EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer/GridContainer" unique_id=443128213]
-layout_mode = 2
-texture_normal = ExtResource("6_k17ee")
-
-[node name="WheatButton" type="TextureButton" parent="EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer/GridContainer" unique_id=1933893502]
-layout_mode = 2
-texture_normal = ExtResource("6_k17ee")
-
-[node name="RockButton" type="TextureButton" parent="EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer/GridContainer" unique_id=659875355]
-layout_mode = 2
-texture_normal = ExtResource("5_l2hcv")
-
-[node name="DesertButton" type="TextureButton" parent="EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer/GridContainer" unique_id=1573128388]
-layout_mode = 2
-texture_normal = ExtResource("8_u7doq")
 
 [node name="Numbers" type="Control" parent="EditorPanel/PanelContainer/MainVbox/TabContainer" unique_id=319570584]
 visible = false

@@ -29,7 +29,7 @@ func is_cell_editable(cell: Vector2i) -> bool:
 #############################################
 ### INPUT HANDLING
 #############################################
-func _input(event):
+func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			place_tile_at_mouse()

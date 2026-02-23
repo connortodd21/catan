@@ -1,7 +1,5 @@
 extends CanvasLayer
 
-signal selection_changed(value: TerrainTypes.Type)
-
 @export var terrain_database: TerrainDatabaseResource
 
 @onready var tile_grid_container: GridContainer = $PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer/GridContainer
@@ -31,7 +29,8 @@ func generate_number_buttons():
 		button.set_meta("value", i)
 		button.pressed.connect(_on_selection_button_pressed.bind(button))
 		number_grid_container.add_child(button)
-		
+
+
 func generate_button_tiles() -> void:
 	for terrain_key in terrain_database.get_keys():
 		var texture = terrain_database.get_texture(terrain_key)
@@ -65,3 +64,13 @@ func _on_selection_button_pressed(button: TextureButton) -> void:
 	selected_button.button_pressed = true
 	selected_button.modulate = Color(0.75, 0.75, 0.75)
 	selected_button.scale = Vector2(0.95, 0.95)
+
+
+func _on_clear_button_pressed() -> void:
+	EditorState.clear_board()
+	EditorState.clear_selected_tile()
+	
+	selected_button.button_pressed = false
+	selected_button.modulate = Color(1,1,1)
+	selected_button.scale = Vector2.ONE
+	selected_button = null

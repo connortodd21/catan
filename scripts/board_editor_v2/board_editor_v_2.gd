@@ -13,8 +13,20 @@ var border_tile_atlas_coords : Vector2i = Vector2i(5,0)
 
 
 func _ready() -> void:
-	pass
+	connect_signals()
 
+
+#############################################
+### SIGNALS
+#############################################
+func connect_signals() -> void:
+	EditorState.board_cleared.connect(_on_board_cleared)
+
+func _on_board_cleared() -> void:
+	var used_cells = board_editor_tile_map.get_used_cells()
+	for cell in used_cells:
+		if board_editor_tile_map.get_cell_atlas_coords(cell) != border_tile_atlas_coords:
+			board_editor_tile_map.set_cell(cell, tileset_source_id, default_tile_atlas_coords)
 
 #############################################
 ### CAMERA
@@ -26,6 +38,7 @@ func _ready() -> void:
 #############################################
 func is_cell_editable(cell: Vector2i) -> bool:
 	return board_editor_tile_map.get_cell_atlas_coords(cell) != border_tile_atlas_coords
+
 
 #############################################
 ### INPUT HANDLING

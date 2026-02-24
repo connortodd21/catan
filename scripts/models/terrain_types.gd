@@ -13,7 +13,8 @@ enum Type {
 	FISH_4_10,
 	GOLD,
 	FOG,
-	UNKNOWN
+	UNKNOWN,
+	BORDER
 }
 
 
@@ -29,7 +30,8 @@ static var tile_type_to_str = {
 	Type.FISH_4_10: "Fish_4_10",
 	Type.GOLD: "Gold",
 	Type.FOG: "Fog",
-	Type.UNKNOWN: "Unknown"
+	Type.UNKNOWN: "Unknown",
+	Type.BORDER: "Border"
 }
 
 

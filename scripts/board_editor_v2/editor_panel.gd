@@ -74,3 +74,7 @@ func _on_clear_button_pressed() -> void:
 	selected_button.modulate = Color(1,1,1)
 	selected_button.scale = Vector2.ONE
 	selected_button = null
+
+
+func _on_save_button_pressed() -> void:
+	EditorState.save_board()

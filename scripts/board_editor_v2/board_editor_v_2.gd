@@ -9,8 +9,9 @@ var tileset_source_id = 0
 var default_tile_atlas_coords : Vector2i = Vector2i(4,0)
 var border_tile_atlas_coords : Vector2i = Vector2i(5,0)
 @export var board_width := 9
-@export var board_height := 9
+@export var board_height := 9 
 
+var tile_metadata_cache : TileMetadataCache = TileMetadataCache.new()
 
 func _ready() -> void:
 	connect_signals()
@@ -21,24 +22,25 @@ func _ready() -> void:
 #############################################
 func connect_signals() -> void:
 	EditorState.board_cleared.connect(_on_board_cleared)
+	EditorState.board_saved.connect(_on_board_saved)
 
 func _on_board_cleared() -> void:
 	var used_cells = board_editor_tile_map.get_used_cells()
 	for cell in used_cells:
 		if board_editor_tile_map.get_cell_atlas_coords(cell) != border_tile_atlas_coords:
 			board_editor_tile_map.set_cell(cell, tileset_source_id, default_tile_atlas_coords)
+	tile_metadata_cache.clear_cache()
 
-#############################################
-### CAMERA
-#############################################
 
+func _on_board_saved() -> void:
+	var serializer = BoardSerializer.new()
+	print(serializer.serialize_to_json(board_editor_tile_map, tile_metadata_cache))
 
 #############################################
 ### TILE MAP
 #############################################
 func is_cell_editable(cell: Vector2i) -> bool:
 	return board_editor_tile_map.get_cell_atlas_coords(cell) != border_tile_atlas_coords
-
 
 #############################################
 ### INPUT HANDLING
@@ -57,7 +59,7 @@ func place_tile_at_mouse():
 	if is_cell_editable(cell) and tile != TerrainTypes.Type.UNKNOWN:
 		board_editor_tile_map.erase_cell(cell)
 		board_editor_tile_map.set_cell(cell, terrain_database.get_source_id(tile), terrain_database.get_atlas_coords(tile))
-
+		tile_metadata_cache.add_to_cache(cell, create_tile_metadata(tile, []))
 
 func remove_tile_at_mouse():
 	var cell = board_editor_tile_map.local_to_map(get_global_mouse_position())
@@ -65,3 +67,10 @@ func remove_tile_at_mouse():
 		board_editor_tile_map.erase_cell(cell)
 		# reset to defalt
 		board_editor_tile_map.set_cell(cell, tileset_source_id, default_tile_atlas_coords)
+		tile_metadata_cache.evict(cell)
+
+#############################################
+### TileMetadata
+#############################################
+func create_tile_metadata(tile: TerrainTypes.Type, numbers: Array[int]) -> TileMetadata:
+	return TileMetadata.new(numbers, tile)

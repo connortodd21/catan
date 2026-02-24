@@ -1,13 +1,15 @@
 extends Node
 
 #############################################
-### BOARD EDITOR BUTTONS
+### BOARD EDITOR SIGNALS
 #############################################
 signal board_cleared
-
-
 func clear_board():
 	board_cleared.emit()
+
+signal board_saved
+func save_board():
+	board_saved.emit()
 #############################################
 ### BOARD EDITOR TILE SELECTION
 #############################################

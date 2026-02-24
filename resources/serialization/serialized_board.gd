@@ -29,3 +29,15 @@ func to_dict() -> Dictionary:
 		"numbers": numbers.map(func(num): return num.to_dict()),
 		"metadata": metadata
 	}
+
+func from_dict(dict: Dictionary) -> SerializedBoard:
+	size = Vector2i(dict.size.width, dict.size.height)
+	for t in dict.tiles:
+		add_tile(t.x, t.y, t.type)
+	for n in dict.numbers:
+		var nums_array: Array[int] = []
+		for v in n["value"]:
+			nums_array.append(int(v))
+		add_numbers(n.x, n.y, nums_array)
+	metadata = dict.metadata
+	return self

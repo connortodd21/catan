@@ -78,3 +78,7 @@ func _on_clear_button_pressed() -> void:
 
 func _on_save_button_pressed() -> void:
 	EditorState.save_board()
+
+
+func _on_load_button_pressed() -> void:
+	EditorState.load_board()

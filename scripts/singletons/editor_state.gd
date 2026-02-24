@@ -4,12 +4,16 @@ extends Node
 ### BOARD EDITOR SIGNALS
 #############################################
 signal board_cleared
-func clear_board():
+func clear_board() -> void:
 	board_cleared.emit()
 
 signal board_saved
-func save_board():
+func save_board() -> void:
 	board_saved.emit()
+
+signal board_load
+func load_board() -> void:
+	board_load.emit()
 #############################################
 ### BOARD EDITOR TILE SELECTION
 #############################################

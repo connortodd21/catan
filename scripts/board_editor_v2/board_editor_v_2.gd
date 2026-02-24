@@ -4,6 +4,7 @@ extends Node2D
 
 @onready var board_editor_tile_map: TileMapLayer = $BoardEditorTileMap
 @onready var camera_2d: Camera2D = $Camera2D
+@onready var save_manager: Node2D = $SaveManager
 
 var tileset_source_id = 0
 var default_tile_atlas_coords : Vector2i = Vector2i(4,0)
@@ -34,7 +35,8 @@ func _on_board_cleared() -> void:
 
 func _on_board_saved() -> void:
 	var serializer = BoardSerializer.new()
-	print(serializer.serialize_to_json(board_editor_tile_map, tile_metadata_cache))
+	var serialized_data = serializer.serialize_to_json(board_editor_tile_map, tile_metadata_cache)
+	save_manager.save_json_with_picker(serialized_data)
 
 #############################################
 ### TILE MAP

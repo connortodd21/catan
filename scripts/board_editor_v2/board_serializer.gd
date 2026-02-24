@@ -4,6 +4,10 @@ class_name BoardSerializer
 const empty_board : Rect2i = Rect2i(0, 0, 0, 0)
 
 
+func serialize_to_resource(board: TileMapLayer, tile_metadata_cache: TileMetadataCache) -> SerializedBoard:
+	return build_serialized_board(board, tile_metadata_cache)
+
+
 func serialize_to_json(board: TileMapLayer, tile_metadata_cache: TileMetadataCache) -> Dictionary:
 	return build_serialized_board(board, tile_metadata_cache).to_dict()
 

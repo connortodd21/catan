@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://ci28boyssuy8b" path="res://assets/tiles/tileset.png" id="2_l7pyh"]
 [ext_resource type="Script" uid="uid://o2n5nbiye1b3" path="res://scripts/board_editor_v2/camera.gd" id="3_l7pyh"]
 [ext_resource type="Script" uid="uid://de65uyhbhanyc" path="res://scripts/board_editor_v2/editor_panel.gd" id="4_k17ee"]
+[ext_resource type="Script" uid="uid://cq255hswe5bm7" path="res://scripts/board_editor_v2/save_manager.gd" id="5_c65gf"]
 [ext_resource type="Resource" uid="uid://i0k4rjpemdnx" path="res://resources/terrain_database.tres" id="5_u7doq"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ox4m1"]
@@ -71,6 +72,9 @@ drag_vertical_enabled = true
 script = ExtResource("3_l7pyh")
 scroll_speed = 1.5
 min_zoom = 0.5
+
+[node name="SaveManager" type="Node2D" parent="." unique_id=248811041]
+script = ExtResource("5_c65gf")
 
 [node name="EditorPanel" type="CanvasLayer" parent="." unique_id=2126564521]
 script = ExtResource("4_k17ee")

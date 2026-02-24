@@ -12,7 +12,7 @@ var metadata: Dictionary = {
 }
 
 func add_tile(x: int, y: int, tile: TerrainTypes.Type) -> void:
-	numbers.append(TileEntry.new(x, y, tile))
+	tiles.append(TileEntry.new(x, y, tile))
 
 
 func add_numbers(x: int, y: int, value: Array[int]) -> void:
@@ -29,31 +29,3 @@ func to_dict() -> Dictionary:
 		"numbers": numbers.map(func(num): return num.to_dict()),
 		"metadata": metadata
 	}
-
-
-class TileEntry:
-	var x: int
-	var y: int
-	var type: TerrainTypes.Type
-	
-	func _init(_x: int, _y: int, _type: TerrainTypes.Type) -> void:
-		x = _x
-		y = _y
-		type = _type
-	
-	func to_dict() -> Dictionary:
-		return {"x": x,"y": y,"type": type}
-
-
-class NumberEntry:
-	var x: int
-	var y: int
-	var value: Array[int]
-	
-	func _init(_x: int, _y: int, _value: Array[int]) -> void:
-		x = _x
-		y = _y
-		value = _value
-	
-	func to_dict() -> Dictionary:
-		return {"x": x,"y": y,"value": value}

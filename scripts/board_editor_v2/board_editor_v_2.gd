@@ -54,7 +54,6 @@ func clear_board() -> void:
 
 func set_board(board: SerializedBoard) -> void:
 	clear_board()
-	print(board)
 	for tile_entry in board.tiles:
 		place_tile(Vector2i(tile_entry.x, tile_entry.y), tile_entry.type)
 

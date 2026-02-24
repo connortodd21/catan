@@ -25,13 +25,15 @@ func _ready():
 
 
 func _on_file_selected(path: String) -> void:
-	match save_mode:
-		JSON_FILE_TYPE:
-			_save_json(path)
-		TRES_FILE_TYPE:
-			_save_tres(path)
+	if save_mode:
+		match save_mode:
+			JSON_FILE_TYPE:
+				_save_json(path)
+			TRES_FILE_TYPE:
+				_save_tres(path)
+		save_mode = ""
 	
-	if _load_mode != "":
+	if _load_mode:
 		match _load_mode:
 			JSON_FILE_TYPE:
 				var json_data = _load_json(path)
@@ -42,7 +44,6 @@ func _on_file_selected(path: String) -> void:
 				if _load_callback:
 					_load_callback.call(board)
 		_load_mode = ""
-	save_mode = ""
 
 
 func _save_json(path: String) -> void:
@@ -75,6 +76,7 @@ func _load_tres(path: String) -> SerializedBoard:
 		return board
 	push_error("Failed to load TRES as SerializedBoard: %s" % path)
 	return null
+
 #############################################
 ### EXTERNAL SAVE FUNCTIONS
 #############################################

@@ -3,6 +3,9 @@
 [ext_resource type="Script" uid="uid://bbb8ds038wdwq" path="res://scripts/main/main.gd" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://d173wutt6c3x" path="res://scenes/board_editor_v_2.tscn" id="1_o5qli"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_0wfyh"]
+font_size = 89
+
 [node name="Main" type="Node2D" unique_id=1298295548]
 script = ExtResource("1_0wfyh")
 board_editor_scene = ExtResource("1_o5qli")
@@ -37,6 +40,13 @@ layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="MainMenu/CenterContainer/VBoxContainer" unique_id=1729138976]
+layout_mode = 2
+text = "Catan"
+label_settings = SubResource("LabelSettings_0wfyh")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="CreateRoomButton" type="Button" parent="MainMenu/CenterContainer/VBoxContainer" unique_id=1799787077]
 custom_minimum_size = Vector2(300, 60)

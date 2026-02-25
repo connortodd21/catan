@@ -108,14 +108,16 @@ func place_number(hex_cell: Vector2i, number: int) -> void:
 	if not NumberUtils.is_valid_number(number):
 		return
 
+	var tile_metadata : TileMetadata = tile_metadata_cache.get_val(hex_cell)
 	# can only place numbers if a tile is already present
-	if tile_metadata_cache.get_val(hex_cell) == null:
+	if tile_metadata == null:
 		return
 	
 	var metadata: NumberMetadata = number_metadata_cache.get_val(hex_cell)
 	if metadata == null:
 		metadata = create_number_metadata([])
-	metadata.add_number(number)
+	
+	metadata.add_number(number, tile_metadata.get_terrain_type())
 	number_metadata_cache.set_val(hex_cell, metadata)
 
 	var number_cell = TileMapUtils.convert_hex_coords_to_number_coords(hex_cell, board_tile_map, numbers_tile_map)

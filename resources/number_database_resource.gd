@@ -21,19 +21,24 @@ func get_keys() -> Array:
 	return numbers.keys()
 
 
-func get_texture(value: int) -> Texture2D:
+func get_texture(key: int) -> Texture2D:
 	build_numbers_if_empty()
-	return numbers.get(value).texture
+	return numbers.get(key).texture
 
 
-func get_atlas_coords(value: int) -> Vector2i:
+func get_atlas_coords(key: int) -> Vector2i:
 	build_numbers_if_empty()
-	return numbers.get(value).atlas_coords
+	return numbers.get(key).atlas_coords
 
 
-func get_source_id(value: int) -> int:
+func get_source_id(key: int) -> int:
 	build_numbers_if_empty()
-	return numbers.get(value).source_id
+	return numbers.get(key).source_id
+
+
+func get_value(key: int) -> int:
+	build_numbers_if_empty()
+	return numbers.get(key).value
 
 
 func get_key_from_atlas_coords(atlas_coords: Vector2i) -> int:

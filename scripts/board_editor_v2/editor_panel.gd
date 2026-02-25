@@ -1,7 +1,10 @@
 extends CanvasLayer
 
 @export var terrain_database: TerrainDatabaseResource
+@export var numbers_database: NumberDatabaseResource
 
+
+@onready var tab_container: TabContainer = $PanelContainer/MainVbox/TabContainer
 @onready var tile_grid_container: GridContainer = $PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer/GridContainer
 @onready var number_grid_container: GridContainer = $PanelContainer/MainVbox/TabContainer/Numbers/VBoxContainer/GridContainer
 
@@ -10,7 +13,7 @@ const NUMBER_KEY := "number_value"
 
 var selected_terrain: TerrainTypes.Type
 var selected_number: int
-var selected_button: BaseButton
+var selected_button: TextureButton
 
 
 func _ready() -> void:
@@ -22,16 +25,18 @@ func _ready() -> void:
 ### UI ELEMENT GENERATION
 #############################################
 func generate_number_buttons():
-	number_grid_container.columns = 4
-	for i in range(2, 13):
-		var button = Button.new()
-		button.text = str(i)
-		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		button.custom_minimum_size = Vector2(80, 60)
-		button.set_meta(NUMBER_KEY, i)
-		button.pressed.connect(_on_number_button_pressed.bind(button))
-		number_grid_container.add_child(button)
+	for number_key in numbers_database.get_keys():
+		var number = numbers_database.get_value(number_key)
+		var texture = numbers_database.get_texture(number_key)
+		var texture_button := TextureButton.new()
+		texture_button.texture_normal = texture
+		texture_button.texture_hover = texture
+		texture_button.texture_pressed = texture
+		texture_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		texture_button.toggle_mode = true
+		texture_button.set_meta(NUMBER_KEY, number)
+		texture_button.pressed.connect(_on_number_button_pressed.bind(texture_button))
+		number_grid_container.add_child(texture_button)
 
 
 func generate_button_tiles() -> void:
@@ -60,7 +65,7 @@ func _on_terrain_button_pressed(button: TextureButton) -> void:
 	_update_button_visual(button)
 
 
-func _on_number_button_pressed(button: Button) -> void:
+func _on_number_button_pressed(button: TextureButton) -> void:
 	var value = button.get_meta(NUMBER_KEY)
 	EditorState.set_editor_state_to_number()
 	selected_number = value
@@ -87,10 +92,18 @@ func _on_load_button_pressed() -> void:
 	EditorState.load_board()
 
 
+func _on_tab_container_tab_changed(tab_index: int) -> void:
+	match tab_index:
+		0: # Tiles tab
+			EditorState.set_editor_state_to_terrain()
+		1: # Numbers tab
+			EditorState.set_editor_state_to_number()
+
+
 #############################################
 ### BUTTON VISUALS
 #############################################
-func _update_button_visual(button: BaseButton) -> void:
+func _update_button_visual(button: TextureButton) -> void:
 	# Unpress previously selected
 	if selected_button and selected_button != button:
 		selected_button.button_pressed = false

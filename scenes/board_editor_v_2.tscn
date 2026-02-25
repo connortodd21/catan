@@ -86,7 +86,6 @@ tile_map_data = PackedByteArray("AAAgACQABAAAAAAAAAAkADcABAAAAAAAAAAeAC8ABAAAAAA
 tile_set = SubResource("TileSet_mswq3")
 
 [node name="NumbersTileMap" type="TileMapLayer" parent="." unique_id=1381543388]
-modulate = Color(0.3382844, 0.28090337, 0.045863636, 1)
 z_index = 1
 texture_filter = 1
 scale = Vector2(1.7, 1.7)
@@ -113,6 +112,7 @@ script = ExtResource("5_c65gf")
 [node name="EditorPanel" type="CanvasLayer" parent="." unique_id=2126564521]
 script = ExtResource("4_k17ee")
 terrain_database = ExtResource("5_u7doq")
+numbers_database = ExtResource("3_m4gbs")
 
 [node name="PanelContainer" type="PanelContainer" parent="EditorPanel" unique_id=1143009052]
 custom_minimum_size = Vector2(150, 0)
@@ -196,7 +196,9 @@ vertical_alignment = 1
 
 [node name="GridContainer" type="GridContainer" parent="EditorPanel/PanelContainer/MainVbox/TabContainer/Numbers/VBoxContainer" unique_id=539880903]
 layout_mode = 2
+columns = 4
 
 [connection signal="pressed" from="EditorPanel/PanelContainer/MainVbox/HBoxContainer/SaveButton" to="EditorPanel" method="_on_save_button_pressed"]
 [connection signal="pressed" from="EditorPanel/PanelContainer/MainVbox/HBoxContainer/LoadButton" to="EditorPanel" method="_on_load_button_pressed"]
 [connection signal="pressed" from="EditorPanel/PanelContainer/MainVbox/HBoxContainer/ClearButton" to="EditorPanel" method="_on_clear_button_pressed"]
+[connection signal="tab_changed" from="EditorPanel/PanelContainer/MainVbox/TabContainer" to="EditorPanel" method="_on_tab_container_tab_changed"]

@@ -1,16 +1,10 @@
 class_name TileMetadata
 
-var numbers : Array[int]
 var terrain_type : TerrainTypes.Type
 
 
-func _init(_numbers: Array[int], _terrain_type: TerrainTypes.Type) -> void:
-	numbers = _numbers
+func _init(_terrain_type: TerrainTypes.Type) -> void:
 	terrain_type = _terrain_type
-
-
-func get_numbers() -> Array[int]:
-	return numbers
 
 
 func get_terrain_type() -> TerrainTypes.Type:
@@ -18,4 +12,4 @@ func get_terrain_type() -> TerrainTypes.Type:
 
 
 func _to_string() -> String:
-	return "Numbers: %s | terrain_type %d" % [str(numbers), terrain_type]
+	return "terrain_type %d" % [terrain_type]

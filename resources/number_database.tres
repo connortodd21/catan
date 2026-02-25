@@ -1,0 +1,90 @@
+[gd_resource type="Resource" script_class="NumberDatabaseResource" format=3 uid="uid://dlk1rll7vemno"]
+
+[ext_resource type="Script" uid="uid://cq8cggj031kkj" path="res://resources/number_data_resource.gd" id="1_gpg4m"]
+[ext_resource type="Texture2D" uid="uid://d7qkcsmo8qy3" path="res://assets/numbers/2.png" id="2_5cymw"]
+[ext_resource type="Script" uid="uid://dw3crhw604tmj" path="res://resources/number_database_resource.gd" id="2_c3m18"]
+[ext_resource type="Texture2D" uid="uid://dtejpbo4axr3m" path="res://assets/numbers/3.png" id="3_xcaac"]
+[ext_resource type="Texture2D" uid="uid://dtx5vqp7vhnqh" path="res://assets/numbers/4.png" id="4_gnmqt"]
+[ext_resource type="Texture2D" uid="uid://c23i85ds3yftf" path="res://assets/numbers/5.png" id="5_bfkec"]
+[ext_resource type="Texture2D" uid="uid://bg050htpux58c" path="res://assets/numbers/6.png" id="6_l2jx3"]
+[ext_resource type="Texture2D" uid="uid://ukl0t7cpslo7" path="res://assets/numbers/7.png" id="7_ytd5v"]
+[ext_resource type="Texture2D" uid="uid://b2jovevkd6ytn" path="res://assets/numbers/8.png" id="8_2njj7"]
+[ext_resource type="Texture2D" uid="uid://b5n16303pvp1x" path="res://assets/numbers/9.png" id="9_4cmgx"]
+[ext_resource type="Texture2D" uid="uid://clvxcmc5nfsqh" path="res://assets/numbers/10.png" id="10_oedfw"]
+
+[sub_resource type="Resource" id="Resource_c8rij"]
+script = ExtResource("1_gpg4m")
+value = 2
+texture = ExtResource("2_5cymw")
+atlas_coords = Vector2i(2, 2)
+source_id = 20
+metadata/_custom_type_script = "uid://cq8cggj031kkj"
+
+[sub_resource type="Resource" id="Resource_44jc5"]
+script = ExtResource("1_gpg4m")
+value = 3
+texture = ExtResource("3_xcaac")
+atlas_coords = Vector2i(6, 2)
+source_id = 20
+metadata/_custom_type_script = "uid://cq8cggj031kkj"
+
+[sub_resource type="Resource" id="Resource_6g4v3"]
+script = ExtResource("1_gpg4m")
+value = 4
+texture = ExtResource("4_gnmqt")
+atlas_coords = Vector2i(10, 2)
+source_id = 20
+metadata/_custom_type_script = "uid://cq8cggj031kkj"
+
+[sub_resource type="Resource" id="Resource_bqc6x"]
+script = ExtResource("1_gpg4m")
+value = 5
+texture = ExtResource("5_bfkec")
+atlas_coords = Vector2i(14, 2)
+source_id = 20
+metadata/_custom_type_script = "uid://cq8cggj031kkj"
+
+[sub_resource type="Resource" id="Resource_f072o"]
+script = ExtResource("1_gpg4m")
+value = 6
+texture = ExtResource("6_l2jx3")
+atlas_coords = Vector2i(18, 2)
+source_id = 20
+metadata/_custom_type_script = "uid://cq8cggj031kkj"
+
+[sub_resource type="Resource" id="Resource_x5fa1"]
+script = ExtResource("1_gpg4m")
+value = 7
+texture = ExtResource("7_ytd5v")
+atlas_coords = Vector2i(22, 2)
+source_id = 20
+metadata/_custom_type_script = "uid://cq8cggj031kkj"
+
+[sub_resource type="Resource" id="Resource_2auma"]
+script = ExtResource("1_gpg4m")
+value = 8
+texture = ExtResource("8_2njj7")
+atlas_coords = Vector2i(26, 2)
+source_id = 20
+metadata/_custom_type_script = "uid://cq8cggj031kkj"
+
+[sub_resource type="Resource" id="Resource_ec8rg"]
+script = ExtResource("1_gpg4m")
+value = 9
+texture = ExtResource("9_4cmgx")
+atlas_coords = Vector2i(30, 2)
+source_id = 20
+metadata/_custom_type_script = "uid://cq8cggj031kkj"
+
+[sub_resource type="Resource" id="Resource_6cc2y"]
+script = ExtResource("1_gpg4m")
+value = 10
+texture = ExtResource("10_oedfw")
+atlas_coords = Vector2i(2, 6)
+source_id = 20
+metadata/_custom_type_script = "uid://cq8cggj031kkj"
+
+[resource]
+script = ExtResource("2_c3m18")
+number_data = Array[ExtResource("1_gpg4m")]([SubResource("Resource_c8rij"), SubResource("Resource_44jc5"), SubResource("Resource_6g4v3"), SubResource("Resource_bqc6x"), SubResource("Resource_f072o"), SubResource("Resource_x5fa1"), SubResource("Resource_2auma"), SubResource("Resource_ec8rg"), SubResource("Resource_6cc2y")])
+metadata/_custom_type_script = "uid://dw3crhw604tmj"

@@ -3,10 +3,11 @@ extends Node2D
 @export var terrain_database : TerrainDatabaseResource
 @export var numbers_database : NumberDatabaseResource
 
-@onready var board_tile_map: TileMapLayer = $BoardTileMap
-@onready var numbers_tile_map: TileMapLayer = $NumbersTileMap
-@onready var camera_2d: Camera2D = $Camera2D
-@onready var save_manager: Node2D = $SaveManager
+
+@onready var board_tile_map: TileMapLayer = $editor/BoardTileMap
+@onready var numbers_tile_map: TileMapLayer = $editor/NumbersTileMap
+@onready var camera_2d: Camera2D = $editor/Camera2D
+@onready var save_manager: SaveManager = $editor/SaveManager
 
 var tileset_source_id = 0
 var default_tile_atlas_coords : Vector2i = Vector2i(4,0)
@@ -18,6 +19,9 @@ var tile_metadata_cache : TypedCache = TypedCache.new(Variant.Type.TYPE_VECTOR2I
 var number_metadata_cache : TypedCache = TypedCache.new(Variant.Type.TYPE_VECTOR2I, NumberMetadata)
 
 func _ready() -> void:
+	print("BoardEditor ready")
+	print(global_position)
+	print("Camera current:", camera_2d.is_current())
 	connect_signals()
 
 

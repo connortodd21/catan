@@ -98,18 +98,19 @@ func set_board(board: SerializedBoard) -> void:
 		place_number(Vector2i(number_entry.x, number_entry.y), number_entry.value[0])
 
 
-func place_tile(cell: Vector2i, tile: TerrainTypes.Type) -> void:
-	board_tile_map.erase_cell(cell)
-	board_tile_map.set_cell(cell, terrain_database.get_source_id(tile), terrain_database.get_atlas_coords(tile))
-	tile_metadata_cache.set_val(cell, create_tile_metadata(tile))
+func place_tile(axial: Vector2i, tile: TerrainTypes.Type) -> void:
+	var offset = HexUtils.axial_to_offset(axial)
+	board_tile_map.erase_cell(offset)
+	board_tile_map.set_cell(offset,terrain_database.get_source_id(tile),terrain_database.get_atlas_coords(tile))
+	tile_metadata_cache.set_val(axial, create_tile_metadata(tile))
 
 
-func remove_tile(cell: Vector2i) -> void:
-	if is_cell_editable(cell):
-		board_tile_map.erase_cell(cell)
-		# reset to defalt
-		board_tile_map.set_cell(cell, tileset_source_id, default_tile_atlas_coords)
-		tile_metadata_cache.evict(cell)
+func remove_tile(axial: Vector2i) -> void:
+	var offset = HexUtils.axial_to_offset(axial)
+	if is_cell_editable(offset):
+		board_tile_map.erase_cell(offset)
+		board_tile_map.set_cell(offset, tileset_source_id, default_tile_atlas_coords)
+		tile_metadata_cache.evict(axial)
 
 
 func place_number(hex_cell: Vector2i, number: int) -> void:
@@ -128,7 +129,8 @@ func place_number(hex_cell: Vector2i, number: int) -> void:
 	metadata.add_number(number, tile_metadata.get_terrain_type())
 	number_metadata_cache.set_val(hex_cell, metadata)
 
-	var number_cell = TileMapUtils.convert_hex_coords_to_number_coords(hex_cell, board_tile_map, numbers_tile_map)
+	var offset = HexUtils.axial_to_offset(hex_cell)
+	var number_cell = TileMapUtils.convert_hex_coords_to_number_coords(offset, board_tile_map, numbers_tile_map)
 	numbers_tile_map.set_cell(number_cell,numbers_database.get_source_id(number),numbers_database.get_atlas_coords(number))
 
 
@@ -142,32 +144,39 @@ func remove_number(hex_cell: Vector2i, number: int) -> void:
 	else:
 		number_metadata_cache.set_val(hex_cell, metadata)
 
-	var number_cell = TileMapUtils.convert_hex_coords_to_number_coords(hex_cell, board_tile_map, numbers_tile_map)
+	var offset = HexUtils.axial_to_offset(hex_cell)
+	var number_cell = TileMapUtils.convert_hex_coords_to_number_coords(offset, board_tile_map, numbers_tile_map)
 	numbers_tile_map.erase_cell(number_cell)
 
 #############################################
 ### INPUT HANDLING
 #############################################
 func place_tile_at_mouse() -> void:
-	var cell = board_tile_map.local_to_map(get_local_mouse_position())
+	var offset = board_tile_map.local_to_map(get_local_mouse_position())
+	var axial = HexUtils.offset_to_axial(offset)
 	var tile = EditorState.get_selected_tile()
-	if is_cell_editable(cell) and tile != TerrainTypes.Type.UNKNOWN:
-		place_tile(cell, tile)
+	if is_cell_editable(offset) and tile != TerrainTypes.Type.UNKNOWN:
+		place_tile(axial, tile)
 
 func remove_tile_at_mouse() -> void:
-	var cell = board_tile_map.local_to_map(get_global_mouse_position())
-	remove_tile(cell)
+	var offset = board_tile_map.local_to_map(get_global_mouse_position())
+	var axial = HexUtils.offset_to_axial(offset)
+	remove_tile(axial)
 
 func place_number_at_mouse() -> void:
-	var cell = board_tile_map.local_to_map(get_local_mouse_position())
+	var offset = board_tile_map.local_to_map(get_local_mouse_position())
+	var axial = HexUtils.offset_to_axial(offset)
+
 	var number = EditorState.get_selected_number()
 	if NumberUtils.is_valid_number(number):
-		place_number(cell, number)
+		place_number(axial, number)
 
 func remove_number_at_mouse():
-	var cell = board_tile_map.local_to_map(get_local_mouse_position())
+	var offset = board_tile_map.local_to_map(get_local_mouse_position())
+	var axial = HexUtils.offset_to_axial(offset)
+
 	var number = EditorState.get_selected_number()
-	remove_number(cell, number)
+	remove_number(axial, number)
 
 #############################################
 ### METADATA

@@ -214,7 +214,7 @@ columns = 4
 [node name="board_generation_window" type="Window" parent="UI/EditorPanel" unique_id=1023699519]
 oversampling_override = 1.0
 initial_position = 1
-size = Vector2i(500, 500)
+size = Vector2i(600, 600)
 visible = false
 script = ExtResource("9_k17ee")
 terrain_database = ExtResource("5_u7doq")
@@ -232,15 +232,98 @@ theme_override_font_sizes/font_size = 26
 text = "BOARD GENERATION RULES"
 horizontal_alignment = 1
 
-[node name="BoardSizeLabel" type="Label" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow" unique_id=1455754022]
+[node name="BoardShapeHbox" type="HBoxContainer" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow" unique_id=960411588]
+layout_mode = 2
+
+[node name="BoardShapeLabel" type="Label" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardShapeHbox" unique_id=1796639185]
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
-text = "Board Radius (center to end)"
+text = "Board Shape"
 
-[node name="BoardSizeHbox" type="HBoxContainer" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow" unique_id=874014708]
+[node name="OptionButton" type="OptionButton" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardShapeHbox" unique_id=445069924]
+layout_mode = 2
+theme_override_font_sizes/font_size = 19
+selected = 0
+item_count = 4
+popup/item_0/text = "Circle"
+popup/item_0/id = 0
+popup/item_1/text = "Square"
+popup/item_1/id = 1
+popup/item_2/text = "Rectangle"
+popup/item_2/id = 2
+popup/item_3/text = "Oval"
+popup/item_3/id = 3
+
+[node name="BoardRadiusSizeHbox" type="HBoxContainer" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow" unique_id=874014708]
 layout_mode = 2
 
-[node name="BoardRadiusSpinbox" type="SpinBox" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardSizeHbox" unique_id=326034720]
+[node name="BoardSizeLabel" type="Label" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardRadiusSizeHbox" unique_id=1455754022]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Board Radius (center to end)"
+
+[node name="BoardRadiusSpinbox" type="SpinBox" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardRadiusSizeHbox" unique_id=326034720]
+layout_mode = 2
+value = 3.0
+rounded = true
+custom_arrow_step = 1.0
+
+[node name="BoardRectSizeVbox" type="VBoxContainer" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow" unique_id=1138559172]
+visible = false
+layout_mode = 2
+
+[node name="BoardRectWidthHbox" type="HBoxContainer" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardRectSizeVbox" unique_id=393981060]
+layout_mode = 2
+
+[node name="BoardWidthLabel" type="Label" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardRectSizeVbox/BoardRectWidthHbox" unique_id=603743390]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Board Width (center to end)"
+
+[node name="BoardRectWidthSpinbox" type="SpinBox" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardRectSizeVbox/BoardRectWidthHbox" unique_id=1581450132]
+layout_mode = 2
+value = 3.0
+custom_arrow_step = 1.0
+
+[node name="BoardRectHeightHbox" type="HBoxContainer" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardRectSizeVbox" unique_id=1821613787]
+layout_mode = 2
+
+[node name="BoardHeightLabel" type="Label" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardRectSizeVbox/BoardRectHeightHbox" unique_id=529885637]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Board Height (center to end)"
+
+[node name="BoardRectHeightSpinbox" type="SpinBox" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardRectSizeVbox/BoardRectHeightHbox" unique_id=2034236918]
+layout_mode = 2
+value = 3.0
+custom_arrow_step = 1.0
+
+[node name="BoardOvalSizeVbox" type="VBoxContainer" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow" unique_id=212731036]
+visible = false
+layout_mode = 2
+
+[node name="BoardOvalWidthHbox" type="HBoxContainer" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardOvalSizeVbox" unique_id=1532175400]
+layout_mode = 2
+
+[node name="BoardWidthLabel" type="Label" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardOvalSizeVbox/BoardOvalWidthHbox" unique_id=181609643]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Board Width (center to end)"
+
+[node name="BoardOvalWidthSpinbox" type="SpinBox" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardOvalSizeVbox/BoardOvalWidthHbox" unique_id=755276012]
+layout_mode = 2
+value = 3.0
+custom_arrow_step = 1.0
+
+[node name="BoardOvalHeightHbox" type="HBoxContainer" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardOvalSizeVbox" unique_id=206354420]
+layout_mode = 2
+
+[node name="BoardHeightLabel" type="Label" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardOvalSizeVbox/BoardOvalHeightHbox" unique_id=1811791654]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Board Height (center to end)"
+
+[node name="BoardOvalHeightSpinbox" type="SpinBox" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardOvalSizeVbox/BoardOvalHeightHbox" unique_id=679101644]
 layout_mode = 2
 value = 3.0
 custom_arrow_step = 1.0
@@ -283,4 +366,9 @@ text = "GENERATE"
 [connection signal="pressed" from="UI/EditorPanel/PanelContainer/MainVbox/HBoxContainer/GenerateBoardButton" to="UI" method="_on_generate_board_button_pressed"]
 [connection signal="tab_changed" from="UI/EditorPanel/PanelContainer/MainVbox/TabContainer" to="UI" method="_on_tab_container_tab_changed"]
 [connection signal="close_requested" from="UI/EditorPanel/board_generation_window" to="UI/EditorPanel/board_generation_window" method="_on_close_requested"]
+[connection signal="value_changed" from="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardRadiusSizeHbox/BoardRadiusSpinbox" to="UI/EditorPanel/board_generation_window" method="_on_board_radius_spinbox_value_changed"]
+[connection signal="value_changed" from="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardRectSizeVbox/BoardRectWidthHbox/BoardRectWidthSpinbox" to="UI/EditorPanel/board_generation_window" method="_on_board_rect_width_spinbox_value_changed"]
+[connection signal="value_changed" from="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardRectSizeVbox/BoardRectHeightHbox/BoardRectHeightSpinbox" to="UI/EditorPanel/board_generation_window" method="_on_board_rect_height_spinbox_value_changed"]
+[connection signal="value_changed" from="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardOvalSizeVbox/BoardOvalWidthHbox/BoardOvalWidthSpinbox" to="UI/EditorPanel/board_generation_window" method="_on_board_oval_width_spinbox_value_changed"]
+[connection signal="value_changed" from="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardOvalSizeVbox/BoardOvalHeightHbox/BoardOvalHeightSpinbox" to="UI/EditorPanel/board_generation_window" method="_on_board_oval_height_spinbox_value_changed"]
 [connection signal="pressed" from="UI/EditorPanel/board_generation_window/GenerateButton" to="UI/EditorPanel/board_generation_window" method="_on_generate_button_pressed"]

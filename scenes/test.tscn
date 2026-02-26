@@ -39,9 +39,8 @@ texture_region_size = Vector2i(104, 120)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j5jx5"]
 texture = ExtResource("1_errlg")
-texture_region_size = Vector2i(104, 120)
+texture_region_size = Vector2i(118, 136)
 0:0/animation_columns = 4
-0:0/animation_speed = 2.0
 0:0/animation_frame_0/duration = 1.0
 0:0/animation_frame_1/duration = 1.0
 0:0/animation_frame_2/duration = 1.0
@@ -50,15 +49,16 @@ texture_region_size = Vector2i(104, 120)
 
 [sub_resource type="TileSet" id="TileSet_iyx0m"]
 tile_shape = 3
-tile_size = Vector2i(122, 137)
+tile_size = Vector2i(118, 136)
 sources/2 = SubResource("TileSetAtlasSource_iyx0m")
 sources/4 = SubResource("TileSetAtlasSource_74lek")
 sources/6 = SubResource("TileSetAtlasSource_lpvoh")
-sources/7 = SubResource("TileSetAtlasSource_j5jx5")
+sources/8 = SubResource("TileSetAtlasSource_j5jx5")
 
 [node name="test" type="Node2D" unique_id=844079791]
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=207981909]
+visible = false
 offset_left = 2.0
 offset_top = 4.0
 offset_right = 1502.0
@@ -67,7 +67,7 @@ color = Color(1, 0.89411765, 0.47058824, 1)
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1213624049]
 texture_filter = 1
-tile_map_data = PackedByteArray("AAAGAAMABgAAAAAAAAAGAAQABgAAAAAAAAAHAAQABwAAAAAAAAAFAAMABwAAAAAAAAAFAAQABwAAAAAAAAAHAAMABwAAAAAAAAAIAAQABwAAAAAAAAAFAAUABgAAAAAAAAAGAAUABgAAAAAAAAAHAAUABgAAAAAAAAAEAAUABgAAAAAAAAAEAAQABwAAAAAAAAAEAAMABwAAAAAAAAAFAAIABwAAAAAAAAAIAAIABwAAAAAAAAAHAAIABwAAAAAAAAAGAAIABwAAAAAAAAAIAAMABwAAAAAAAAAJAAQABwAAAAAAAAAIAAUABwAAAAAAAAAJAAUABgAAAAAAAAAJAAMABgAAAAAAAAAJAAIABgAAAAAAAAAKAAQABgAAAAAAAAADAAUABgAAAAAAAAADAAMABgAAAAAAAAAEAAIABgAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAGAAMABgAAAAAAAAAGAAQABgAAAAAAAAAFAAUABgAAAAAAAAAGAAUABgAAAAAAAAAHAAUABgAAAAAAAAAEAAUABgAAAAAAAAADAAUABgAAAAAAAAADAAMABgAAAAAAAAAEAAIABgAAAAAAAAAEAAMACAAAAAAAAAAFAAIACAAAAAAAAAAFAAMACAAAAAAAAAAGAAIACAAAAAAAAAAFAAQACAAAAAAAAAAEAAQACAAAAAAAAAA=")
 tile_set = SubResource("TileSet_iyx0m")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1815354332]

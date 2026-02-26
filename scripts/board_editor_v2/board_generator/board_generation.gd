@@ -1,6 +1,6 @@
 class_name BoardGenerator
 
-const center : Vector2i = Vector2i(6,4)
+static var center : Vector2i = HexUtils.oddr_to_axial(Vector2i(6,4))
 
 const HEX_DIRECTIONS: Array[Vector2i] = [
 	Vector2i(1, 0),
@@ -66,15 +66,17 @@ static func generate(config: GenerationConfig) -> SerializedBoard:
 ### COORDS
 #############################################
 static func _generate_coords(config: GenerationConfig) -> Array[Vector2i]:
-	var coords: Array[Vector2i] = []
-	var radius = config.radius
-
-	for q in range(-radius, radius + 1):
-		for r in range(-radius, radius + 1):
-			var hex = Vector2i(q, r) + center
-			if _coord_in_shape(hex - center, radius, config.shape):
-				coords.append(hex)
-	return coords
+	match config.shape:
+		Shapes.Type.CIRCLE:
+			return _generate_hex_circle(config.radius)
+		Shapes.Type.SQUARE:
+			return _generate_hex_square(config.radius)
+		Shapes.Type.RECTANGLE:
+			return _generate_hex_rectangle(config.rect_width, config.rect_height)
+		Shapes.Type.OVAL:
+			return _generate_hex_oval(config.oval_width, config.oval_height)
+		_:
+			return _generate_hex_circle(config.radius)
 
 
 static func _coord_in_shape(coord: Vector2i, radius: int, shape: Shapes.Type) -> bool:
@@ -97,7 +99,6 @@ static func _assign_tiles(coords: Array[Vector2i], config: GenerationConfig, rng
 	var tile_pool: Array = []
 	var needed := coords.size()
 
-	print(config.allowed_tiles)
 	while tile_pool.size() < needed:
 		tile_pool.append_array(config.allowed_tiles)
 
@@ -124,37 +125,86 @@ static func _assign_tiles(coords: Array[Vector2i], config: GenerationConfig, rng
 static func _assign_numbers(tile_map: Dictionary, coords: Array, config: GenerationConfig, rng: RandomNumberGenerator) -> Dictionary:
 	var valid_coords: Array[Vector2i] = []
 
+	# only non-desert tiles can get numbers
 	for coord in coords:
-		if tile_map.has(coord):
-			if not TileUtils.is_desert(tile_map[coord]):
-				valid_coords.append(coord)
+		if tile_map.has(coord) and not TileUtils.is_desert(tile_map[coord]):
+			valid_coords.append(coord)
 
 	var number_pool = build_number_pool(valid_coords.size(), rng)
+	number_pool.shuffle()
+
 	var coords_to_numbers := {}
-	for coord in valid_coords:
-		var placed := false
-		number_pool.shuffle()
-
-		for number in number_pool:
-			var tile = tile_map[coord]
-
-			if config.rule_set.validate_rules(coord, number, tile, tile_map, coords_to_numbers):
-				coords_to_numbers[coord] = number
-				number_pool.erase(number)
-				placed = true
-				break
-
-		if not placed:
-			return {}
-
-	return coords_to_numbers
+	if _place_number_recursive(0, valid_coords, number_pool, tile_map, coords_to_numbers, config):
+		return coords_to_numbers
+	else:
+		return {}
 
 
+static func _place_number_recursive(index: int, coords: Array, pool: Array, tile_map: Dictionary, current_map: Dictionary, config: GenerationConfig) -> bool:
+	if index >= coords.size():
+		return true
+
+	var coord: Vector2i = coords[index]
+
+	for i in range(pool.size()):
+		var number = pool[i]
+		var tile = tile_map[coord]
+
+		if config.rule_set.validate_rules(coord, number, tile, tile_map, current_map):
+			# place number
+			current_map[coord] = number
+
+			# remove this exact index for the next recursion
+			var new_pool = pool.duplicate()
+			new_pool.remove_at(i)
+
+			if _place_number_recursive(index + 1, coords, new_pool, tile_map, current_map, config):
+				return true
+
+			# backtrack
+			current_map.erase(coord)
+
+	# dead-end
+	return false
+
+
+#############################################
+### BOARD SHAPES
+#############################################
+static func _generate_hex_square(radius: int) -> Array[Vector2i]:
+	return _generate_hex_rectangle(radius, radius)
+
+
+static func _generate_hex_rectangle(width_radius: int, height_radius: int) -> Array[Vector2i]:
+	var coords: Array[Vector2i] = []
+
+	for q in range(-width_radius, width_radius + 1):
+		for r in range(-height_radius, height_radius + 1):
+			coords.append(Vector2i(q, r) + center)
+
+	return coords
+
+
+static func _generate_hex_circle(radius: int) -> Array[Vector2i]:
+	return _generate_hex_oval(radius, radius)
+
+
+static func _generate_hex_oval(width_radius: int, height_radius: int) -> Array[Vector2i]:
+	var coords: Array[Vector2i] = []
+
+	for q in range(-width_radius, width_radius + 1):
+		for r in range(-height_radius, height_radius + 1):
+			var norm_q = float(q) / width_radius
+			var norm_r = float(r) / height_radius
+
+			if norm_q * norm_q + norm_r * norm_r <= 1.0:
+				coords.append(Vector2i(q, r) + center)
+
+	return coords
 #############################################
 ### HELPERS
 #############################################
 static func build_number_pool(tile_count: int, rng: RandomNumberGenerator) -> Array:
-	# 1. Total numbers in standard Catan
 	var total_standard := 18  # sum of all counts in DEFAULT_COUNTS
 	var pool := []
 

@@ -5,7 +5,7 @@ func get_rule_name() -> String:
 	return "No 6 adjacent to 8"
 
 
-func validate(coord: Vector2i,number: int, tile: TerrainTypes.Type,tile_map: Dictionary ,number_map: Dictionary) -> bool:
+func validate(coord: Vector2i,number: int, tile: TerrainTypes.Type,tile_map: Dictionary, number_map: Dictionary) -> bool:
 	if number != 6 and number != 8:
 		return true
 

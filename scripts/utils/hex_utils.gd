@@ -84,3 +84,30 @@ static func hex_distance(a: Vector2i, b: Vector2i) -> int:
 	var dq = a.x - b.x
 	var dr = a.y - b.y
 	return int((abs(dq) + abs(dq + dr) + abs(dr)) / 2)
+
+
+#############################################
+### HEX DISTANCES
+#############################################
+static func axial_to_oddr(hex: Vector2i) -> Vector2i:
+	var col = int(hex.x + (hex.y - (hex.y & 1)) / 2.0)
+	var row = hex.y
+	return Vector2i(col, row)
+
+
+static func oddr_to_axial(offset: Vector2i) -> Vector2i:
+	var q = int(offset.x - (offset.y - (offset.y & 1)) / 2.0)
+	var r = offset.y
+	return Vector2i(q, r)
+
+
+static func axial_to_offset(axial: Vector2i) -> Vector2i:
+	var col = int(axial.x + (axial.y - (axial.y & 1)) / 2.0)
+	var row = axial.y
+	return Vector2i(col, row)
+
+
+static func offset_to_axial(offset: Vector2i) -> Vector2i:
+	var q = int(offset.x - (offset.y - (offset.y & 1)) / 2.0)
+	var r = offset.y
+	return Vector2i(q, r)

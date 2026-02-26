@@ -80,10 +80,11 @@ func _on_clear_button_pressed() -> void:
 	EditorState.clear_board()
 	EditorState.clear_selected_tile()
 	
-	selected_button.button_pressed = false
-	selected_button.modulate = Color(1,1,1)
-	selected_button.scale = Vector2.ONE
-	selected_button = null
+	if selected_button:
+		selected_button.button_pressed = false
+		selected_button.modulate = Color(1,1,1)
+		selected_button.scale = Vector2.ONE
+		selected_button = null
 
 
 func _on_save_button_pressed() -> void:

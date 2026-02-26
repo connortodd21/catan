@@ -75,3 +75,12 @@ static func cube_round(cube: HexCube) -> HexCube:
 
 static func axial_round(hex: HexAxial) -> HexAxial:
 	return cube_round(hex._to_cube())._to_axial()
+
+
+#############################################
+### HEX DISTANCES
+#############################################
+static func hex_distance(a: Vector2i, b: Vector2i) -> int:
+	var dq = a.x - b.x
+	var dr = a.y - b.y
+	return int((abs(dq) + abs(dq + dr) + abs(dr)) / 2)

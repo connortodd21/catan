@@ -31,7 +31,7 @@ static func generate(config: GenerationConfig) -> SerializedBoard:
 	else:
 		rng.randomize()
 
-	var coords := _generate_coords(config.radius)
+	var coords : Array[Vector2i] = _generate_coords(config)
 
 	# generate tiles
 	var tile_map := {}
@@ -65,17 +65,27 @@ static func generate(config: GenerationConfig) -> SerializedBoard:
 #############################################
 ### COORDS
 #############################################
-static func _generate_coords(radius: int) -> Array[Vector2i]:
+static func _generate_coords(config: GenerationConfig) -> Array[Vector2i]:
 	var coords: Array[Vector2i] = []
+	var radius = config.radius
 
 	for q in range(-radius, radius + 1):
-		var r1 = max(-radius, -q - radius)
-		var r2 = min(radius, -q + radius)
-		for r in range(r1, r2 + 1):
-			coords.append(Vector2i(q, r) + center)
-
+		for r in range(-radius, radius + 1):
+			var hex = Vector2i(q, r) + center
+			if _coord_in_shape(hex - center, radius, config.shape):
+				coords.append(hex)
 	return coords
 
+
+static func _coord_in_shape(coord: Vector2i, radius: int, shape: Shapes.Type) -> bool:
+	match shape:
+		"circle":
+			return HexUtils.hex_distance(Vector2i.ZERO, coord) <= radius
+		"rectangle":
+			return abs(coord.x) <= radius and abs(coord.y) <= radius
+		_:
+			# default circle
+			return HexUtils.hex_distance(Vector2i.ZERO, coord) <= radius
 
 #############################################
 ### BOARD ASSIGNMENT
@@ -87,6 +97,7 @@ static func _assign_tiles(coords: Array[Vector2i], config: GenerationConfig, rng
 	var tile_pool: Array = []
 	var needed := coords.size()
 
+	print(config.allowed_tiles)
 	while tile_pool.size() < needed:
 		tile_pool.append_array(config.allowed_tiles)
 

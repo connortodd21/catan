@@ -90,7 +90,7 @@ func _on_generate_button_pressed() -> void:
 	config.rule_set = rule_set
 	
 	for checkbox in tile_checkbox_map:
-		if checkbox.pressed:
+		if checkbox.button_pressed:
 			config.add_tile(tile_checkbox_map[checkbox])
 
 	EditorState.generate_board(config)

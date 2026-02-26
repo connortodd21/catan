@@ -242,6 +242,7 @@ layout_mode = 2
 
 [node name="BoardRadiusSpinbox" type="SpinBox" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow/BoardSizeHbox" unique_id=326034720]
 layout_mode = 2
+value = 3.0
 custom_arrow_step = 1.0
 
 [node name="AllowedTilesLabel" type="Label" parent="UI/EditorPanel/board_generation_window/BoardConfigWindow" unique_id=1762931306]

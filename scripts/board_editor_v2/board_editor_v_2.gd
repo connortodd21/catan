@@ -46,6 +46,7 @@ func connect_signals() -> void:
 	EditorState.board_cleared.connect(_on_board_cleared)
 	EditorState.board_saved.connect(_on_board_saved)
 	EditorState.board_load.connect(_on_board_load)
+	EditorState.board_generate_requested.connect(_on_board_generate)
 
 func _on_board_cleared() -> void:
 	clear_board()
@@ -59,6 +60,12 @@ func _on_board_saved() -> void:
 
 func _on_board_load() -> void:
 	save_manager.load_json_file_with_picker(Callable(self, "_on_json_loaded"))
+
+
+func _on_board_generate(config: GenerationConfig) -> void:
+	var board : SerializedBoard = BoardGenerator.generate(config)
+	clear_board()
+	set_board(board)
 
 #############################################
 ### TILE MAPS

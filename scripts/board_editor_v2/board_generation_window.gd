@@ -82,18 +82,16 @@ func _on_close_requested() -> void:
 
 func _on_generate_button_pressed() -> void:
 	var config := GenerationConfig.new()
-	var selected_rules: Array[BoardRule] = []
+	var rule_set = RuleSet.new()
 
 	for checkbox in rule_checkbox_map:
 		if checkbox.button_pressed:
-			selected_rules.append(rule_checkbox_map[checkbox])
-	config.rules = selected_rules
+			rule_set.add_rule(rule_checkbox_map[checkbox])
+	config.rule_set = rule_set
 	
-	var allowed_tile := []
 	for checkbox in tile_checkbox_map:
 		if checkbox.pressed:
-			allowed_tile.append(tile_checkbox_map[checkbox].type)
-	config.allowed_tiles = allowed_tile
+			config.add_tile(tile_checkbox_map[checkbox])
 
 	EditorState.generate_board(config)
 	hide()

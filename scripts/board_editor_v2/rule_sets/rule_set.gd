@@ -9,3 +9,7 @@ func validate_rules(coord: Vector2i,number: int, tile: TerrainTypes.Type,tile_ma
 		if not rule.validate(coord, tile, number, tile_map, number_map):
 			return false
 	return true
+
+
+func add_rule(rule: BoardRule) -> void:
+	rules.append(rule)

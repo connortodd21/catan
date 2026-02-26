@@ -1,5 +1,7 @@
 class_name BoardGenerator
 
+const center : Vector2i = Vector2i(6,4)
+
 const HEX_DIRECTIONS: Array[Vector2i] = [
 	Vector2i(1, 0),
 	Vector2i(1, -1),
@@ -9,12 +11,18 @@ const HEX_DIRECTIONS: Array[Vector2i] = [
 	Vector2i(0, 1),
 ]
 
-const DEFAULT_NUMBER_POOL := [
-	2, 3, 3, 4, 4, 5, 5,
-	6, 6, 8, 8,
-	9, 9, 10, 10, 11, 11, 12
-]
-
+const DEFAULT_COUNTS := {
+	2: 1,
+	3: 2,
+	4: 2,
+	5: 2,
+	6: 2,
+	8: 2,
+	9: 2,
+	10: 2,
+	#11: 2,
+	#12: 1
+}
 
 static func generate(config: GenerationConfig) -> SerializedBoard:
 	var rng := RandomNumberGenerator.new()
@@ -64,7 +72,7 @@ static func _generate_coords(radius: int) -> Array[Vector2i]:
 		var r1 = max(-radius, -q - radius)
 		var r2 = min(radius, -q + radius)
 		for r in range(r1, r2 + 1):
-			coords.append(Vector2i(q, r))
+			coords.append(Vector2i(q, r) + center)
 
 	return coords
 
@@ -103,9 +111,6 @@ static func _assign_tiles(coords: Array[Vector2i], config: GenerationConfig, rng
 	return coords_to_tile
 
 static func _assign_numbers(tile_map: Dictionary, coords: Array, config: GenerationConfig, rng: RandomNumberGenerator) -> Dictionary:
-	var number_pool := DEFAULT_NUMBER_POOL.duplicate()
-	_shuffle_with_rng(number_pool, rng)
-
 	var valid_coords: Array[Vector2i] = []
 
 	for coord in coords:
@@ -113,11 +118,8 @@ static func _assign_numbers(tile_map: Dictionary, coords: Array, config: Generat
 			if not TileUtils.is_desert(tile_map[coord]):
 				valid_coords.append(coord)
 
-	if number_pool.size() < valid_coords.size():
-		return {}
-
+	var number_pool = build_number_pool(valid_coords.size(), rng)
 	var coords_to_numbers := {}
-
 	for coord in valid_coords:
 		var placed := false
 		number_pool.shuffle()
@@ -137,46 +139,39 @@ static func _assign_numbers(tile_map: Dictionary, coords: Array, config: Generat
 	return coords_to_numbers
 
 
-
 #############################################
-### RULES
+### HELPERS
 #############################################
-static func _has_adjacent_same_tile(tile_map: Dictionary, coord: Vector2i, tile: int) -> bool:
-	for dir in HEX_DIRECTIONS:
-		var neighbor := coord + dir
-		if tile_map.has(neighbor):
-			if tile_map[neighbor] == tile:
-				return true
-	return false
+static func build_number_pool(tile_count: int, rng: RandomNumberGenerator) -> Array:
+	# 1. Total numbers in standard Catan
+	var total_standard := 18  # sum of all counts in DEFAULT_COUNTS
+	var pool := []
 
+	for number in DEFAULT_COUNTS.keys():
+		var proportion := float(DEFAULT_COUNTS[number]) / total_standard
+		var scaled_count = round(proportion * tile_count)
+		for i in range(scaled_count):
+			pool.append(number)
 
-static func _has_adjacent_same_number(number_map: Dictionary, coord: Vector2i, number: int) -> bool:
-	for dir in HEX_DIRECTIONS:
-		var neighbor := coord + dir
-		if number_map.has(neighbor):
-			if number_map[neighbor] == number:
-				return true
-	return false
+	# Fix rounding: add/remove numbers to match tile_count exactly
+	while pool.size() < tile_count:
+		# pick a number randomly weighted by original distribution
+		var weights := []
+		for n in DEFAULT_COUNTS.keys():
+			weights.append(DEFAULT_COUNTS[n])
+		var r := randi() % int(ArrayUtils.sum_array(weights))
+		var cum := 0
+		for idx in range(weights.size()):
+			cum += weights[idx]
+			if r < cum:
+				pool.append(DEFAULT_COUNTS.keys()[idx])
+				break
 
+	while pool.size() > tile_count:
+		pool.pop_back()
 
-static func _has_adjacent_six_or_eight(number_map: Dictionary, coord: Vector2i) -> bool:
-	for dir in HEX_DIRECTIONS:
-		var neighbor := coord + dir
-		if number_map.has(neighbor):
-			var n = number_map[neighbor]
-			if n == 6 or n == 8:
-				return true
-	return false
-
-
-static func _has_adjacent_two_or_twelve(number_map: Dictionary, coord: Vector2i) -> bool:
-	for dir in HEX_DIRECTIONS:
-		var neighbor := coord + dir
-		if number_map.has(neighbor):
-			var n = number_map[neighbor]
-			if n == 2 or n == 12:
-				return true
-	return false
+	_shuffle_with_rng(pool, rng)
+	return pool
 
 #############################################
 ### RANDOMNESS

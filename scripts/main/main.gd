@@ -45,5 +45,3 @@ func _on_board_editor_button_pressed() -> void:
 	ui_container.add_child(ui_node)
 
 	_show_container(ui_container)
-	print("scene_container global position:", scene_container.global_position)
-	print("editor_instance global position:", editor_instance.global_position)

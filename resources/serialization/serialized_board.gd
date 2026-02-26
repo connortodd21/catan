@@ -11,8 +11,17 @@ var metadata: Dictionary = {
 	"version": 1
 }
 
+
+func add_tile_vector2(coords: Vector2i, tile: TerrainTypes.Type) -> void:
+	add_tile(coords.x, coords.y, tile)
+
+
 func add_tile(x: int, y: int, tile: TerrainTypes.Type) -> void:
 	tiles.append(TileEntry.new(x, y, tile))
+
+
+func add_numbers_vector2(coords: Vector2i, value: Array[int]) -> void:
+	add_numbers(coords.x, coords.y, value)
 
 
 func add_numbers(x: int, y: int, value: Array[int]) -> void:
@@ -29,6 +38,7 @@ func to_dict() -> Dictionary:
 		"numbers": numbers.map(func(num): return num.to_dict()),
 		"metadata": metadata
 	}
+
 
 func from_dict(dict: Dictionary) -> SerializedBoard:
 	size = Vector2i(dict.size.width, dict.size.height)

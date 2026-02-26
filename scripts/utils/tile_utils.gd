@@ -10,3 +10,7 @@ static func is_user_changed_tile(tile_type: TerrainTypes.Type) -> bool:
 
 static func tile_supports_multiple_numbers(tile_type: TerrainTypes.Type) -> bool:
 	return tile_type == TerrainTypes.Type.FISH_2_3_11_12 or tile_type == TerrainTypes.Type.FISH_4_10
+
+
+static func is_desert(tile_type: TerrainTypes.Type) -> bool:
+	return tile_type == TerrainTypes.Type.DESERT

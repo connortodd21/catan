@@ -1,12 +1,14 @@
-extends CanvasLayer
+extends Control
 
 @export var terrain_database: TerrainDatabaseResource
 @export var numbers_database: NumberDatabaseResource
 
+@onready var panel_container: PanelContainer = $EditorPanel/PanelContainer
 
-@onready var tab_container: TabContainer = $PanelContainer/MainVbox/TabContainer
-@onready var tile_grid_container: GridContainer = $PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer/GridContainer
-@onready var number_grid_container: GridContainer = $PanelContainer/MainVbox/TabContainer/Numbers/VBoxContainer/GridContainer
+@onready var tab_container: TabContainer = $EditorPanel/PanelContainer/MainVbox/TabContainer
+@onready var tile_grid_container: GridContainer = $EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer/GridContainer
+@onready var number_grid_container: GridContainer = $EditorPanel/PanelContainer/MainVbox/TabContainer/Numbers/VBoxContainer/GridContainer
+@onready var board_generation_window: Window = $EditorPanel/board_generation_window
 
 const TERRAIN_KEY := "terrain_key"
 const NUMBER_KEY := "number_value"
@@ -90,6 +92,11 @@ func _on_save_button_pressed() -> void:
 
 func _on_load_button_pressed() -> void:
 	EditorState.load_board()
+
+
+func _on_generate_board_button_pressed() -> void:
+	if board_generation_window:
+		board_generation_window.show()
 
 
 func _on_tab_container_tab_changed(tab_index: int) -> void:

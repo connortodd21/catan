@@ -1,6 +1,13 @@
 extends Node
 
 #############################################
+### BOARD GENERATION SIGNALS
+#############################################
+signal board_generate_requested(config: GenerationConfig)
+func generate_board(config: GenerationConfig):
+	board_generate_requested.emit(config)
+
+#############################################
 ### BOARD EDITOR SIGNALS
 #############################################
 signal board_cleared

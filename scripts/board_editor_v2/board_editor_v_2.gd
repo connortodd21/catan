@@ -19,9 +19,6 @@ var tile_metadata_cache : TypedCache = TypedCache.new(Variant.Type.TYPE_VECTOR2I
 var number_metadata_cache : TypedCache = TypedCache.new(Variant.Type.TYPE_VECTOR2I, NumberMetadata)
 
 func _ready() -> void:
-	print("BoardEditor ready")
-	print(global_position)
-	print("Camera current:", camera_2d.is_current())
 	connect_signals()
 
 

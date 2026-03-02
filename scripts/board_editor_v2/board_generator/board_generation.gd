@@ -2,14 +2,6 @@ class_name BoardGenerator
 
 static var center : Vector2i = HexUtils.oddr_to_axial(Vector2i(6,4))
 
-const HEX_DIRECTIONS: Array[Vector2i] = [
-	Vector2i(1, 0),
-	Vector2i(1, -1),
-	Vector2i(0, -1),
-	Vector2i(-1, 0),
-	Vector2i(-1, 1),
-	Vector2i(0, 1),
-]
 
 const DEFAULT_COUNTS := {
 	2: 1,

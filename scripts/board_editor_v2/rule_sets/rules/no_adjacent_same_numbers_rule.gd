@@ -7,7 +7,7 @@ func get_rule_name() -> String:
 
 
 func validate(coord: Vector2i,number: int, tile: TerrainTypes.Type,tile_map: Dictionary ,number_map: Dictionary) -> bool:
-	for dir in HEX_DIRECTIONS:
+	for dir in HexConstants.HEX_DIRECTIONS:
 		var neighbor = coord + dir
 		if number_map.has(neighbor):
 			if number_map[neighbor] == number:

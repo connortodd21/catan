@@ -4,9 +4,9 @@ extends Node2D
 @export var numbers_database : NumberDatabaseResource
 
 
-@onready var board_tile_map: TileMapLayer = $editor/BoardTileMap
-@onready var numbers_tile_map: TileMapLayer = $editor/NumbersTileMap
-@onready var camera_2d: Camera2D = $editor/Camera2D
+@onready var board_tile_map: TileMapLayer = $editor/BoardView/TerrainTileMap
+@onready var numbers_tile_map: TileMapLayer = $editor/BoardView/NumbersTileMap
+@onready var camera_2d: Camera2D = $editor/BoardView/Camera2D
 @onready var save_manager: SaveManager = $editor/SaveManager
 
 var tileset_source_id = 0

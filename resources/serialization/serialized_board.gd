@@ -2,11 +2,12 @@ extends Resource
 class_name SerializedBoard
 
 # width/height of the playable board rectangle. We use this as the board is normalized at (0,0)
-@export var size: Vector2i = Vector2i.ZERO 
+@export var size: Vector2i = Vector2i.ZERO
 
 
 var tiles: Array[TileEntry] = []
 var numbers: Array[NumberEntry] = []
+var ports: Array[PortEntry] = []
 var metadata: Dictionary = {
 	"version": 1
 }
@@ -28,6 +29,14 @@ func add_numbers(x: int, y: int, value: Array[int]) -> void:
 	numbers.append(NumberEntry.new(x, y, value))
 
 
+func add_port_vector2(coords: Vector2i, type: PortTypes.Type, direction: int) -> void:
+	add_port(coords.x, coords.y, type, direction)
+
+
+func add_port(x: int, y: int, type: PortTypes.Type, direction: int) -> void:
+	ports.append(PortEntry.new(x, y, type, direction))
+
+
 func to_dict() -> Dictionary:
 	return {
 		"size": {
@@ -36,6 +45,7 @@ func to_dict() -> Dictionary:
 		},
 		"tiles": tiles.map(func(tile): return tile.to_dict()),
 		"numbers": numbers.map(func(num): return num.to_dict()),
+		"ports": ports.map(func(p): return p.to_dict()),
 		"metadata": metadata
 	}
 
@@ -49,5 +59,8 @@ func from_dict(dict: Dictionary) -> SerializedBoard:
 		for v in n["value"]:
 			nums_array.append(int(v))
 		add_numbers(n.x, n.y, nums_array)
+	if "ports" in dict:
+		for p in dict.ports:
+			add_port(p.x, p.y, p.type, p.direction)
 	metadata = dict.metadata
 	return self

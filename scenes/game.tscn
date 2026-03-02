@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://bija5lqicoyyc"]
+
+[ext_resource type="Script" path="res://scripts/game/game.gd" id="1_game"]
+[ext_resource type="PackedScene" path="res://scenes/board_view.tscn" id="2_bv"]
+[ext_resource type="Resource" uid="uid://i0k4rjpemdnx" path="res://resources/terrain_database.tres" id="3_terraindb"]
+[ext_resource type="Resource" uid="uid://dlk1rll7vemno" path="res://resources/number_database.tres" id="4_numdb"]
+
+[node name="Game" type="Node2D" unique_id=1503594724]
+script = ExtResource("1_game")
+terrain_database = ExtResource("3_terraindb")
+numbers_database = ExtResource("4_numdb")
+
+[node name="BoardView" parent="." instance=ExtResource("2_bv")]
+
+[node name="Camera2D" parent="BoardView"]
+position = Vector2(0, 0)
+limit_left = -2000
+limit_top = -1500
+limit_right = 2000
+limit_bottom = 1500
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+min_zoom = 0.3
+max_zoom = 2.0
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=5555555555]
+
+[node name="BackButton" type="Button" parent="UI" unique_id=6666666666]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -120.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 50.0
+text = "BACK"
+
+[connection signal="pressed" from="UI/BackButton" to="." method="_on_back_button_pressed"]

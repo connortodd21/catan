@@ -4,9 +4,9 @@ extends Node2D
 @export var numbers_database : NumberDatabaseResource
 
 
-@onready var board_tile_map: TileMapLayer = $editor/BoardTileMap
-@onready var numbers_tile_map: TileMapLayer = $editor/NumbersTileMap
-@onready var camera_2d: Camera2D = $editor/Camera2D
+@onready var board_tile_map: TileMapLayer = $editor/BoardView/BoardTileMap
+@onready var numbers_tile_map: TileMapLayer = $editor/BoardView/NumbersTileMap
+@onready var camera_2d: Camera2D = $editor/BoardView/Camera2D
 @onready var save_manager: SaveManager = $editor/SaveManager
 
 var tileset_source_id = 0
@@ -48,6 +48,7 @@ func connect_signals() -> void:
 	EditorState.board_load.connect(_on_board_load)
 	EditorState.board_generate_requested.connect(_on_board_generate)
 
+
 func _on_board_cleared() -> void:
 	clear_board()
 
@@ -73,9 +74,11 @@ func _on_board_generate(config: GenerationConfig) -> void:
 func is_cell_editable(cell: Vector2i) -> bool:
 	return board_tile_map.get_cell_atlas_coords(cell) != border_tile_atlas_coords
 
+
 func clear_board() -> void:
 	clear_tiles()
 	clear_numbers()
+
 
 func clear_tiles() -> void:
 	var used_cells = board_tile_map.get_used_cells()
@@ -84,11 +87,13 @@ func clear_tiles() -> void:
 			board_tile_map.set_cell(cell, tileset_source_id, default_tile_atlas_coords)
 	tile_metadata_cache.clear_cache()
 
+
 func clear_numbers() -> void:
 	var used_cells = numbers_tile_map.get_used_cells()
 	for cell in used_cells:
 		numbers_tile_map.erase_cell(cell)
 	number_metadata_cache.clear_cache()
+
 
 func set_board(board: SerializedBoard) -> void:
 	clear_board()
@@ -158,10 +163,12 @@ func place_tile_at_mouse() -> void:
 	if is_cell_editable(offset) and tile != TerrainTypes.Type.UNKNOWN:
 		place_tile(axial, tile)
 
+
 func remove_tile_at_mouse() -> void:
 	var offset = board_tile_map.local_to_map(get_global_mouse_position())
 	var axial = HexUtils.offset_to_axial(offset)
 	remove_tile(axial)
+
 
 func place_number_at_mouse() -> void:
 	var offset = board_tile_map.local_to_map(get_local_mouse_position())
@@ -170,6 +177,7 @@ func place_number_at_mouse() -> void:
 	var number = EditorState.get_selected_number()
 	if NumberUtils.is_valid_number(number):
 		place_number(axial, number)
+
 
 func remove_number_at_mouse():
 	var offset = board_tile_map.local_to_map(get_local_mouse_position())
@@ -184,6 +192,7 @@ func remove_number_at_mouse():
 func create_tile_metadata(tile: TerrainTypes.Type,) -> TileMetadata:
 	return TileMetadata.new(tile)
 
+
 func create_number_metadata(numbers: Array[int]) -> NumberMetadata:
 	return NumberMetadata.new(numbers)
 #############################################
@@ -195,6 +204,7 @@ func _on_json_loaded(data: Dictionary) -> void:
 	# Convert JSON dictionary back to SerializedBoard
 	var board = SerializedBoard.new().from_dict(data)
 	set_board(board)
+
 
 func _on_board_loaded_tres(board: SerializedBoard) -> void:
 	if board == null:

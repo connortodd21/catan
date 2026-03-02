@@ -119,7 +119,7 @@ func handle_shape_configs(shape: Shapes.Type, config: GenerationConfig) -> void:
 			config.radius = int(board_radius_spinbox.value)
 		Shapes.Type.OVAL:
 			config.oval_height = int(board_oval_height_spinbox.value)
-			config.oval_width = int(board_oval_height_spinbox.value)
+			config.oval_width = int(board_oval_width_spinbox.value)
 		Shapes.Type.RECTANGLE:
 			config.rect_height = int(board_rect_height_spinbox.value)
 			config.rect_width = int(board_rect_width_spinbox.value)

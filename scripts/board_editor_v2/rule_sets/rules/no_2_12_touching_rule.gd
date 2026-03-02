@@ -6,14 +6,12 @@ func get_rule_name() -> String:
 
 
 func validate(coord: Vector2i,number: int, tile: TerrainTypes.Type,tile_map: Dictionary ,number_map: Dictionary) -> bool:
-	if number != 2 and number != 12:
-		return true
-
-	for dir in HEX_DIRECTIONS:
-		var neighbor = coord + dir
-		if number_map.has(neighbor):
-			var neighbor_num = number_map[neighbor]
-			if neighbor_num == 2 or neighbor_num == 12:
-				return false
+	if number == 2 or number == 12:
+		for dir in HEX_DIRECTIONS:
+			var neighbor = coord + dir
+			if number_map.has(neighbor):
+				var neighbor_num = number_map[neighbor]
+				if neighbor_num == 2 or neighbor_num == 12:
+					return false
 
 	return true

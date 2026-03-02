@@ -79,16 +79,6 @@ static func _generate_coords(config: GenerationConfig) -> Array[Vector2i]:
 			return _generate_hex_circle(config.radius)
 
 
-static func _coord_in_shape(coord: Vector2i, radius: int, shape: Shapes.Type) -> bool:
-	match shape:
-		"circle":
-			return HexUtils.hex_distance(Vector2i.ZERO, coord) <= radius
-		"rectangle":
-			return abs(coord.x) <= radius and abs(coord.y) <= radius
-		_:
-			# default circle
-			return HexUtils.hex_distance(Vector2i.ZERO, coord) <= radius
-
 #############################################
 ### BOARD ASSIGNMENT
 #############################################
@@ -145,23 +135,16 @@ static func _place_number_recursive(index: int, coords: Array, pool: Array, tile
 		return true
 
 	var coord: Vector2i = coords[index]
-
 	for i in range(pool.size()):
 		var number = pool[i]
 		var tile = tile_map[coord]
-
 		if config.rule_set.validate_rules(coord, number, tile, tile_map, current_map):
-			# place number
 			current_map[coord] = number
-
-			# remove this exact index for the next recursion
 			var new_pool = pool.duplicate()
 			new_pool.remove_at(i)
-
 			if _place_number_recursive(index + 1, coords, new_pool, tile_map, current_map, config):
 				return true
 
-			# backtrack
 			current_map.erase(coord)
 
 	# dead-end
@@ -186,18 +169,22 @@ static func _generate_hex_rectangle(width_radius: int, height_radius: int) -> Ar
 
 
 static func _generate_hex_circle(radius: int) -> Array[Vector2i]:
-	return _generate_hex_oval(radius, radius)
+	return _generate_hex_ellipse(radius, radius, radius)
 
 
-static func _generate_hex_oval(width_radius: int, height_radius: int) -> Array[Vector2i]:
+static func _generate_hex_oval(width: int, height: int) -> Array[Vector2i]:
+	return _generate_hex_ellipse(width, height, width)
+
+
+static func _generate_hex_ellipse(x_radius: int, y_radius: int, z_radius: int) -> Array[Vector2i]:
 	var coords: Array[Vector2i] = []
-
-	for q in range(-width_radius, width_radius + 1):
-		for r in range(-height_radius, height_radius + 1):
-			var norm_q = float(q) / width_radius
-			var norm_r = float(r) / height_radius
-
-			if norm_q * norm_q + norm_r * norm_r <= 1.0:
+	var max_r = max(x_radius, y_radius, z_radius)
+	for q in range(-max_r, max_r + 1):
+		for r in range(-max_r, max_r + 1):
+			var x = q
+			var z = r
+			var y = -x - z
+			if abs(x) <= x_radius and abs(y) <= y_radius and abs(z) <= z_radius:
 				coords.append(Vector2i(q, r) + center)
 
 	return coords

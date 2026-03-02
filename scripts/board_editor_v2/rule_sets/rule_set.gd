@@ -13,3 +13,7 @@ func validate_rules(coord: Vector2i,number: int, tile: TerrainTypes.Type,tile_ma
 
 func add_rule(rule: BoardRule) -> void:
 	rules.append(rule)
+
+
+func get_rules() -> Array[BoardRule]:
+	return rules

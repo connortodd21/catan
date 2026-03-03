@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://ci28boyssuy8b" path="res://assets/tiles/tileset.png" id="1_terrain_tex"]
 [ext_resource type="Texture2D" uid="uid://ddwapjs6u870o" path="res://assets/numbers/numbers_tileset.png" id="2_numbers_tex"]
-[ext_resource type="Script" uid="uid://o2n5nbiye1b3" path="res://scripts/board_editor_v2/camera.gd" id="3_camera"]
+[ext_resource type="Script" uid="uid://o2n5nbiye1b3" path="res://scripts/scenes/board_view/camera.gd" id="3_camera"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tp8c8"]
 texture = ExtResource("1_terrain_tex")

@@ -28,57 +28,26 @@ func _on_file_selected(path: String) -> void:
 	if save_mode:
 		match save_mode:
 			JSON_FILE_TYPE:
-				_save_json(path)
+				FileUtils.save_json(path, _pending_json)
 			TRES_FILE_TYPE:
-				_save_tres(path)
+				FileUtils.save_tres(path, _pending_board)
 		save_mode = ""
 	
 	if _load_mode:
 		match _load_mode:
 			JSON_FILE_TYPE:
-				var json_data = _load_json(path)
+				var json_data = FileUtils.load_json_as_dict(path)
 				if _load_callback:
 					_load_callback.call(json_data)
 			TRES_FILE_TYPE:
-				var board = _load_tres(path)
+				var board = FileUtils.load_tres(path)
 				if _load_callback:
 					_load_callback.call(board)
 		_load_mode = ""
 
 
-func _save_json(path: String) -> void:
-	var file = FileAccess.open(path, FileAccess.WRITE)
-	if file:
-		file.store_string(JSON.stringify(_pending_json, "\t"))
-		file.close()
-	else:
-		push_error("Failed to save JSON.")
-
-
-func _save_tres(path: String) -> void:
-	var err = ResourceSaver.save(_pending_board, path)
-	if err != OK:
-		push_error("Failed to save TRES: %s" % err)
-
-
-func _load_json(path: String) -> Dictionary:
-	var file = FileAccess.open(path, FileAccess.READ)
-	if not file:
-		return {}
-	var data = JSON.parse_string(file.get_as_text())
-	if not data:
-		return {}
-	return data
-
-func _load_tres(path: String) -> SerializedBoard:
-	var board = ResourceLoader.load(path)
-	if board is SerializedBoard:
-		return board
-	push_error("Failed to load TRES as SerializedBoard: %s" % path)
-	return null
-
 #############################################
-### EXTERNAL SAVE FUNCTIONS
+### SAVE WITH PICKER
 #############################################
 func save_json_with_picker(json_data: Dictionary) -> void:
 	save_mode = JSON_FILE_TYPE
@@ -99,7 +68,7 @@ func save_tres_with_picker(board: SerializedBoard) -> void:
 
 
 #############################################
-### EXTERNAL LOAD FUNCTIONS
+### LOAD WITH PICKER
 #############################################
 func load_json_file_with_picker(callback: Callable) -> void:
 	_load_mode = JSON_FILE_TYPE

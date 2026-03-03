@@ -11,12 +11,14 @@ config_version=5
 [application]
 
 config/name="catan"
+run/main_scene="uid://cfctqbm4sum1y"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 EditorState="*uid://mm6ipoq4nuf1"
+SignalBus="*uid://brywrrdvtjoov"
 
 [display]
 

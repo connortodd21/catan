@@ -76,6 +76,10 @@ func _on_number_button_pressed(button: TextureButton) -> void:
 	_update_button_visual(button)
 
 
+func _on_back_button_pressed() -> void:
+	SignalBus.go_back_to_menu()
+
+
 func _on_clear_button_pressed() -> void:
 	EditorState.clear_board()
 	EditorState.clear_selected_tile()

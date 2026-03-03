@@ -8,4 +8,3 @@ static func invert_dictionary(dict: Dictionary) -> Dictionary:
 		var value = dict[key]
 		inverted_dict[value] = key
 	return inverted_dict
-	

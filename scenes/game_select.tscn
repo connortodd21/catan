@@ -1,0 +1,146 @@
+[gd_scene format=3 uid="uid://c2rllsjdui05u"]
+
+[ext_resource type="Script" uid="uid://c32kxahr4i61f" path="res://scripts/scenes/game_select/game_select.gd" id="1_gssel"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_back"]
+bg_color = Color(0.2, 0.2, 0.2, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 48
+
+[node name="GameSelect" type="Control" unique_id=-1447576251]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_gssel")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1938274651]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=-1080399406]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Header" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1827364950]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/Header" unique_id=-265783540]
+custom_minimum_size = Vector2(120, 60)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_back")
+text = "< BACK"
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer/Header" unique_id=1234567890]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "New Game"
+label_settings = SubResource("LabelSettings_title")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Body" type="HSplitContainer" parent="MarginContainer/VBoxContainer" unique_id=-447676240]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="BoardPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body" unique_id=-2101119736]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BoardLabel" type="Label" parent="MarginContainer/VBoxContainer/Body/BoardPanel" unique_id=1029384756]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "BOARD"
+horizontal_alignment = 1
+
+[node name="BoardScroll" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Body/BoardPanel" unique_id=-447405376]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BoardList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body/BoardPanel/BoardScroll" unique_id=-1356491686]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OptionsScroll" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Body" unique_id=1847362950]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="OptionsPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body/OptionsScroll" unique_id=-1265782540]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="ExpansionsLabel" type="Label" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=-1447774240]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "EXPANSIONS"
+horizontal_alignment = 1
+
+[node name="ExpansionList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=1938475620]
+layout_mode = 2
+
+[node name="SepVP" type="HSeparator" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=-447675736]
+layout_mode = 2
+
+[node name="VictoryPointsHeader" type="Label" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=1000000006]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "VICTORY POINTS"
+horizontal_alignment = 1
+
+[node name="VictoryPointsRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=2093847516]
+layout_mode = 2
+
+[node name="VPLabel" type="Label" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel/VictoryPointsRow" unique_id=1847362059]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Points to win:"
+vertical_alignment = 1
+
+[node name="VictoryPointsSpinBox" type="SpinBox" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel/VictoryPointsRow" unique_id=-1265485540]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+min_value = 6.0
+max_value = 20.0
+value = 10.0
+
+[node name="SepHR" type="HSeparator" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=-1447575736]
+layout_mode = 2
+
+[node name="HouseRulesLabel" type="Label" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=1938274056]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "HOUSE RULES"
+horizontal_alignment = 1
+
+[node name="HouseRuleList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=-1080400207]
+layout_mode = 2
+
+[node name="StartGameButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1827364059]
+custom_minimum_size = Vector2(300, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+disabled = true
+text = "START GAME"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Header/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/StartGameButton" to="." method="_on_start_game_button_pressed"]

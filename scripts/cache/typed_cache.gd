@@ -1,4 +1,3 @@
-# TypedCacheWrapper.gd
 class_name TypedCache
 
 var cache: BaseCache

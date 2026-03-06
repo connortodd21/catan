@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://im3e5o01dctl"
-path="res://.godot/imported/border.png-89ac885cf8b25500bfd9b781a9889f3f.ctex"
+uid="uid://csgoe61oi0pyv"
+path="res://.godot/imported/brick_animated.png-9f71ca47dfeaf6ddbd7b5af436cb0880.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/tiles/border.png"
-dest_files=["res://.godot/imported/border.png-89ac885cf8b25500bfd9b781a9889f3f.ctex"]
+source_file="res://assets/custom_tiles/brick_animated.png"
+dest_files=["res://.godot/imported/brick_animated.png-9f71ca47dfeaf6ddbd7b5af436cb0880.ctex"]
 
 [params]
 
@@ -33,7 +33,7 @@ process/channel_remap/blue=2
 process/channel_remap/alpha=3
 process/fix_alpha_border=true
 process/premult_alpha=false
-process/normal_map_invert_y=true
+process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0

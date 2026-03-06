@@ -17,10 +17,17 @@ const TERRAIN_COLORS := {
 	TerrainTypes.Type.FOG: Color(0.35, 0.35, 0.38),
 }
 
+var board : SerializedBoard = null
+
 var tiles: Array[TileEntry] = []
 
 
-func set_tiles(board: SerializedBoard) -> void:
+func get_board() -> SerializedBoard:
+	return board
+
+
+func set_board(_board: SerializedBoard) -> void:
+	board = _board
 	if board.tiles:
 		for tile in board.tiles:
 			if tile.type != TerrainTypes.Type.UNKNOWN and tile.type != TerrainTypes.Type.BORDER:

@@ -9,7 +9,7 @@ extends Node
 @onready var v_box_container: VBoxContainer = $MainMenu/CenterContainer/VBoxContainer
 
 var active_scene: Node = null
-var active_ui: Node = null
+var active_ui: Control = null
 
 
 func _ready() -> void:

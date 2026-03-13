@@ -2,9 +2,6 @@ extends Node2D
 
 @export var terrain_database : TerrainDatabaseResource
 @export var numbers_database : NumberDatabaseResource
-@export var number_scale: float = 1.0
-@export var number_offset: Vector2 = Vector2.ZERO
-
 
 @onready var board_tile_map: TileMapLayer = $editor/BoardView/BoardTileMap
 @onready var board_view: Node2D = $editor/BoardView
@@ -14,8 +11,12 @@ extends Node2D
 var tileset_source_id = 0
 var default_tile_atlas_coords : Vector2i = Vector2i(4,0)
 var border_tile_atlas_coords : Vector2i = Vector2i(5,0)
+
 @export var board_width := 9
 @export var board_height := 9
+
+@export var number_scale: float = 1.0
+@export var number_offset: Vector2 = Vector2.ZERO
 
 var tile_metadata_cache : TypedCache = TypedCache.new(Variant.Type.TYPE_VECTOR2I, TileMetadata)
 var number_metadata_cache : TypedCache = TypedCache.new(Variant.Type.TYPE_VECTOR2I, NumberMetadata)
@@ -129,21 +130,20 @@ func place_number(hex_cell: Vector2i, number: int) -> void:
 	if tile_metadata == null:
 		return
 
-	var metadata: NumberMetadata = number_metadata_cache.get_val(hex_cell)
-	if metadata == null:
-		metadata = create_number_metadata([])
+	var number_metadata: NumberMetadata = number_metadata_cache.get_val(hex_cell)
+	if number_metadata == null:
+		number_metadata = create_number_metadata([])
 
-	metadata.add_number(number, tile_metadata.get_terrain_type())
-	number_metadata_cache.set_val(hex_cell, metadata)
+	number_metadata.add_number(number, tile_metadata.get_terrain_type())
+	number_metadata_cache.set_val(hex_cell, number_metadata)
 
 	if number_sprites.has(hex_cell):
 		number_sprites[hex_cell].queue_free()
 
-	var offset := HexUtils.axial_to_offset(hex_cell)
 	var sprite := Sprite2D.new()
 	sprite.texture = numbers_database.get_texture(number)
 	sprite.scale = Vector2(number_scale, number_scale)
-	sprite.position = board_tile_map.map_to_local(offset) + number_offset
+	sprite.position = board_tile_map.map_to_local(HexUtils.axial_to_offset(hex_cell)) + number_offset
 	sprite.z_index = 1
 	board_view.add_child(sprite)
 	number_sprites[hex_cell] = sprite

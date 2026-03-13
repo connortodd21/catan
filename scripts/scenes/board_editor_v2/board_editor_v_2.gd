@@ -3,20 +3,24 @@ extends Node2D
 @export var terrain_database : TerrainDatabaseResource
 @export var numbers_database : NumberDatabaseResource
 
-
 @onready var board_tile_map: TileMapLayer = $editor/BoardView/BoardTileMap
-@onready var numbers_tile_map: TileMapLayer = $editor/BoardView/NumbersTileMap
+@onready var board_view: Node2D = $editor/BoardView
 @onready var camera_2d: Camera2D = $editor/BoardView/Camera2D
 @onready var save_manager: SaveManager = $editor/SaveManager
 
 var tileset_source_id = 0
 var default_tile_atlas_coords : Vector2i = Vector2i(4,0)
 var border_tile_atlas_coords : Vector2i = Vector2i(5,0)
+
 @export var board_width := 9
-@export var board_height := 9  
+@export var board_height := 9
+
+@export var number_scale: float = 1.0
+@export var number_offset: Vector2 = Vector2.ZERO
 
 var tile_metadata_cache : TypedCache = TypedCache.new(Variant.Type.TYPE_VECTOR2I, TileMetadata)
 var number_metadata_cache : TypedCache = TypedCache.new(Variant.Type.TYPE_VECTOR2I, NumberMetadata)
+var number_sprites: Dictionary = {}
 
 func _ready() -> void:
 	connect_signals()
@@ -89,9 +93,9 @@ func clear_tiles() -> void:
 
 
 func clear_numbers() -> void:
-	var used_cells = numbers_tile_map.get_used_cells()
-	for cell in used_cells:
-		numbers_tile_map.erase_cell(cell)
+	for sprite: Sprite2D in number_sprites.values():
+		sprite.queue_free()
+	number_sprites.clear()
 	number_metadata_cache.clear_cache()
 
 
@@ -123,20 +127,26 @@ func place_number(hex_cell: Vector2i, number: int) -> void:
 		return
 
 	var tile_metadata : TileMetadata = tile_metadata_cache.get_val(hex_cell)
-	# can only place numbers if a tile is already present
 	if tile_metadata == null:
 		return
-	
-	var metadata: NumberMetadata = number_metadata_cache.get_val(hex_cell)
-	if metadata == null:
-		metadata = create_number_metadata([])
-	
-	metadata.add_number(number, tile_metadata.get_terrain_type())
-	number_metadata_cache.set_val(hex_cell, metadata)
 
-	var offset = HexUtils.axial_to_offset(hex_cell)
-	var number_cell = TileMapUtils.convert_hex_coords_to_number_coords(offset, board_tile_map, numbers_tile_map)
-	numbers_tile_map.set_cell(number_cell,numbers_database.get_source_id(number),numbers_database.get_atlas_coords(number))
+	var number_metadata: NumberMetadata = number_metadata_cache.get_val(hex_cell)
+	if number_metadata == null:
+		number_metadata = create_number_metadata([])
+
+	number_metadata.add_number(number, tile_metadata.get_terrain_type())
+	number_metadata_cache.set_val(hex_cell, number_metadata)
+
+	if number_sprites.has(hex_cell):
+		number_sprites[hex_cell].queue_free()
+
+	var sprite := Sprite2D.new()
+	sprite.texture = numbers_database.get_texture(number)
+	sprite.scale = Vector2(number_scale, number_scale)
+	sprite.position = board_tile_map.map_to_local(HexUtils.axial_to_offset(hex_cell)) + number_offset
+	sprite.z_index = 1
+	board_view.add_child(sprite)
+	number_sprites[hex_cell] = sprite
 
 
 func remove_number(hex_cell: Vector2i, number: int) -> void:
@@ -149,9 +159,9 @@ func remove_number(hex_cell: Vector2i, number: int) -> void:
 	else:
 		number_metadata_cache.set_val(hex_cell, metadata)
 
-	var offset = HexUtils.axial_to_offset(hex_cell)
-	var number_cell = TileMapUtils.convert_hex_coords_to_number_coords(offset, board_tile_map, numbers_tile_map)
-	numbers_tile_map.erase_cell(number_cell)
+	if number_sprites.has(hex_cell):
+		number_sprites[hex_cell].queue_free()
+		number_sprites.erase(hex_cell)
 
 #############################################
 ### INPUT HANDLING
@@ -201,7 +211,6 @@ func create_number_metadata(numbers: Array[int]) -> NumberMetadata:
 func _on_json_loaded(data: Dictionary) -> void:
 	if data.is_empty():
 		return
-	# Convert JSON dictionary back to SerializedBoard
 	var board = SerializedBoard.new().from_dict(data)
 	set_board(board)
 

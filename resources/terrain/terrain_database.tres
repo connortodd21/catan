@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="TerrainDatabaseResource" format=3 uid="uid://i0k4rjpemdnx"]
 
-[ext_resource type="Script" uid="uid://s3mk0g728fmm" path="res://resources/terrain_database_resource.gd" id="1_wectp"]
-[ext_resource type="Script" uid="uid://b4eyx7s7pvccf" path="res://resources/terrain_data_resource.gd" id="2_6b4hj"]
+[ext_resource type="Script" uid="uid://s3mk0g728fmm" path="res://resources/terrain/terrain_database_resource.gd" id="1_wectp"]
+[ext_resource type="Script" uid="uid://b4eyx7s7pvccf" path="res://resources/terrain/terrain_data_resource.gd" id="2_6b4hj"]
 [ext_resource type="Texture2D" uid="uid://vsum5t28610t" path="res://assets/tiles/wood.png" id="3_6b4hj"]
 [ext_resource type="Texture2D" uid="uid://dcj4agtem6sy" path="res://assets/tiles/brick.png" id="3_x4mmk"]
 [ext_resource type="Texture2D" uid="uid://1s5wq04o1dmg" path="res://assets/tiles/desert.png" id="4_v8uf6"]

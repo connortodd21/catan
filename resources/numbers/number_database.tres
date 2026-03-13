@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="NumberDatabaseResource" format=3 uid="uid://dlk1rll7vemno"]
 
-[ext_resource type="Script" uid="uid://cq8cggj031kkj" path="res://resources/number_data_resource.gd" id="1_gpg4m"]
+[ext_resource type="Script" uid="uid://cq8cggj031kkj" path="res://resources/numbers/number_data_resource.gd" id="1_gpg4m"]
 [ext_resource type="Texture2D" uid="uid://d7qkcsmo8qy3" path="res://assets/numbers/2.png" id="2_5cymw"]
-[ext_resource type="Script" uid="uid://dw3crhw604tmj" path="res://resources/number_database_resource.gd" id="2_c3m18"]
+[ext_resource type="Script" uid="uid://dw3crhw604tmj" path="res://resources/numbers/number_database_resource.gd" id="2_c3m18"]
 [ext_resource type="Texture2D" uid="uid://dtejpbo4axr3m" path="res://assets/numbers/3.png" id="3_xcaac"]
 [ext_resource type="Texture2D" uid="uid://dtx5vqp7vhnqh" path="res://assets/numbers/4.png" id="4_gnmqt"]
 [ext_resource type="Texture2D" uid="uid://c23i85ds3yftf" path="res://assets/numbers/5.png" id="5_bfkec"]

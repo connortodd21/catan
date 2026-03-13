@@ -2,13 +2,15 @@
 
 [ext_resource type="Script" uid="uid://b6ncegpukdyhn" path="res://scripts/scenes/game/game.gd" id="1_80nbo"]
 [ext_resource type="PackedScene" uid="uid://dbro2ruekwy4c" path="res://scenes/board_view.tscn" id="2_e2o6t"]
-[ext_resource type="Resource" uid="uid://i0k4rjpemdnx" path="res://resources/terrain_database.tres" id="2_fc0e3"]
-[ext_resource type="Resource" uid="uid://dlk1rll7vemno" path="res://resources/number_database.tres" id="3_lbhrr"]
+[ext_resource type="Resource" uid="uid://i0k4rjpemdnx" path="res://resources/terrain/terrain_database.tres" id="2_fc0e3"]
+[ext_resource type="Resource" uid="uid://dlk1rll7vemno" path="res://resources/numbers/number_database.tres" id="3_lbhrr"]
+[ext_resource type="Resource" uid="uid://dcrup1kpiwxdw" path="res://resources/pieces/piece_database.tres" id="4_iywne"]
 
 [node name="Game" type="Node2D" unique_id=67801416]
 script = ExtResource("1_80nbo")
 terrain_database = ExtResource("2_fc0e3")
 number_database = ExtResource("3_lbhrr")
+piece_database = ExtResource("4_iywne")
 number_scale = 1.6
 number_offset = Vector2(-25, -25)
 

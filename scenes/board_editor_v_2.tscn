@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://d173wutt6c3x"]
 
 [ext_resource type="Script" uid="uid://bnr7laywjc0m7" path="res://scripts/scenes/board_editor_v2/board_editor_v_2.gd" id="1_nxk3t"]
-[ext_resource type="Resource" uid="uid://dlk1rll7vemno" path="res://resources/number_database.tres" id="3_m4gbs"]
+[ext_resource type="Resource" uid="uid://dlk1rll7vemno" path="res://resources/numbers/number_database.tres" id="3_m4gbs"]
 [ext_resource type="Script" uid="uid://de65uyhbhanyc" path="res://scripts/scenes/board_editor_v2/editor_panel.gd" id="4_k17ee"]
 [ext_resource type="Script" uid="uid://cq255hswe5bm7" path="res://scripts/scenes/board_editor_v2/save_manager.gd" id="5_c65gf"]
-[ext_resource type="Resource" uid="uid://i0k4rjpemdnx" path="res://resources/terrain_database.tres" id="5_u7doq"]
+[ext_resource type="Resource" uid="uid://i0k4rjpemdnx" path="res://resources/terrain/terrain_database.tres" id="5_u7doq"]
 [ext_resource type="Script" uid="uid://2hkecl1vwe8a" path="res://scripts/scenes/board_editor_v2/board_generator/board_generation_window.gd" id="9_k17ee"]
 [ext_resource type="PackedScene" uid="uid://dbro2ruekwy4c" path="res://scenes/board_view.tscn" id="bv_scene"]
 

@@ -2,10 +2,11 @@ extends Node
 
 @export var board_editor_scene: PackedScene
 @export var game_select_scene: PackedScene
+@export var game_scene: PackedScene
 
 @onready var scene_container: Node2D = $SceneContainer
 @onready var main_menu: Control = $MainMenu
-@onready var v_box_container: VBoxContainer = $MainMenu/CenterContainer/VBoxContainer
+
 
 var active_scene: Node = null
 var active_ui: Node = null
@@ -17,6 +18,7 @@ func _ready() -> void:
 
 func _setup_signals() -> void:
 	GlobalSignals.back_to_menu.connect(_on_back_to_menu)
+	GameSelectState.game_started.connect(_on_game_start)
 
 
 func _cleanup_active() -> void:
@@ -58,3 +60,12 @@ func _on_board_editor_button_pressed() -> void:
 	active_ui = active_scene.get_node("UI")
 	active_scene.remove_child(active_ui)
 	add_child(active_ui)
+
+
+func _on_game_start(game_config: GameConfig) -> void:
+	if active_ui:
+		active_ui.queue_free()
+		active_ui = null
+	active_scene = game_scene.instantiate()
+	active_scene.game_config = game_config
+	scene_container.add_child(active_scene)

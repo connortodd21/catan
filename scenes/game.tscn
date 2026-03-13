@@ -3,15 +3,11 @@
 [ext_resource type="Script" uid="uid://b6ncegpukdyhn" path="res://scripts/scenes/game/game.gd" id="1_80nbo"]
 [ext_resource type="PackedScene" uid="uid://dbro2ruekwy4c" path="res://scenes/board_view.tscn" id="2_e2o6t"]
 [ext_resource type="Resource" uid="uid://i0k4rjpemdnx" path="res://resources/terrain_database.tres" id="2_fc0e3"]
-[ext_resource type="Script" uid="uid://b5jqar3ul0ulx" path="res://scripts/models/game_config.gd" id="3_7jktm"]
+[ext_resource type="Resource" uid="uid://dlk1rll7vemno" path="res://resources/number_database.tres" id="3_lbhrr"]
 
-[sub_resource type="Resource" id="Resource_ryrav"]
-script = ExtResource("3_7jktm")
-metadata/_custom_type_script = "uid://b5jqar3ul0ulx"
-
-[node name="Node2D" type="Node2D" unique_id=67801416]
+[node name="Game" type="Node2D" unique_id=67801416]
 script = ExtResource("1_80nbo")
 terrain_database = ExtResource("2_fc0e3")
-game_config = SubResource("Resource_ryrav")
+number_database = ExtResource("3_lbhrr")
 
 [node name="BoardView" parent="." unique_id=298739414 instance=ExtResource("2_e2o6t")]

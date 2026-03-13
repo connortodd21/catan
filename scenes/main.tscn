@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bbb8ds038wdwq" path="res://scripts/scenes/main/main.gd" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://d173wutt6c3x" path="res://scenes/board_editor_v_2.tscn" id="1_o5qli"]
+[ext_resource type="PackedScene" uid="uid://l0l6tmvgapip" path="res://scenes/game.tscn" id="4_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://c2rllsjdui05u" path="res://scenes/game_select.tscn" id="gs_scene"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_0wfyh"]
@@ -11,6 +12,7 @@ font_size = 89
 script = ExtResource("1_0wfyh")
 board_editor_scene = ExtResource("1_o5qli")
 game_select_scene = ExtResource("gs_scene")
+game_scene = ExtResource("4_jyhfs")
 
 [node name="SceneContainer" type="Node2D" parent="." unique_id=1322314173]
 

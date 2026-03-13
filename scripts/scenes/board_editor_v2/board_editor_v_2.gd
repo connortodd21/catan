@@ -13,7 +13,7 @@ var tileset_source_id = 0
 var default_tile_atlas_coords : Vector2i = Vector2i(4,0)
 var border_tile_atlas_coords : Vector2i = Vector2i(5,0)
 @export var board_width := 9
-@export var board_height := 9 
+@export var board_height := 9  
 
 var tile_metadata_cache : TypedCache = TypedCache.new(Variant.Type.TYPE_VECTOR2I, TileMetadata)
 var number_metadata_cache : TypedCache = TypedCache.new(Variant.Type.TYPE_VECTOR2I, NumberMetadata)

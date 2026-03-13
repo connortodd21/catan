@@ -1,10 +1,7 @@
 class_name BoardRule
 extends Resource
 
-const HEX_DIRECTIONS = [
-	Vector2i(1,0), Vector2i(1,-1), Vector2i(0,-1),
-	Vector2i(-1,0), Vector2i(-1,1), Vector2i(0,1)
-]
+const HEX_DIRECTIONS = HexUtils.HEX_DIRECTIONS
 
 
 func get_rule_name() -> String:

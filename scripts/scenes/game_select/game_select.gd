@@ -1,5 +1,5 @@
 class_name GameSelect
-extends Control
+extends CanvasLayer
 
 const BOARDS_DIR : String = "res://boards"
 const EXPANSION : String = "expansion"
@@ -136,4 +136,4 @@ func _on_back_button_pressed() -> void:
 func _on_start_game_button_pressed() -> void:
 	var config = _generate_game_config()
 	GameSelectState.start_game(config)
-	hide()
+	visible = false

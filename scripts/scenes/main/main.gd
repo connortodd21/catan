@@ -3,13 +3,12 @@ extends Node
 @export var board_editor_scene: PackedScene
 @export var game_select_scene: PackedScene
 
-@onready var ui_container: Control = $UIContainer
 @onready var scene_container: Node2D = $SceneContainer
 @onready var main_menu: Control = $MainMenu
 @onready var v_box_container: VBoxContainer = $MainMenu/CenterContainer/VBoxContainer
 
 var active_scene: Node = null
-var active_ui: Control = null
+var active_ui: Node = null
 
 
 func _ready() -> void:
@@ -17,13 +16,7 @@ func _ready() -> void:
 
 
 func _setup_signals() -> void:
-	SignalBus.back_to_menu.connect(_on_back_to_menu)
-
-
-func _show_container(container: Control) -> void:
-	main_menu.visible = false
-	ui_container.visible = false
-	container.visible = true
+	GlobalSignals.back_to_menu.connect(_on_back_to_menu)
 
 
 func _cleanup_active() -> void:
@@ -40,7 +33,7 @@ func _cleanup_active() -> void:
 #############################################
 func _on_back_to_menu() -> void:
 	_cleanup_active()
-	_show_container(main_menu)
+	main_menu.visible = true
 
 
 func _on_create_room_button_pressed() -> void:
@@ -52,17 +45,16 @@ func _on_join_room_button_pressed() -> void:
 
 
 func _on_local_game_button_pressed() -> void:
+	main_menu.visible = false
 	active_ui = game_select_scene.instantiate()
-	ui_container.add_child(active_ui)
-	_show_container(ui_container)
+	add_child(active_ui)
 
 
 func _on_board_editor_button_pressed() -> void:
+	main_menu.visible = false
 	active_scene = board_editor_scene.instantiate()
 	scene_container.add_child(active_scene)
 
 	active_ui = active_scene.get_node("UI")
 	active_scene.remove_child(active_ui)
-	ui_container.add_child(active_ui)
-
-	_show_container(ui_container)
+	add_child(active_ui)

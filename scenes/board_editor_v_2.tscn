@@ -26,6 +26,8 @@ z_index = 1
 script = ExtResource("1_nxk3t")
 terrain_database = ExtResource("5_u7doq")
 numbers_database = ExtResource("3_m4gbs")
+number_scale = 1.6
+number_offset = Vector2(-25, -25)
 
 [node name="editor" type="Node2D" parent="." unique_id=1451504454]
 

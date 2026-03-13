@@ -9,5 +9,7 @@
 script = ExtResource("1_80nbo")
 terrain_database = ExtResource("2_fc0e3")
 number_database = ExtResource("3_lbhrr")
+number_scale = 1.6
+number_offset = Vector2(-25, -25)
 
 [node name="BoardView" parent="." unique_id=298739414 instance=ExtResource("2_e2o6t")]

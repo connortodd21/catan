@@ -3,10 +3,12 @@ extends Node2D
 
 @export var terrain_database: TerrainDatabaseResource
 @export var number_database: NumberDatabaseResource
+@export var number_scale: float = 1.0
+@export var number_offset: Vector2 = Vector2.ZERO
 @export var game_config: GameConfig = null
 
 @onready var board_tile_map: TileMapLayer = $BoardView/BoardTileMap
-@onready var numbers_tile_map: TileMapLayer = $BoardView/NumbersTileMap
+@onready var board_view: Node2D = $BoardView
 
 
 func _ready() -> void:
@@ -39,12 +41,12 @@ func _render_numbers(board: SerializedBoard) -> void:
 		if not number in number_database.get_keys():
 			continue
 		var offset := HexUtils.axial_to_offset(Vector2i(entry.x, entry.y))
-		var number_cell := TileMapUtils.convert_hex_coords_to_number_coords(offset, board_tile_map, numbers_tile_map)
-		numbers_tile_map.set_cell(
-			number_cell,
-			number_database.get_source_id(number),
-			number_database.get_atlas_coords(number)
-		)
+		var sprite := Sprite2D.new()
+		sprite.texture = number_database.get_texture(number)
+		sprite.scale = Vector2(number_scale, number_scale)
+		sprite.position = board_tile_map.map_to_local(offset) + number_offset
+		sprite.z_index = 1
+		board_view.add_child(sprite)
 
 
 func _add_border(coord_to_tile: Dictionary) -> void:

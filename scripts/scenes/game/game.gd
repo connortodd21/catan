@@ -6,6 +6,7 @@ extends Node2D
 @export var piece_database: PieceDatabaseResource
 @export var number_scale: float = 1.0
 @export var number_offset: Vector2 = Vector2.ZERO
+@export var robber_offset: Vector2 = Vector2(-40, 0)
 @export var game_config: GameConfig = null
 
 @onready var board_tile_map: TileMapLayer = $BoardView/BoardTileMap
@@ -17,6 +18,8 @@ var tile_coords: Array[Vector2i] = []
 func _ready() -> void:
 	if game_config:
 		render_board(game_config.board)
+		if not HouseRules.RULE_NAMES.NO_ROBBER in game_config.house_rules:
+			place_robber_on_desert(game_config.board)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -59,6 +62,22 @@ func render_numbers(board: SerializedBoard) -> void:
 		sprite.position = board_tile_map.map_to_local(offset) + number_offset
 		sprite.z_index = 1
 		board_view.add_child(sprite)
+
+
+#############################################
+### ROBBER
+#############################################
+func place_robber_on_desert(board: SerializedBoard) -> void:
+	for tile: TileEntry in board.tiles:
+		if tile.type == TerrainTypes.Type.DESERT:
+			var offset := HexUtils.axial_to_offset(Vector2i(tile.x, tile.y))
+			var sprite := Sprite2D.new()
+			sprite.texture = piece_database.get_texture(PieceTypes.Type.ROBBER)
+			sprite.position = board_tile_map.map_to_local(offset) + robber_offset
+			sprite.modulate = Color.BLACK
+			sprite.z_index = 2
+			board_view.add_child(sprite)
+			return
 
 
 #############################################

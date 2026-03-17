@@ -44,13 +44,13 @@ func _generate_game_config() -> GameConfig:
 
 func _set_selected_expansions(game_config: GameConfig) -> void:
 	for checkbox : CheckBox in expansions_list.get_children():
-		if checkbox.pressed:
+		if checkbox.button_pressed:
 			game_config.add_expansion(checkbox.get_meta(EXPANSION))
 
 
 func _set_selected_house_rules(game_config: GameConfig) -> void:
 	for checkbox : CheckBox in house_rules_list.get_children():
-		if checkbox.pressed:
+		if checkbox.button_pressed:
 			game_config.add_house_rule(checkbox.get_meta(HOUSE_RULE))
 
 #############################################
@@ -61,6 +61,7 @@ func _generate_expansions() -> void:
 		var checkbox := CheckBox.new()
 		checkbox.text = ExpansionTypes.DISPLAY_NAMES[expansion]
 		checkbox.set_meta(EXPANSION, expansion)
+		checkbox.button_pressed = false
 		expansions_list.add_child(checkbox)
 
 
@@ -69,6 +70,7 @@ func _generate_house_rules() -> void:
 		var checkbox := CheckBox.new()
 		checkbox.text = HouseRules.DISPLAY_NAMES[house_rule]
 		checkbox.set_meta(HOUSE_RULE, house_rule)
+		checkbox.button_pressed = false
 		house_rules_list.add_child(checkbox)
 
 

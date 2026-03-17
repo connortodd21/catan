@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dk55ibnq6puyg" path="res://assets/pieces/road.png" id="3_8u566"]
 [ext_resource type="Texture2D" uid="uid://cs6tqq2jhxhh1" path="res://assets/pieces/knight.png" id="4_tsc8r"]
 [ext_resource type="Script" uid="uid://bgd0buxgalcv5" path="res://resources/pieces/piece_database_resource.gd" id="5_02a1o"]
+[ext_resource type="Texture2D" uid="uid://bvnmf7rimr0p2" path="res://assets/pieces/robber.png" id="5_jx8dx"]
 
 [sub_resource type="Resource" id="Resource_5bhqn"]
 script = ExtResource("1_g33yb")
@@ -25,6 +26,13 @@ type = 3
 texture = ExtResource("4_tsc8r")
 metadata/_custom_type_script = "uid://0d5uasxn8hgr"
 
+[sub_resource type="Resource" id="Resource_8u566"]
+script = ExtResource("1_g33yb")
+type = 4
+placement = 2
+texture = ExtResource("5_jx8dx")
+metadata/_custom_type_script = "uid://0d5uasxn8hgr"
+
 [resource]
 script = ExtResource("5_02a1o")
-piece_data = Array[ExtResource("1_g33yb")]([SubResource("Resource_5bhqn"), SubResource("Resource_ars0u"), SubResource("Resource_tvivx")])
+piece_data = Array[ExtResource("1_g33yb")]([SubResource("Resource_5bhqn"), SubResource("Resource_ars0u"), SubResource("Resource_tvivx"), SubResource("Resource_8u566")])

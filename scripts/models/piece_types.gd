@@ -5,4 +5,5 @@ enum Type {
 	SETTLEMENT,
 	ROAD,
 	KNIGHT,
+	ROBBER
 }

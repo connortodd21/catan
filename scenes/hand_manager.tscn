@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://b3q7m8xnp0yvw"]
+
+[ext_resource type="Script" uid="uid://c8tll7k87b3fl" path="res://scripts/scenes/hand/hand_manager.gd" id="1_h86fp"]
+
+[node name="HandManager" type="PanelContainer" unique_id=337594377]
+script = ExtResource("1_h86fp")
+card_minimum_size = Vector2(180, 180)
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=200000001]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="CardsContainer" type="HBoxContainer" parent="MarginContainer" unique_id=200000003]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+alignment = 1

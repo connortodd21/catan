@@ -11,6 +11,7 @@ extends Node2D
 
 @onready var board_tile_map: TileMapLayer = $BoardView/BoardTileMap
 @onready var board_view: Node2D = $BoardView
+@onready var hand_manager: HandDisplay = $UI/HandManager
 
 var tile_coords: Array[Vector2i] = []
 
@@ -20,6 +21,10 @@ func _ready() -> void:
 		render_board(game_config.board)
 		if not HouseRules.RULE_NAMES.NO_ROBBER in game_config.house_rules:
 			place_robber_on_desert(game_config.board)
+
+	for type in [CardTypes.Type.WOOD, CardTypes.Type.BRICK, CardTypes.Type.SHEEP, CardTypes.Type.WHEAT, CardTypes.Type.ROCK]:
+		hand_manager.add_card(type)
+
 
 
 func _unhandled_input(event: InputEvent) -> void:

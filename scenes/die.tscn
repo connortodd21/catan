@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cqr8x5m0jw4y0"]
+
+[ext_resource type="Script" path="res://scripts/scenes/dice_roller/die.gd" id="1_die"]
+
+[node name="Die" type="TextureRect"]
+custom_minimum_size = Vector2(80, 80)
+expand_mode = 3
+stretch_mode = 5
+script = ExtResource("1_die")

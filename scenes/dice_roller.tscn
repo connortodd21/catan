@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://d26hbf0pdv6yl"]
+
+[ext_resource type="Script" uid="uid://vw81qypumals" path="res://scripts/scenes/dice_roller/dice_roller.gd" id="1_aeiou"]
+[ext_resource type="PackedScene" path="res://scenes/die.tscn" id="2_die"]
+[ext_resource type="Resource" uid="uid://pftnx57m7tpi" path="res://resources/dice/yellow_numeric.tres" id="3_yellow"]
+[ext_resource type="Resource" uid="uid://bhxh4gpiid1u0" path="res://resources/dice/red_numeric.tres" id="4_red"]
+
+[node name="DiceRoller" type="PanelContainer" unique_id=100000001]
+script = ExtResource("1_aeiou")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=100000002]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=100000003]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="DiceRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=100000004]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Die1" parent="MarginContainer/VBoxContainer/DiceRow" unique_id=818006859 instance=ExtResource("2_die")]
+unique_name_in_owner = true
+layout_mode = 2
+dice = ExtResource("3_yellow")
+
+[node name="Die2" parent="MarginContainer/VBoxContainer/DiceRow" unique_id=785351002 instance=ExtResource("2_die")]
+unique_name_in_owner = true
+layout_mode = 2
+dice = ExtResource("4_red")
+
+[node name="RollButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=100000008]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "ROLL DICE"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/RollButton" to="." method="_on_roll_button_pressed"]

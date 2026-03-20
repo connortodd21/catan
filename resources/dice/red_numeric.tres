@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="Dice" format=3 uid="uid://bhxh4gpiid1u0"]
+
+[ext_resource type="Script" uid="uid://cuwof50fumx4a" path="res://resources/dice/dice.gd" id="1_xid1w"]
+[ext_resource type="Script" uid="uid://crr8ji0lc4pwt" path="res://resources/dice/dice_face.gd" id="2_d8fey"]
+[ext_resource type="Texture2D" uid="uid://cd4dl2ke2ipjp" path="res://assets/dice/number/1.png" id="3_vtcd2"]
+[ext_resource type="Texture2D" uid="uid://dakoyvxkpd38y" path="res://assets/dice/number/2.png" id="4_jmbvl"]
+[ext_resource type="Texture2D" uid="uid://b0ppqprfll1ok" path="res://assets/dice/number/3.png" id="5_65nhq"]
+[ext_resource type="Texture2D" uid="uid://c3era38uvpx75" path="res://assets/dice/number/4.png" id="6_a6ih3"]
+[ext_resource type="Texture2D" uid="uid://dbpypmyxt0cnn" path="res://assets/dice/number/5.png" id="7_ocyun"]
+[ext_resource type="Texture2D" uid="uid://557p6eqgtx8f" path="res://assets/dice/number/6.png" id="8_2siqj"]
+
+[sub_resource type="Resource" id="Resource_xke54"]
+script = ExtResource("2_d8fey")
+texture = ExtResource("3_vtcd2")
+metadata/_custom_type_script = "uid://crr8ji0lc4pwt"
+
+[sub_resource type="Resource" id="Resource_qho2i"]
+script = ExtResource("2_d8fey")
+texture = ExtResource("4_jmbvl")
+dice_face = 1
+metadata/_custom_type_script = "uid://crr8ji0lc4pwt"
+
+[sub_resource type="Resource" id="Resource_5ydgc"]
+script = ExtResource("2_d8fey")
+texture = ExtResource("5_65nhq")
+dice_face = 2
+metadata/_custom_type_script = "uid://crr8ji0lc4pwt"
+
+[sub_resource type="Resource" id="Resource_m1ag2"]
+script = ExtResource("2_d8fey")
+texture = ExtResource("6_a6ih3")
+dice_face = 3
+metadata/_custom_type_script = "uid://crr8ji0lc4pwt"
+
+[sub_resource type="Resource" id="Resource_wulvk"]
+script = ExtResource("2_d8fey")
+texture = ExtResource("7_ocyun")
+dice_face = 4
+metadata/_custom_type_script = "uid://crr8ji0lc4pwt"
+
+[sub_resource type="Resource" id="Resource_kyvgk"]
+script = ExtResource("2_d8fey")
+texture = ExtResource("8_2siqj")
+dice_face = 5
+metadata/_custom_type_script = "uid://crr8ji0lc4pwt"
+
+[resource]
+script = ExtResource("1_xid1w")
+sides = Array[ExtResource("2_d8fey")]([SubResource("Resource_xke54"), SubResource("Resource_qho2i"), SubResource("Resource_5ydgc"), SubResource("Resource_m1ag2"), SubResource("Resource_wulvk"), SubResource("Resource_kyvgk")])
+color = Color(0.95, 0.12, 0.12, 1)
+metadata/_custom_type_script = "uid://cuwof50fumx4a"

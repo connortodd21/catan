@@ -1,10 +1,9 @@
-[gd_resource type="Resource" script_class="CardDefinition" format=3 uid="uid://cv22a3n1x443d"]
+[gd_resource type="Resource" script_class="ResourceDefinition" format=3 uid="uid://cv22a3n1x443d"]
 
-[ext_resource type="Script" uid="uid://ckdpnuqei70yb" path="res://resources/cards/card_definition.gd" id="1_bitsg"]
+[ext_resource type="Script" uid="uid://cdgeiep00fjyg" path="res://resources/cards/resource_definition.gd" id="1_h8osp"]
 [ext_resource type="Texture2D" uid="uid://dtdbqcxgguxmx" path="res://assets/cards/resources/wheat.png" id="2_bitsg"]
 
 [resource]
-script = ExtResource("1_bitsg")
-card_type = 3
+script = ExtResource("1_h8osp")
+resource_type = 3
 texture = ExtResource("2_bitsg")
-metadata/_custom_type_script = "uid://ckdpnuqei70yb"

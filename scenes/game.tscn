@@ -7,12 +7,6 @@
 [ext_resource type="Resource" uid="uid://dcrup1kpiwxdw" path="res://resources/pieces/piece_database.tres" id="4_iywne"]
 [ext_resource type="PackedScene" uid="uid://d26hbf0pdv6yl" path="res://scenes/dice_roller.tscn" id="5_dice"]
 [ext_resource type="PackedScene" uid="uid://b3q7m8xnp0yvw" path="res://scenes/hand_manager.tscn" id="6_hm"]
-[ext_resource type="Script" uid="uid://ckdpnuqei70yb" path="res://resources/cards/card_definition.gd" id="7_cdef"]
-[ext_resource type="Resource" uid="uid://dqqnhsdohpfvn" path="res://resources/cards/resource/wood.tres" id="8_wood"]
-[ext_resource type="Resource" uid="uid://cmt78l6e1ubex" path="res://resources/cards/resource/brick.tres" id="9_brick"]
-[ext_resource type="Resource" uid="uid://cwe82c33pran0" path="res://resources/cards/resource/sheep.tres" id="10_sheep"]
-[ext_resource type="Resource" uid="uid://cv22a3n1x443d" path="res://resources/cards/resource/wheat.tres" id="11_wheat"]
-[ext_resource type="Resource" uid="uid://hdkqsq1rrr7g" path="res://resources/cards/resource/rock.tres" id="12_rock"]
 
 [node name="Game" type="Node2D" unique_id=67801416]
 script = ExtResource("1_80nbo")
@@ -27,14 +21,14 @@ number_offset = Vector2(-25, -25)
 [node name="UI" type="CanvasLayer" parent="." unique_id=298739415]
 
 [node name="HandManager" parent="UI" unique_id=298739417 instance=ExtResource("6_hm")]
-anchor_left = 0.0
+anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_vertical = 0
-definitions = Array[ExtResource("7_cdef")]([ExtResource("8_wood"), ExtResource("9_brick"), ExtResource("10_sheep"), ExtResource("11_wheat"), ExtResource("12_rock")])
 
 [node name="DiceRoller" parent="UI" unique_id=298739416 instance=ExtResource("5_dice")]
+anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0

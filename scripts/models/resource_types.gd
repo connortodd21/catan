@@ -1,4 +1,4 @@
-class_name CardTypes
+class_name ResourceTypes
 
 enum Type {
 	WOOD,
@@ -9,9 +9,6 @@ enum Type {
 	CLOTH,
 	COIN,
 	PAPER,
-	PROGRESS_TRADE,
-	PROGRESS_POLITICS,
-	PROGRESS_SCIENCE,
 	FISH,
 }
 
@@ -26,9 +23,5 @@ static func counts_toward_robber(type: Type) -> bool:
 
 static func max_in_hand(type: Type) -> int:
 	match type:
-		Type.PROGRESS_TRADE, Type.PROGRESS_POLITICS, Type.PROGRESS_SCIENCE:
-			return 5
-		Type.FISH:
-			return 7
-		_:
-			return -1
+		Type.FISH: return 7
+		_: return -1

@@ -1,10 +1,9 @@
-[gd_resource type="Resource" script_class="CardDefinition" format=3 uid="uid://cmt78l6e1ubex"]
+[gd_resource type="Resource" script_class="ResourceDefinition" format=3 uid="uid://cmt78l6e1ubex"]
 
-[ext_resource type="Script" uid="uid://ckdpnuqei70yb" path="res://resources/cards/card_definition.gd" id="1_pyukm"]
+[ext_resource type="Script" uid="uid://cdgeiep00fjyg" path="res://resources/cards/resource_definition.gd" id="1_pyukm"]
 [ext_resource type="Texture2D" uid="uid://du5reg263cn66" path="res://assets/cards/resources/brick.png" id="2_vqy2e"]
 
 [resource]
 script = ExtResource("1_pyukm")
-card_type = 1
+resource_type = 1
 texture = ExtResource("2_vqy2e")
-metadata/_custom_type_script = "uid://ckdpnuqei70yb"

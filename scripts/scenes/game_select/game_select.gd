@@ -6,6 +6,9 @@ const EXPANSION : String = "expansion"
 const HOUSE_RULE : String = "house_rule"
 const BOARD : String = "board"
 
+@export var min_players: int = 3
+@export var max_players: int = 4
+
 @onready var board_list: VBoxContainer = $MarginContainer/VBoxContainer/Body/BoardPanel/BoardScroll/BoardList
 @onready var expansions_list: VBoxContainer = $MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel/ExpansionList
 @onready var house_rules_list: VBoxContainer = $MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel/HouseRuleList
@@ -79,6 +82,7 @@ func _add_player_row(player: Player, is_local: bool) -> void:
 	player_rows.append(row)
 	player_list.add_child(vbox)
 	_refresh_color_buttons()
+	_update_start_button()
 
 
 func _on_color_selected(player: Player, color_key: int) -> void:
@@ -101,7 +105,7 @@ func _refresh_color_buttons() -> void:
 			style.border_width_right = 3
 			style.border_width_top = 3
 			style.border_width_bottom = 3
-			style.border_color = Color.WHITE
+			style.border_color = Color.BLACK
 		var btn: Button = row.color_buttons[color_key]
 		btn.disabled = is_taken
 		btn.add_theme_stylebox_override("normal", style)
@@ -118,7 +122,11 @@ func _generate_game_config() -> GameConfig:
 	
 	# board
 	game_config.board = selected_board
-	
+
+	# players
+	for player in players:
+		game_config.add_player(player)
+
 	# expansions
 	_set_selected_expansions(game_config)
 
@@ -211,13 +219,23 @@ func _create_board_preview(path: String, button_group: ButtonGroup) -> void:
 	hbox.add_child(label)
 
 
+func _update_start_button() -> void:
+	var enough_players : bool = (players.size() >= min_players) and (players.size() <= max_players)
+	enough_players = true
+	var board_selected : bool = selected_board != null
+	start_button.disabled = (not enough_players) or (not board_selected)
+	if not enough_players: 
+		start_button.tooltip_text = "Must have either 3 or 4 players to start a game"
+	elif not board_selected:
+		start_button.tooltip_text = "Please select a board"
+
 #############################################
 ### SIGNALS
 #############################################
+
 func _on_board_selected(button: BaseButton) -> void:
 	selected_board = button.get_meta(BOARD)
-	if selected_board:
-		start_button.disabled = false
+	_update_start_button()
 
 
 func _on_back_button_pressed() -> void:

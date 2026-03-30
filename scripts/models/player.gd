@@ -4,7 +4,7 @@ extends Resource
 @export var player_name: String = ""
 @export var player_color: PlayerColor = PlayerColor.RED
 
-enum PlayerColor { RED, BLUE, YELLOW, GREEN, ORANGE, PURPLE }
+enum PlayerColor { RED, BLUE, YELLOW, GREEN, ORANGE, PURPLE, WHITE }
 
 static var PALETTE: Dictionary = {
 	PlayerColor.RED:    Palette.new("Red",    Color(0.80, 0.15, 0.15)),
@@ -13,6 +13,7 @@ static var PALETTE: Dictionary = {
 	PlayerColor.GREEN:  Palette.new("Green",  Color(0.15, 0.60, 0.20)),
 	PlayerColor.ORANGE: Palette.new("Orange", Color(0.92, 0.50, 0.10)),
 	PlayerColor.PURPLE: Palette.new("Purple", Color(0.52, 0.12, 0.82)),
+	PlayerColor.WHITE:  Palette.new("White",  Color(0.95, 0.95, 0.95)),
 }
 
 class Palette:

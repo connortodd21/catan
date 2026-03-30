@@ -12,8 +12,10 @@ extends Node2D
 @onready var board_tile_map: TileMapLayer = $BoardView/BoardTileMap
 @onready var board_view: Node2D = $BoardView
 @onready var hand_manager: HandManager = $UI/HandManager
+@onready var player_hud: PlayerHUD = $UI/PlayerHUD
 
 var tile_coords: Array[Vector2i] = []
+var player_states: Array[PlayerState] = []
 
 
 func _ready() -> void:
@@ -21,6 +23,13 @@ func _ready() -> void:
 		render_board(game_config.board)
 		if not HouseRules.RULE_NAMES.NO_ROBBER in game_config.house_rules:
 			place_robber_on_desert(game_config.board)
+		_init_players()
+
+
+func _init_players() -> void:
+	for player in game_config.players:
+		player_states.append(PlayerState.new(player))
+	player_hud.init(player_states)
 
 	for type in [ResourceTypes.Type.WOOD, ResourceTypes.Type.BRICK, ResourceTypes.Type.SHEEP, ResourceTypes.Type.WHEAT, ResourceTypes.Type.ROCK]:
 		hand_manager.add_resource(type)

@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://player_hud_001"]
+
+[ext_resource type="Script" path="res://scripts/scenes/game/player_hud.gd" id="1_phud"]
+
+[node name="PlayerHUD" type="PanelContainer"]
+script = ExtResource("1_phud")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="PlayerList" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8

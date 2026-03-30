@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://dcrup1kpiwxdw" path="res://resources/pieces/piece_database.tres" id="4_iywne"]
 [ext_resource type="PackedScene" uid="uid://d26hbf0pdv6yl" path="res://scenes/dice_roller.tscn" id="5_dice"]
 [ext_resource type="PackedScene" uid="uid://b3q7m8xnp0yvw" path="res://scenes/hand_manager.tscn" id="6_hm"]
+[ext_resource type="PackedScene" path="res://scenes/player_hud.tscn" id="7_phud"]
 
 [node name="Game" type="Node2D" unique_id=67801416]
 script = ExtResource("1_80nbo")
@@ -26,6 +27,11 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_vertical = 0
+
+[node name="PlayerHUD" parent="UI" unique_id=298739418 instance=ExtResource("7_phud")]
+anchor_top = 0.0
+anchor_bottom = 1.0
+offset_right = 220.0
 
 [node name="DiceRoller" parent="UI" unique_id=298739416 instance=ExtResource("5_dice")]
 anchors_preset = 3

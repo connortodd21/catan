@@ -2,9 +2,14 @@ class_name GameConfig
 extends Resource
 
 @export var board : SerializedBoard = null
+@export var players: Array[Player] = []
 @export var expansions: Array[ExpansionTypes.Expansion] = []
 @export var victory_points: int = 10
 @export var house_rules: Array[HouseRules.RULE_NAMES] = []
+
+
+func add_player(player: Player) -> void:
+	players.append(player)
 
 
 func add_house_rule(house_rule: HouseRules.RULE_NAMES) -> void:

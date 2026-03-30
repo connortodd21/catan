@@ -10,15 +10,104 @@ const BOARD : String = "board"
 @onready var expansions_list: VBoxContainer = $MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel/ExpansionList
 @onready var house_rules_list: VBoxContainer = $MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel/HouseRuleList
 @onready var victory_points_spinbox: SpinBox = $MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel/VictoryPointsRow/VictoryPointsSpinBox
-@onready var start_button: Button = $MarginContainer/VBoxContainer/StartGameButton
+@onready var start_button: Button = $MarginContainer/VBoxContainer/Body/PlayerPanel/StartGameButton
+@onready var player_list: VBoxContainer = $MarginContainer/VBoxContainer/Body/PlayerPanel/PlayerList
+
+class PlayerRow:
+	var color_buttons: Dictionary  # PlayerColor -> Button
 
 var selected_board: SerializedBoard = null
+var players: Array[Player] = []
+var player_rows: Array[PlayerRow] = []
+var local_player_index: int = 0
 
 
 func _ready() -> void:
 	_generate_board_previews()
 	_generate_expansions()
 	_generate_house_rules()
+	_init_players()
+
+
+#############################################
+### PLAYERS
+#############################################
+func _init_players() -> void:
+	var local_player := Player.new()
+	local_player.player_name = "Player 1"
+	local_player.player_color = Player.PlayerColor.RED
+	players.append(local_player)
+	_add_player_row(local_player, true)
+
+
+func _add_player_row(player: Player, is_local: bool) -> void:
+	var row := PlayerRow.new()
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 4)
+
+	var hbox := HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 8)
+
+	if is_local:
+		var name_edit := LineEdit.new()
+		name_edit.text = player.player_name
+		name_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name_edit.text_changed.connect(func(t: String) -> void: player.player_name = t)
+		hbox.add_child(name_edit)
+	else:
+		var name_label := Label.new()
+		name_label.text = player.player_name
+		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		hbox.add_child(name_label)
+
+	vbox.add_child(hbox)
+
+	# color picker — local player only
+	if is_local:
+		var color_row := HBoxContainer.new()
+		color_row.add_theme_constant_override("separation", 4)
+		for color_key: int in Player.PALETTE:
+			var btn := Button.new()
+			btn.custom_minimum_size = Vector2(28, 28)
+			btn.tooltip_text = Player.PALETTE[color_key].get_name()
+			btn.pressed.connect(func() -> void: _on_color_selected(player, color_key))
+			row.color_buttons[color_key] = btn
+			color_row.add_child(btn)
+		vbox.add_child(color_row)
+
+	player_rows.append(row)
+	player_list.add_child(vbox)
+	_refresh_color_buttons()
+
+
+func _on_color_selected(player: Player, color_key: int) -> void:
+	player.player_color = color_key as Player.PlayerColor
+	_refresh_color_buttons()
+
+
+func _refresh_color_buttons() -> void:
+	var used_colors := players.map(func(p: Player) -> int: return p.player_color)
+	var local_color: int = players[local_player_index].player_color
+	var row := player_rows[local_player_index]
+	for color_key: int in row.color_buttons:
+		var is_selected := color_key == local_color
+		var is_taken := color_key in used_colors and not is_selected
+		var c: Color = Player.PALETTE[color_key].get_color()
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(c.r, c.g, c.b, 0.3 if is_taken else 1.0)
+		if is_selected:
+			style.border_width_left = 3
+			style.border_width_right = 3
+			style.border_width_top = 3
+			style.border_width_bottom = 3
+			style.border_color = Color.WHITE
+		var btn: Button = row.color_buttons[color_key]
+		btn.disabled = is_taken
+		btn.add_theme_stylebox_override("normal", style)
+		btn.add_theme_stylebox_override("hover", style)
+		btn.add_theme_stylebox_override("pressed", style)
+		btn.add_theme_stylebox_override("disabled", style)
 
 
 #############################################

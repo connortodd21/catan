@@ -53,6 +53,29 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 12
 
+[node name="PlayerPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body" unique_id=2000000001]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PlayersLabel" type="Label" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=2000000002]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "PLAYERS"
+horizontal_alignment = 1
+
+[node name="PlayerList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=2000000003]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="StartGameButton" type="Button" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=1827364059]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "START GAME"
+
 [node name="BoardPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body" unique_id=-2101119736]
 custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
@@ -128,12 +151,5 @@ horizontal_alignment = 1
 [node name="HouseRuleList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=-1080400207]
 layout_mode = 2
 
-[node name="StartGameButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1827364059]
-custom_minimum_size = Vector2(300, 60)
-layout_mode = 2
-size_flags_horizontal = 4
-disabled = true
-text = "START GAME"
-
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Header/BackButton" to="." method="_on_back_button_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/StartGameButton" to="." method="_on_start_game_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Body/PlayerPanel/StartGameButton" to="." method="_on_start_game_button_pressed"]

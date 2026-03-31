@@ -16,6 +16,7 @@ extends Node2D
 
 var tile_coords: Array[Vector2i] = []
 var player_states: Array[PlayerState] = []
+var local_player: PlayerState = null
 
 
 func _ready() -> void:
@@ -29,10 +30,14 @@ func _ready() -> void:
 func _init_players() -> void:
 	for player in game_config.players:
 		player_states.append(PlayerState.new(player))
+	local_player = player_states[0]
+	hand_manager.set_hand(local_player.hand)
 	player_hud.init(player_states)
 
 	for type in [ResourceTypes.Type.WOOD, ResourceTypes.Type.BRICK, ResourceTypes.Type.SHEEP, ResourceTypes.Type.WHEAT, ResourceTypes.Type.ROCK]:
-		hand_manager.add_resource(type)
+		local_player.hand.add_resource(type)
+		if type == ResourceTypes.Type.WOOD or type == ResourceTypes.Type.WHEAT:
+			local_player.hand.add_resource(type)
 
 
 

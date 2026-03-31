@@ -8,32 +8,12 @@
 [ext_resource type="Resource" uid="uid://cv22a3n1x443d" path="res://resources/cards/resource/wheat.tres" id="6_glbfe"]
 [ext_resource type="Resource" uid="uid://dqqnhsdohpfvn" path="res://resources/cards/resource/wood.tres" id="7_qvj1r"]
 
-[node name="HandManager" type="PanelContainer" unique_id=337594377]
+[node name="HandManager" type="Control" unique_id=337594377]
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("1_h86fp")
 resource_definitions = Array[ExtResource("2_ha2nf")]([ExtResource("3_kdqnj"), ExtResource("4_tmdq4"), ExtResource("5_lxbvp"), ExtResource("6_glbfe"), ExtResource("7_qvj1r")])
-card_minimum_size = Vector2(180, 180)
+card_step = 80.0
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=200000001]
-layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=200000004]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="ResourcesContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=200000005]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 12
-alignment = 1
-
-[node name="CardsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=200000003]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 12
-alignment = 1
+[node name="FanContainer" type="Control" parent="." unique_id=200000001]
+anchors_preset = 0

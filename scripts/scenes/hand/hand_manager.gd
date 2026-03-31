@@ -1,106 +1,127 @@
 class_name HandManager
-extends PanelContainer
+extends Control
+
+const RESOURCE_ORDER: Array[ResourceTypes.Type] = [
+	ResourceTypes.Type.WOOD,
+	ResourceTypes.Type.BRICK,
+	ResourceTypes.Type.SHEEP,
+	ResourceTypes.Type.WHEAT,
+	ResourceTypes.Type.ROCK,
+]
 
 @export var resource_definitions: Array[ResourceDefinition] = []
-@export var card_minimum_size: Vector2 = Vector2(80, 80)
+@export var card_size: Vector2 = Vector2(120, 178)
+@export var card_step: float = 50.0
+@export var hover_raise: float = 40.0
 
-@onready var resources_container: HBoxContainer = %ResourcesContainer
-@onready var cards_container: HBoxContainer = %CardsContainer
+@onready var fan_container: Control = $FanContainer
 
 var hand: Hand
+var _cards: Array[TextureRect] = []
+var _hovered_card: TextureRect = null
 
 
 func _ready() -> void:
-	hand = Hand.new()
-	hand.hand_changed.connect(_onhand_changed)
+	pass
 
 
-#############################################
-### RESOURCES
-#############################################
-func add_resource(type: ResourceTypes.Type) -> void:
-	hand.add_resource(type)
+func _process(_delta: float) -> void:
+	if _cards.is_empty():
+		return
+	var card_under_mouse := get_card_at_position(fan_container.get_local_mouse_position())
+	if card_under_mouse == _hovered_card:
+		return
+	if _hovered_card:
+		_unhover(_hovered_card)
+	_hovered_card = card_under_mouse
+	if _hovered_card:
+		_hover(_hovered_card)
 
 
-func remove_resource(type: ResourceTypes.Type) -> bool:
-	return hand.remove_resource(type)
+func get_card_at_position(pos: Vector2) -> TextureRect:
+	for i in range(_cards.size() - 1, -1, -1):
+		var rect := Rect2(Vector2(i * card_step, 0.0), card_size + Vector2(0.0, hover_raise))
+		if rect.has_point(pos):
+			return _cards[i]
+	return null
 
 
-func resource_count(type: ResourceTypes.Type) -> int:
-	return hand.resource_count(type)
+func _hover(card: TextureRect) -> void:
+	card.position.y = 0.0
+	card.z_index = _cards.size()
 
 
-func robber_count() -> int:
-	return hand.robber_count()
+func _unhover(card: TextureRect) -> void:
+	var index := _cards.find(card)
+	card.position.y = hover_raise
+	card.z_index = _cards.size() - 1 - index
 
 
-func is_over_resource_limit(type: ResourceTypes.Type) -> bool:
-	return hand.is_over_resource_limit(type)
-
-
-#############################################
-### CARDS
-#############################################
-func add_card(definition: CardDefinition) -> void:
-	hand.add_card(definition)
-
-
-func remove_card(definition: CardDefinition) -> bool:
-	return hand.remove_card(definition)
-
-
-func card_count(definition: CardDefinition) -> int:
-	return hand.card_count(definition)
+func set_hand(new_hand: Hand) -> void:
+	if hand:
+		hand.hand_changed.disconnect(_on_hand_changed)
+	hand = new_hand
+	hand.hand_changed.connect(_on_hand_changed)
+	_rebuild_fan()
 
 
 #############################################
 ### DISPLAY
 #############################################
-func _onhand_changed() -> void:
-	_refresh()
+func _on_hand_changed() -> void:
+	_rebuild_fan()
 
 
-func _refresh() -> void:
-	_refresh_resources()
-	_refresh_cards()
+func _rebuild_fan() -> void:
+	_hovered_card = null
+	_cards.clear()
+	for child in fan_container.get_children():
+		child.free()
+
+	var textures := _get_all_textures()
+	var n := textures.size()
+	for i in n:
+		var card := _create_card(textures[i], i)
+		card.z_index = n - 1 - i
+		_cards.append(card)
+
+	var total_width := (n - 1) * card_step + card_size.x if n > 0 else card_size.x
+	var total_height := card_size.y + hover_raise
+	fan_container.size = Vector2(total_width, total_height)
+	offset_right = offset_left + total_width
+	offset_top = offset_bottom - total_height
 
 
-func _refresh_resources() -> void:
-	for child in resources_container.get_children():
-		child.queue_free()
-
-	for def in resource_definitions:
-		var n := hand.resource_count(def.resource_type)
-		if n == 0:
-			continue
-		resources_container.add_child(_make_slot(def.texture, n))
-
-
-func _refresh_cards() -> void:
-	for child in cards_container.get_children():
-		child.queue_free()
-
-	var seen: Array[CardDefinition] = []
-	for def in hand.get_cards():
-		if def in seen:
-			continue
-		seen.append(def)
-		cards_container.add_child(_make_slot(def.texture, hand.card_count(def)))
+func _get_all_textures() -> Array[Texture2D]:
+	var textures: Array[Texture2D] = []
+	for def in get_sorted_resource_definitions():
+		for _j in hand.resource_count(def.resource_type):
+			textures.append(def.texture)
+	for card_def in hand.get_cards():
+		textures.append(card_def.texture)
+	return textures
 
 
-func _make_slot(texture: Texture2D, count: int) -> VBoxContainer:
-	var slot := VBoxContainer.new()
+func get_sorted_resource_definitions() -> Array[ResourceDefinition]:
+	var sorted: Array[ResourceDefinition] = []
+	for type in RESOURCE_ORDER:
+		for def in resource_definitions:
+			if def.resource_type == type:
+				sorted.append(def)
+				break
+	return sorted
 
-	var icon := TextureRect.new()
-	icon.texture = texture
-	icon.custom_minimum_size = card_minimum_size
-	icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	slot.add_child(icon)
 
-	var label := Label.new()
-	label.text = str(count)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	slot.add_child(label)
+func _create_card(texture: Texture2D, index: int) -> TextureRect:
+	var card := TextureRect.new()
+	card.texture = texture
+	card.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	card.stretch_mode = TextureRect.STRETCH_SCALE
+	card.mouse_filter = Control.MOUSE_FILTER_PASS
 
-	return slot
+	fan_container.add_child(card)
+
+	card.size = card_size
+	card.position = Vector2(index * card_step, hover_raise)
+
+	return card

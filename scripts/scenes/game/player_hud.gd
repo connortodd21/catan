@@ -1,7 +1,8 @@
 class_name PlayerHUD
-extends PanelContainer
+extends Control
 
 class HUDRow:
+	var container: PanelContainer
 	var score_label: Label
 	var resource_label: Label
 
@@ -29,8 +30,9 @@ func set_active_player(index: int) -> void:
 func _add_row(state: PlayerState) -> HUDRow:
 	var row := HUDRow.new()
 
-	var container := PanelContainer.new()
-	container.name = "Row_%s" % state.get_name()
+	row.container = PanelContainer.new()
+	row.container.name = "Row_%s" % state.get_name()
+	var container := row.container
 
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 8)
@@ -67,12 +69,11 @@ func _update_row(index: int) -> void:
 
 
 func _refresh_highlights() -> void:
-	for i in player_list.get_child_count():
-		var container := player_list.get_child(i) as PanelContainer
+	for i in _rows.size():
 		var style := StyleBoxFlat.new()
-		style.bg_color = Color(0.35, 0.35, 0.35, 0.9) if i == _active_index else Color(0.15, 0.15, 0.15, 0.8)
+		style.bg_color = Color(0.25, 0.35, 0.25, 1.0) if i == _active_index else Color(0.15, 0.15, 0.15, 1.0)
 		style.corner_radius_top_left = 4
 		style.corner_radius_top_right = 4
 		style.corner_radius_bottom_right = 4
 		style.corner_radius_bottom_left = 4
-		container.add_theme_stylebox_override("panel", style)
+		_rows[i].container.add_theme_stylebox_override("panel", style)

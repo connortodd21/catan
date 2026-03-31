@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/scenes/game/player_hud.gd" id="1_phud"]
 
-[node name="PlayerHUD" type="PanelContainer"]
+[node name="PlayerHUD" type="Control"]
 script = ExtResource("1_phud")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

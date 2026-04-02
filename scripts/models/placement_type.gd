@@ -1,6 +1,7 @@
 class_name PlacementType
 
 enum Type {
+	NONE,
 	HEX_VERTEX,
 	HEX_EDGE,
 	HEX_INSIDE,

@@ -18,7 +18,7 @@ func init(_player_states: Array[PlayerState]) -> void:
 	for i in player_states.size():
 		var row := _add_row(player_states[i])
 		_rows.append(row)
-		player_states[i].hand.hand_changed.connect(func() -> void: _update_row(i))
+		player_states[i].hand.hand_add_remove.connect(func() -> void: _update_row(i))
 	_refresh_highlights()
 
 

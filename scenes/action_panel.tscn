@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://brg7isj8h7cud" path="res://scripts/scenes/action_panel/action_panel.gd" id="1"]
+
+[node name="ActionPanel" type="PanelContainer"]
+script = ExtResource("1")

@@ -59,16 +59,16 @@ func _unhover(card: TextureRect) -> void:
 
 func set_hand(new_hand: Hand) -> void:
 	if hand:
-		hand.hand_changed.disconnect(_on_hand_changed)
+		hand.hand_add_remove.disconnect(_on_hand_add_remove)
 	hand = new_hand
-	hand.hand_changed.connect(_on_hand_changed)
+	hand.hand_add_remove.connect(_on_hand_add_remove)
 	_rebuild_fan()
 
 
 #############################################
 ### DISPLAY
 #############################################
-func _on_hand_changed() -> void:
+func _on_hand_add_remove() -> void:
 	_rebuild_fan()
 
 

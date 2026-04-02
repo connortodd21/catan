@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ActionDefinition" format=3 uid="uid://dtct1yxb0pawy"]
+
+[ext_resource type="Script" uid="uid://d7ikctt0onm7" path="res://resources/game/actions/action_definition.gd" id="1_es56u"]
+
+[resource]
+script = ExtResource("1_es56u")
+id = 1
+base_cost = Dictionary[int, int]({
+0: 1,
+1: 1,
+2: 1,
+3: 1
+})
+placement = 1
+phases = Array[int]([1])
+metadata/_custom_type_script = "uid://d7ikctt0onm7"

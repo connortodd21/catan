@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ActionDatabaseResource" format=3 uid="uid://brdcbi8ajmttf"]
+
+[ext_resource type="Script" uid="uid://d7ikctt0onm7" path="res://resources/game/actions/action_definition.gd" id="1_4a8q4"]
+[ext_resource type="Resource" uid="uid://yocroxh8sl2i" path="res://resources/game/actions/build_city.tres" id="2_hm6yo"]
+[ext_resource type="Script" uid="uid://bwwssfy5tk4h7" path="res://resources/game/actions/action_database_resource.gd" id="2_vjmwu"]
+[ext_resource type="Resource" uid="uid://bopit7ojeyvvs" path="res://resources/game/actions/build_road.tres" id="3_3y1g8"]
+[ext_resource type="Resource" uid="uid://dtct1yxb0pawy" path="res://resources/game/actions/build_settlement.tres" id="4_q0hvw"]
+[ext_resource type="Resource" uid="uid://bobiwgo0jexyf" path="res://resources/game/actions/buy_development_card.tres" id="5_msejl"]
+
+[resource]
+script = ExtResource("2_vjmwu")
+actions = Array[ExtResource("1_4a8q4")]([ExtResource("3_3y1g8"), ExtResource("4_q0hvw"), ExtResource("2_hm6yo"), ExtResource("5_msejl")])
+metadata/_custom_type_script = "uid://bwwssfy5tk4h7"

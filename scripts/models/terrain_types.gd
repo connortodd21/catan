@@ -48,3 +48,15 @@ static func type_to_str(terrainType: Type) -> String:
 	if terrainType in tile_type_to_str:
 		return tile_type_to_str[terrainType]
 	return ""
+
+
+static var _terrain_to_resource: Dictionary = {
+	Type.WOOD: ResourceTypes.Type.WOOD,
+	Type.BRICK: ResourceTypes.Type.BRICK,
+	Type.SHEEP: ResourceTypes.Type.SHEEP,
+	Type.WHEAT: ResourceTypes.Type.WHEAT,
+	Type.ROCK: ResourceTypes.Type.ROCK,
+}
+
+static func to_resource(terrain: Type) -> Variant:
+	return _terrain_to_resource.get(terrain, null)

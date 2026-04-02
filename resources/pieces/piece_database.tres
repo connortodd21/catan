@@ -3,9 +3,10 @@
 [ext_resource type="Script" uid="uid://0d5uasxn8hgr" path="res://resources/pieces/piece_data_resource.gd" id="1_g33yb"]
 [ext_resource type="Texture2D" uid="uid://d3sdxm0v3pdcc" path="res://assets/pieces/settlement.png" id="2_jx8dx"]
 [ext_resource type="Texture2D" uid="uid://dk55ibnq6puyg" path="res://assets/pieces/road.png" id="3_8u566"]
-[ext_resource type="Texture2D" uid="uid://cs6tqq2jhxhh1" path="res://assets/pieces/knight.png" id="4_tsc8r"]
+[ext_resource type="Texture2D" uid="uid://cs6tqq2jhxhh1" path="res://assets/pieces/knight_1.png" id="4_jx8dx"]
 [ext_resource type="Script" uid="uid://bgd0buxgalcv5" path="res://resources/pieces/piece_database_resource.gd" id="5_02a1o"]
 [ext_resource type="Texture2D" uid="uid://bvnmf7rimr0p2" path="res://assets/pieces/robber.png" id="5_jx8dx"]
+[ext_resource type="Texture2D" uid="uid://cmdjqeiwhhnv5" path="res://assets/pieces/city.png" id="6_8u566"]
 
 [sub_resource type="Resource" id="Resource_5bhqn"]
 script = ExtResource("1_g33yb")
@@ -22,17 +23,24 @@ metadata/_custom_type_script = "uid://0d5uasxn8hgr"
 
 [sub_resource type="Resource" id="Resource_tvivx"]
 script = ExtResource("1_g33yb")
-type = 3
-texture = ExtResource("4_tsc8r")
+type = 5
+texture = ExtResource("4_jx8dx")
 metadata/_custom_type_script = "uid://0d5uasxn8hgr"
 
 [sub_resource type="Resource" id="Resource_8u566"]
 script = ExtResource("1_g33yb")
-type = 4
+type = 12
 placement = 2
 texture = ExtResource("5_jx8dx")
 metadata/_custom_type_script = "uid://0d5uasxn8hgr"
 
+[sub_resource type="Resource" id="Resource_tsc8r"]
+script = ExtResource("1_g33yb")
+type = 3
+placement = 1
+texture = ExtResource("6_8u566")
+metadata/_custom_type_script = "uid://0d5uasxn8hgr"
+
 [resource]
 script = ExtResource("5_02a1o")
-piece_data = Array[ExtResource("1_g33yb")]([SubResource("Resource_5bhqn"), SubResource("Resource_ars0u"), SubResource("Resource_tvivx"), SubResource("Resource_8u566")])
+piece_data = Array[ExtResource("1_g33yb")]([SubResource("Resource_5bhqn"), SubResource("Resource_ars0u"), SubResource("Resource_tvivx"), SubResource("Resource_8u566"), SubResource("Resource_tsc8r")])

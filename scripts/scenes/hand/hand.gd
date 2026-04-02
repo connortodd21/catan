@@ -1,7 +1,7 @@
 class_name Hand
 extends Resource
 
-signal hand_changed
+signal hand_add_remove
 
 var resource_counts: Dictionary = {}
 var cards: Array[CardDefinition] = []
@@ -12,14 +12,14 @@ var cards: Array[CardDefinition] = []
 #############################################
 func add_resource(type: ResourceTypes.Type) -> void:
 	resource_counts[type] = resource_counts.get(type, 0) + 1
-	hand_changed.emit()
+	hand_add_remove.emit()
 
 
 func remove_resource(type: ResourceTypes.Type) -> bool:
 	if resource_counts.get(type, 0) == 0:
 		return false
 	resource_counts[type] -= 1
-	hand_changed.emit()
+	hand_add_remove.emit()
 	return true
 
 
@@ -47,7 +47,7 @@ func is_over_resource_limit(type: ResourceTypes.Type) -> bool:
 #############################################
 func add_card(definition: CardDefinition) -> void:
 	cards.append(definition)
-	hand_changed.emit()
+	hand_add_remove.emit()
 
 
 func remove_card(definition: CardDefinition) -> bool:
@@ -55,7 +55,7 @@ func remove_card(definition: CardDefinition) -> bool:
 	if idx == -1:
 		return false
 	cards.remove_at(idx)
-	hand_changed.emit()
+	hand_add_remove.emit()
 	return true
 
 

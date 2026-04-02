@@ -6,23 +6,29 @@
 [ext_resource type="Resource" uid="uid://dlk1rll7vemno" path="res://resources/numbers/number_database.tres" id="3_lbhrr"]
 [ext_resource type="Resource" uid="uid://dcrup1kpiwxdw" path="res://resources/pieces/piece_database.tres" id="4_iywne"]
 [ext_resource type="PackedScene" uid="uid://d26hbf0pdv6yl" path="res://scenes/dice_roller.tscn" id="5_dice"]
+[ext_resource type="Resource" uid="uid://brdcbi8ajmttf" path="res://resources/game/actions/action_database.tres" id="5_kvpfn"]
 [ext_resource type="PackedScene" uid="uid://b3q7m8xnp0yvw" path="res://scenes/hand_manager.tscn" id="6_hm"]
 [ext_resource type="PackedScene" path="res://scenes/player_hud.tscn" id="7_phud"]
+[ext_resource type="Script" uid="uid://dmuqoerjc03m3" path="res://scripts/scenes/game/action_manager.gd" id="8_am"]
+[ext_resource type="PackedScene" path="res://scenes/action_panel.tscn" id="9_ap"]
 
 [node name="Game" type="Node2D" unique_id=67801416]
 script = ExtResource("1_80nbo")
 terrain_database = ExtResource("2_fc0e3")
 number_database = ExtResource("3_lbhrr")
 piece_database = ExtResource("4_iywne")
+action_database = ExtResource("5_kvpfn")
 number_scale = 1.6
 number_offset = Vector2(-25, -25)
+
+[node name="ActionManager" type="Node" parent="." unique_id=111111111]
+script = ExtResource("8_am")
 
 [node name="BoardView" parent="." unique_id=298739414 instance=ExtResource("2_e2o6t")]
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=298739415]
 
 [node name="HandManager" parent="UI" unique_id=298739417 instance=ExtResource("6_hm")]
-layout_mode = 3
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -31,9 +37,42 @@ offset_bottom = -16.0
 grow_vertical = 0
 
 [node name="PlayerHUD" parent="UI" unique_id=298739418 instance=ExtResource("7_phud")]
+layout_mode = 3
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_right = 220.0
+grow_vertical = 2
+
+[node name="DebugLabel" type="Label" parent="UI" unique_id=59893457]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 10.0
+offset_right = 200.0
+offset_bottom = 34.0
+grow_horizontal = 2
+horizontal_alignment = 1
+
+[node name="EndTurnButton" type="Button" parent="UI" unique_id=1629296097]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -136.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 46.0
+grow_horizontal = 0
+text = "End Turn"
+
+[node name="ActionPanel" parent="UI" unique_id=355308023 instance=ExtResource("9_ap")]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -160.0
+offset_top = 60.0
+offset_right = -16.0
+grow_horizontal = 0
 
 [node name="DiceRoller" parent="UI" unique_id=298739416 instance=ExtResource("5_dice")]
 anchors_preset = 3

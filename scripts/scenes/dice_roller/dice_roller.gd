@@ -10,6 +10,10 @@ const FINAL_INTERVAL : float = 0.18
 @onready var roll_button: Button = %RollButton
 
 
+func set_roll_enabled(val: bool) -> void:
+	roll_button.disabled = not val
+
+
 func _on_roll_button_pressed() -> void:
 	if not die1.dice or not die2.dice:
 		return
@@ -30,7 +34,7 @@ func _on_roll_button_pressed() -> void:
 	var total : int = val1 + val2 if val1 != -1 and val2 != -1 else -1
 
 	roll_button.disabled = false
-	GlobalSignals.roll_dice(face1.dice_face, face2.dice_face, total)
+	GameSignals.roll_dice(face1.dice_face, face2.dice_face, total)
 
 
 func _animate_roll() -> void:

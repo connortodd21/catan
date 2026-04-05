@@ -2,6 +2,7 @@ class_name ActionManager
 extends Node
 
 var _actions: Dictionary[ActionTypes.Type, ActionDefinition] = {}
+var _validators: Dictionary[ActionTypes.Type, Callable] = {}
 var _active_action: ActionDefinition = null
 var _current_phase: GamePhase.Phase = GamePhase.Phase.ROLL
 
@@ -12,6 +13,10 @@ func _ready() -> void:
 
 func register_action(definition: ActionDefinition) -> void:
 	_actions[definition.id] = definition
+
+
+func register_validator(type: ActionTypes.Type, validator: Callable) -> void:
+	_validators[type] = validator
 
 
 func get_registered_actions() -> Array[ActionDefinition]:
@@ -39,7 +44,9 @@ func is_in_phase(type: ActionTypes.Type) -> bool:
 
 
 func can_perform_action(type: ActionTypes.Type, hand: Hand) -> bool:
-	return is_in_phase(type) and can_afford(type, hand)
+	if type in _validators and is_in_phase(type) and can_afford(type, hand):
+		return _validators[type].call()
+	return false
 
 
 func select_action(type: ActionTypes.Type, hand: Hand) -> void:

@@ -33,7 +33,7 @@ func _ready() -> void:
 		board = game_config.board
 		board_state = BoardState.new()
 		render_board()
-		board_state.build(board)
+		board_state.build(board, board_tile_map)
 		if not HouseRules.RULE_NAMES.NO_ROBBER in game_config.house_rules:
 			place_robber_on_desert()
 		_init_players()
@@ -70,6 +70,7 @@ func _init_players() -> void:
 
 	for action in action_database.actions:
 		action_manager.register_action(action)
+	_register_validators()
 	action_panel.init(action_manager)
 	action_panel.build_buttons()
 
@@ -152,6 +153,37 @@ func place_robber_on_desert() -> void:
 
 
 #############################################
+### ACTION VALIDATORS
+#############################################
+func _register_validators() -> void:
+	action_manager.register_validator(ActionTypes.Type.BUILD_SETTLEMENT, _can_perform_settlement)
+	action_manager.register_validator(ActionTypes.Type.BUILD_ROAD, _can_perform_road)
+	action_manager.register_validator(ActionTypes.Type.BUILD_CITY, _can_perform_city)
+	action_manager.register_validator(ActionTypes.Type.BUY_DEV_CARD, _can_perform_buy_dev_card)
+	action_manager.register_validator(ActionTypes.Type.TRADE, _can_perform_trade)
+
+
+func _can_perform_settlement() -> bool:
+	return board_state.has_valid_settlement_placement(turn_manager.current_player_index)
+
+
+func _can_perform_road() -> bool:
+	return board_state.has_valid_road_placement(turn_manager.current_player_index)
+
+
+func _can_perform_city() -> bool:
+	return board_state.has_valid_city_placement(turn_manager.current_player_index)
+
+
+func _can_perform_buy_dev_card() -> bool:
+	return true
+
+
+func _can_perform_trade() -> bool:
+	return true
+
+
+#############################################
 ### ACTION EXECUTION
 #############################################
 static var _action_to_piece: Dictionary = {
@@ -164,10 +196,39 @@ func _on_action_executed(type: ActionTypes.Type, action_position: Vector2) -> vo
 	var definition := action_manager.get_action(type)
 	if definition == null:
 		return
-	if definition.placement != PlacementType.Type.NONE:
-		var piece_type: PieceTypes.Type = _action_to_piece.get(type, PieceTypes.Type.UNKNOWN)
-		if piece_type != PieceTypes.Type.UNKNOWN:
-			_place_piece(piece_type, action_position, definition.placement)
+
+	if definition.placement == PlacementType.Type.NONE:
+		_deduct_cost(definition)
+		return
+
+	var piece_type: PieceTypes.Type = _action_to_piece.get(type, PieceTypes.Type.UNKNOWN)
+	if piece_type == PieceTypes.Type.UNKNOWN:
+		return
+
+	var snap := _snap_to_nearest(action_position, definition.placement)
+	if snap.is_empty():
+		return
+
+	if not _can_place(type, snap.pos):
+		return
+
+	_place_piece_at(piece_type, snap)
+	_deduct_cost(definition)
+
+
+func _can_place(type: ActionTypes.Type, snapped_pos: Vector2) -> bool:
+	var player_index := turn_manager.current_player_index
+	match type:
+		ActionTypes.Type.BUILD_SETTLEMENT:
+			return board_state.can_place_settlement(snapped_pos, player_index)
+		ActionTypes.Type.BUILD_ROAD:
+			return board_state.can_place_road(snapped_pos, player_index)
+		ActionTypes.Type.BUILD_CITY:
+			return board_state.can_place_city(snapped_pos, player_index)
+	return true
+
+
+func _deduct_cost(definition: ActionDefinition) -> void:
 	for resource_type: ResourceTypes.Type in definition.base_cost:
 		for i in definition.base_cost[resource_type]:
 			local_player.hand.remove_resource(resource_type)
@@ -199,10 +260,7 @@ func _snap_to_nearest(mouse_pos: Vector2, placement: PlacementType.Type) -> Dict
 	return { "pos": nearest_pos, "rotation": nearest_rotation }
 
 
-func _place_piece(type: PieceTypes.Type, mouse_pos: Vector2, placement: PlacementType.Type) -> void:
-	var snap := _snap_to_nearest(mouse_pos, placement)
-	if snap.is_empty():
-		return
+func _place_piece_at(type: PieceTypes.Type, snap: Dictionary) -> void:
 	board_state.record_placement(type, snap.pos, turn_manager.current_player_index)
 	var sprite := Sprite2D.new()
 	sprite.texture = piece_database.get_texture(type)

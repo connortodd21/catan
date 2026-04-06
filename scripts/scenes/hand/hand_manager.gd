@@ -25,6 +25,13 @@ func _ready() -> void:
 	pass
 
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if _hovered_card != null and _hovered_card.has_meta(HandUtils.CARD_DEF_META):
+				GameSignals.emit_card_clicked(_hovered_card.get_meta(HandUtils.CARD_DEF_META))
+
+
 func _process(_delta: float) -> void:
 	if _cards.is_empty():
 		return
@@ -78,10 +85,11 @@ func _rebuild_fan() -> void:
 	for child in fan_container.get_children():
 		child.free()
 
-	var textures := _get_all_textures()
-	var n := textures.size()
+	var entries := _get_all_card_entries()
+	var n := entries.size()
 	for i in n:
-		var card := _create_card(textures[i], i)
+		var entry: Dictionary = entries[i]
+		var card := _create_card(entry[HandUtils.TEXTURE_KEY], i, entry.get(HandUtils.CARD_DEF_META))
 		card.z_index = n - 1 - i
 		_cards.append(card)
 
@@ -92,14 +100,14 @@ func _rebuild_fan() -> void:
 	offset_top = offset_bottom - total_height
 
 
-func _get_all_textures() -> Array[Texture2D]:
-	var textures: Array[Texture2D] = []
+func _get_all_card_entries() -> Array:
+	var entries: Array = []
 	for def in get_sorted_resource_definitions():
 		for _j in hand.resource_count(def.resource_type):
-			textures.append(def.texture)
+			entries.append({HandUtils.TEXTURE_KEY: def.texture})
 	for card_def in hand.get_cards():
-		textures.append(card_def.texture)
-	return textures
+		entries.append({HandUtils.TEXTURE_KEY: card_def.texture, HandUtils.CARD_DEF_META: card_def})
+	return entries
 
 
 func get_sorted_resource_definitions() -> Array[ResourceDefinition]:
@@ -112,12 +120,15 @@ func get_sorted_resource_definitions() -> Array[ResourceDefinition]:
 	return sorted
 
 
-func _create_card(texture: Texture2D, index: int) -> TextureRect:
+func _create_card(texture: Texture2D, index: int, card_def: CardDefinition = null) -> TextureRect:
 	var card := TextureRect.new()
 	card.texture = texture
 	card.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	card.stretch_mode = TextureRect.STRETCH_SCALE
 	card.mouse_filter = Control.MOUSE_FILTER_PASS
+
+	if card_def != null:
+		card.set_meta(HandUtils.CARD_DEF_META, card_def)
 
 	fan_container.add_child(card)
 

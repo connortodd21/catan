@@ -52,6 +52,11 @@ func emit_hand_changed() -> void:
 	hand_changed.emit()
 
 
+signal card_clicked(card: CardDefinition)
+func emit_card_clicked(card: CardDefinition) -> void:
+	card_clicked.emit(card)
+
+
 #############################################
 ### ACTION SIGNALS
 #############################################

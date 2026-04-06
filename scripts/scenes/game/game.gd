@@ -25,6 +25,7 @@ extends Node2D
 @onready var debug_label: Label = $UI/DebugLabel
 @onready var end_turn_button: Button = $UI/EndTurnButton
 @onready var action_manager: ActionManager = $ActionManager
+@onready var card_manager: CardManager = $CardManager
 @onready var action_panel: ActionPanel = $UI/ActionPanel
 
 var tile_coords: Array[Vector2i] = []
@@ -95,7 +96,9 @@ func _init_players() -> void:
 	action_panel.init(action_manager)
 	action_panel.build_buttons()
 
-	register_signals()
+	_register_card_handlers()
+	
+	_register_signals()
 
 	turn_manager.start_game(player_states.size())
 	
@@ -209,6 +212,39 @@ func _handle_robber_placement(mouse_pos: Vector2) -> void:
 
 func _steal_resource(_target_index: int) -> void:
 	pass # TODO: implement steal logic
+
+
+#############################################
+### CARD HANDLERS
+#############################################
+func _register_card_handlers() -> void:
+	card_manager.register_handler(CardTypes.Type.VICTORY_POINT, _on_play_victory_point)
+	card_manager.register_handler(CardTypes.Type.KNIGHT, _on_play_knight)
+	card_manager.register_handler(CardTypes.Type.ROAD_BUILDING, _on_play_road_building)
+	card_manager.register_handler(CardTypes.Type.YEAR_OF_PLENTY, _on_play_year_of_plenty)
+	card_manager.register_handler(CardTypes.Type.MONOPOLY, _on_play_monopoly)
+
+
+func _on_play_victory_point() -> void:
+	var player_index := turn_manager.current_player_index
+	player_states[player_index].score += 1
+	GameSignals.emit_score_changed(player_index, player_states[player_index].score)
+
+
+func _on_play_knight() -> void:
+	pass # TODO: move robber + steal
+
+
+func _on_play_road_building() -> void:
+	pass # TODO: place 2 roads
+
+
+func _on_play_year_of_plenty() -> void:
+	pass # TODO: choose 2 resources
+
+
+func _on_play_monopoly() -> void:
+	pass # TODO: choose resource type, take all from opponents
 
 
 #############################################
@@ -419,14 +455,19 @@ func add_border(coord_to_tile: Dictionary) -> void:
 #############################################
 ### SIGNALS
 #############################################
-func register_signals() -> void:
+func _register_signals() -> void:
 	GameSignals.player_changed.connect(_on_player_changed)
 	GameSignals.phase_changed.connect(_on_phase_changed)
 	GameSignals.dice_rolled.connect(_on_dice_rolled)
 	GameSignals.action_button_pressed.connect(_on_action_button_pressed)
 	GameSignals.action_executed.connect(_on_action_executed)
 	GameSignals.hand_changed.connect(_on_hand_changed)
+	GameSignals.card_clicked.connect(_on_card_clicked)
 	end_turn_button.pressed.connect(turn_manager.end_turn)
+
+
+func _on_card_clicked(card: CardDefinition) -> void:
+	card_manager.play_card(card, player_states[turn_manager.current_player_index])
 
 
 func _on_player_changed(index: int) -> void:

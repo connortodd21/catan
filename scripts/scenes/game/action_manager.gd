@@ -44,7 +44,6 @@ func is_in_phase(type: ActionTypes.Type) -> bool:
 
 
 func can_perform_action(type: ActionTypes.Type, hand: Hand) -> bool:
-	print(ActionTypes.type_to_label(type), is_in_phase(type), can_afford(type, hand))
 	if type in _validators and is_in_phase(type) and can_afford(type, hand):
 		return _validators[type].call()
 	return false

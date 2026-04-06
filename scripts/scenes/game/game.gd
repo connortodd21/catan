@@ -458,7 +458,6 @@ func _on_hand_changed() -> void:
 
 func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, dice_total: int) -> void:
 	turn_manager.advance_from_roll()
-	print(dice_total)
 	if game_config.has_robber() and dice_total == 7:
 		# TODO: handle discard for players over robber_discard_hand_threshold
 		turn_manager.enter_robber_phase()

@@ -109,6 +109,22 @@ func get_edge_owner(world_pos: Vector2) -> Dictionary:
 
 
 #############################################
+### ROBBER
+#############################################
+func get_stealable_players(coord: Vector2i, current_player_index: int, board_tile_map: TileMapLayer) -> Array[int]:
+	var hex_center := board_tile_map.map_to_local(HexUtils.axial_to_offset(coord))
+	var snap_points := PlacementType.get_snap_points(PlacementType.Type.HEX_VERTEX)
+	var indices: Array[int] = []
+	for snap in snap_points:
+		var owner := get_vertex_owner(hex_center + snap)
+		if owner.is_empty() or owner.player_index == current_player_index:
+			continue
+		if owner.player_index not in indices:
+			indices.append(owner.player_index)
+	return indices
+
+
+#############################################
 ### PLACEMENT
 #############################################
 func record_placement(piece_type: PieceTypes.Type, world_pos: Vector2, player_index: int) -> void:

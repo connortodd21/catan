@@ -15,8 +15,18 @@ func start_game(player_count: int) -> void:
 	GameSignals.emit_player_changed(current_player_index)
 
 
-func on_dice_rolled() -> void:
+func advance_from_roll() -> void:
 	if current_phase != GamePhase.Phase.ROLL:
+		return
+	_set_phase(GamePhase.Phase.ACTION)
+
+
+func enter_robber_phase() -> void:
+	_set_phase(GamePhase.Phase.ROBBER)
+
+
+func advance_from_robber() -> void:
+	if current_phase != GamePhase.Phase.ROBBER:
 		return
 	_set_phase(GamePhase.Phase.ACTION)
 
@@ -32,6 +42,7 @@ func end_turn() -> void:
 func phase_name() -> String:
 	match current_phase:
 		GamePhase.Phase.ROLL: return "Roll"
+		GamePhase.Phase.ROBBER: return "Robber"
 		GamePhase.Phase.ACTION: return "Action"
 	return ""
 

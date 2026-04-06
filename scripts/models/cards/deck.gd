@@ -1,0 +1,9 @@
+class_name Deck
+
+enum Type {
+	UNKNOWN,
+	STANDARD,
+	PROGRESS_TRADE,
+	PROGRESS_POLITICS,
+	PROGRESS_SCIENCE,
+}

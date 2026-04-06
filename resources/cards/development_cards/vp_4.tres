@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CardDefinition" format=3 uid="uid://c7bwpi4hxupx"]
+
+[ext_resource type="Script" uid="uid://ckdpnuqei70yb" path="res://resources/cards/card_definition.gd" id="1_ximis"]
+[ext_resource type="Texture2D" uid="uid://bsvpha6kf4yp0" path="res://assets/cards/development_cards/vp_dev_card_4.png" id="2_ximis"]
+
+[resource]
+script = ExtResource("1_ximis")
+card_type = 1
+texture = ExtResource("2_ximis")
+metadata/_custom_type_script = "uid://ckdpnuqei70yb"

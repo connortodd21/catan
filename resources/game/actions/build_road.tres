@@ -9,5 +9,5 @@ base_cost = Dictionary[int, int]({
 1: 1
 })
 placement = 2
-phases = Array[int]([1])
+phases = Array[int]([2])
 metadata/_custom_type_script = "uid://d7ikctt0onm7"

@@ -52,6 +52,7 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 12
+split_offsets = PackedInt32Array(0, 0)
 
 [node name="PlayerPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body" unique_id=2000000001]
 custom_minimum_size = Vector2(220, 0)

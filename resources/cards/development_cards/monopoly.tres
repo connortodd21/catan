@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CardDefinition" format=3 uid="uid://cri28d2ar4x5r"]
+
+[ext_resource type="Script" uid="uid://ckdpnuqei70yb" path="res://resources/cards/card_definition.gd" id="1_scfxn"]
+[ext_resource type="Texture2D" uid="uid://6dpexqsi2vwr" path="res://assets/cards/development_cards/monopoly.png" id="2_scfxn"]
+
+[resource]
+script = ExtResource("1_scfxn")
+card_type = 4
+texture = ExtResource("2_scfxn")
+metadata/_custom_type_script = "uid://ckdpnuqei70yb"

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardDeck" format=3 uid="uid://b75vl6j3vsoux"]
+
+[ext_resource type="Script" uid="uid://cpvwjyhyd43xy" path="res://resources/cards/card_deck.gd" id="1_lyjiy"]
+[ext_resource type="Script" uid="uid://ckdpnuqei70yb" path="res://resources/cards/card_definition.gd" id="1_pn3dd"]
+[ext_resource type="Resource" uid="uid://bff86lmy31jn6" path="res://resources/cards/development_cards/knight.tres" id="2_f3vn8"]
+[ext_resource type="Resource" uid="uid://cri28d2ar4x5r" path="res://resources/cards/development_cards/monopoly.tres" id="3_cqnl6"]
+[ext_resource type="Resource" uid="uid://ci064m0lit63h" path="res://resources/cards/development_cards/year_of_plenty.tres" id="4_qbuyx"]
+[ext_resource type="Resource" uid="uid://cvx6s1nf6dq7v" path="res://resources/cards/development_cards/road_building.tres" id="5_cw1rg"]
+[ext_resource type="Resource" uid="uid://bm46we3qndhcc" path="res://resources/cards/development_cards/vp_1.tres" id="6_u54hg"]
+[ext_resource type="Resource" uid="uid://dpnd88rf220m1" path="res://resources/cards/development_cards/vp_2.tres" id="7_qnh0b"]
+[ext_resource type="Resource" uid="uid://bwov83p8pxo7k" path="res://resources/cards/development_cards/vp_3.tres" id="8_y2452"]
+[ext_resource type="Resource" uid="uid://c7bwpi4hxupx" path="res://resources/cards/development_cards/vp_4.tres" id="9_xr0lb"]
+
+[resource]
+script = ExtResource("1_lyjiy")
+deck = Array[ExtResource("1_pn3dd")]([ExtResource("2_f3vn8"), ExtResource("2_f3vn8"), ExtResource("2_f3vn8"), ExtResource("2_f3vn8"), ExtResource("2_f3vn8"), ExtResource("2_f3vn8"), ExtResource("2_f3vn8"), ExtResource("2_f3vn8"), ExtResource("2_f3vn8"), ExtResource("2_f3vn8"), ExtResource("2_f3vn8"), ExtResource("2_f3vn8"), ExtResource("2_f3vn8"), ExtResource("2_f3vn8"), ExtResource("3_cqnl6"), ExtResource("3_cqnl6"), ExtResource("4_qbuyx"), ExtResource("4_qbuyx"), ExtResource("5_cw1rg"), ExtResource("5_cw1rg"), ExtResource("6_u54hg"), ExtResource("7_qnh0b"), ExtResource("8_y2452"), ExtResource("9_xr0lb"), ExtResource("9_xr0lb")])
+deck_type = 1
+metadata/_custom_type_script = "uid://cpvwjyhyd43xy"

@@ -44,6 +44,7 @@ func is_in_phase(type: ActionTypes.Type) -> bool:
 
 
 func can_perform_action(type: ActionTypes.Type, hand: Hand) -> bool:
+	print(ActionTypes.type_to_label(type), is_in_phase(type), can_afford(type, hand))
 	if type in _validators and is_in_phase(type) and can_afford(type, hand):
 		return _validators[type].call()
 	return false
@@ -69,7 +70,7 @@ func cancel() -> void:
 	GameSignals.emit_action_cancelled()
 
 
-func on_board_click(position: Vector2) -> void:
+func handle_board_click(position: Vector2) -> void:
 	if _active_action == null:
 		return
 	GameSignals.emit_action_executed(_active_action.id, position)

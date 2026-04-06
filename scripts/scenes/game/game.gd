@@ -5,9 +5,12 @@ extends Node2D
 @export var number_database: NumberDatabaseResource
 @export var piece_database: PieceDatabaseResource
 @export var action_database: ActionDatabaseResource
+@export var decks: Array[CardDeck] = []
+
 @export var number_scale: float = 1.0
 @export var number_offset: Vector2 = Vector2.ZERO
 @export var robber_offset: Vector2 = Vector2(-40, 0)
+
 @export var game_config: GameConfig = null
 @export var min_longest_road: int = 5
 @export var min_largest_army: int = 3
@@ -31,19 +34,28 @@ var turn_manager: TurnManager
 var board_state: BoardState
 var board: SerializedBoard
 
+var board_renderer: BoardRenderer
+
+var _draw_piles: Dictionary = {}
+
 var _longest_road_holder: PlayerState = null
 var _largest_army_holder: PlayerState = null
 var _harbormaster_holder: PlayerState = null
+var _robber_coord: Vector2i = Vector2i(-999, -999)
 
 
 func _ready() -> void:
 	if game_config:
 		board = game_config.board
-		board_state = BoardState.new()
+		board_renderer = BoardRenderer.new(board_view, board_tile_map)
 		render_board()
+		
+		board_state = BoardState.new()
 		board_state.build(board, board_tile_map)
+		
 		if game_config.has_robber():
 			place_robber_on_desert()
+		
 		_init_players()
 
 
@@ -52,7 +64,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_RIGHT:
 			action_manager.cancel()
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			action_manager.on_board_click(board_view.get_local_mouse_position())
+			var mouse_pos := board_view.get_local_mouse_position()
+			match turn_manager.current_phase:
+				GamePhase.Phase.ROBBER:
+					_handle_robber_placement(mouse_pos)
+				GamePhase.Phase.ACTION:
+					action_manager.handle_board_click(mouse_pos)
 
 
 func _init_players() -> void:
@@ -67,6 +84,8 @@ func _init_players() -> void:
 		local_player.hand.add_resource(type)
 		local_player.hand.add_resource(type)
 		local_player.hand.add_resource(type)
+
+	_load_dev_decks()
 
 	turn_manager = TurnManager.new()
 
@@ -83,15 +102,33 @@ func _init_players() -> void:
 
 
 #############################################
+### DEV DECK
+#############################################
+func _load_dev_decks() -> void:
+	for deck: CardDeck in decks:
+		var pile: Array[CardDefinition] = deck.deck.duplicate()
+		pile.shuffle()
+		_draw_piles[deck.deck_type] = pile
+
+
+func _draw_dev_card(deck_type: Deck.Type) -> void:
+	var pile: Array[CardDefinition] = _draw_piles.get(deck_type, [])
+	if pile.is_empty():
+		return
+	var card: CardDefinition = pile.pop_back()
+	player_states[turn_manager.current_player_index].hand.add_card(card)
+
+
+#############################################
 ### GAME LOGIC
 #############################################
-func _distribute_resources(total: int) -> void:
-	if game_config.has_robber() and total == 7:
+func _distribute_resources(dice_total: int) -> void:
+	if game_config.has_robber() and dice_total == 7:
 		return
-	if not board_state.has_number(total):
+	if not board_state.has_number(dice_total):
 		return
 	var snap_points := PlacementType.get_snap_points(PlacementType.Type.HEX_VERTEX)
-	var coords : Array[Vector2i] = board_state.get_coords_for_number(total)
+	var coords : Array[Vector2i] = board_state.get_coords_for_number(dice_total)
 	for coord in coords:
 		var resource = TerrainTypes.to_resource(board_state.get_terrain(coord))
 		if resource == null:
@@ -146,14 +183,32 @@ func render_numbers() -> void:
 func place_robber_on_desert() -> void:
 	for tile: TileEntry in board.tiles:
 		if tile.type == TerrainTypes.Type.DESERT:
-			var offset := HexUtils.axial_to_offset(Vector2i(tile.x, tile.y))
-			var sprite := Sprite2D.new()
-			sprite.texture = piece_database.get_texture(PieceTypes.Type.ROBBER)
-			sprite.position = board_tile_map.map_to_local(offset) + robber_offset
-			sprite.modulate = Color.BLACK
-			sprite.z_index = 2
-			board_view.add_child(sprite)
+			var coord := Vector2i(tile.x, tile.y)
+			var world_pos: Vector2 = board_tile_map.map_to_local(HexUtils.axial_to_offset(coord))
+			_robber_coord = coord
+			board_renderer.place_robber(piece_database.get_texture(PieceTypes.Type.ROBBER), world_pos, robber_offset)
 			return
+
+
+func _handle_robber_placement(mouse_pos: Vector2) -> void:
+	var coord: Vector2i = board_renderer.get_nearest_hex_coord(mouse_pos, tile_coords)
+	if coord == _robber_coord:
+		return
+	_robber_coord = coord
+	var world_pos: Vector2 = board_tile_map.map_to_local(HexUtils.axial_to_offset(coord))
+	board_renderer.move_robber_to(world_pos, robber_offset)
+
+	var stealable_players: Array[int] = board_state.get_stealable_players(coord, turn_manager.current_player_index, board_tile_map)
+	if not stealable_players.is_empty():
+		var target_index: int = stealable_players[randi() % stealable_players.size()]
+		# TODO: let player choose target when multiple opponents are present
+		_steal_resource(target_index)
+
+	turn_manager.advance_from_robber()
+
+
+func _steal_resource(_target_index: int) -> void:
+	pass # TODO: implement steal logic
 
 
 #############################################
@@ -180,7 +235,7 @@ func _can_perform_city() -> bool:
 
 
 func _can_perform_buy_dev_card() -> bool:
-	return true
+	return not _draw_piles.get(Deck.Type.STANDARD, []).is_empty()
 
 
 func _can_perform_trade() -> bool:
@@ -196,6 +251,7 @@ static var _action_to_piece: Dictionary = {
 	ActionTypes.Type.BUILD_CITY: PieceTypes.Type.CITY,
 }
 
+
 func _on_action_executed(action: ActionTypes.Type, action_position: Vector2) -> void:
 	var definition := action_manager.get_action(action)
 	if definition == null:
@@ -203,6 +259,8 @@ func _on_action_executed(action: ActionTypes.Type, action_position: Vector2) -> 
 
 	if definition.placement == PlacementType.Type.NONE:
 		_deduct_cost(definition)
+		if action == ActionTypes.Type.BUY_DEV_CARD:
+			_draw_dev_card(Deck.Type.STANDARD)
 		return
 
 	var piece_type: PieceTypes.Type = _action_to_piece.get(action, PieceTypes.Type.UNKNOWN)
@@ -340,13 +398,9 @@ func _snap_to_nearest(mouse_pos: Vector2, placement: PlacementType.Type) -> Dict
 
 func _place_piece_at(piece: PieceTypes.Type, snap: Dictionary) -> void:
 	board_state.record_placement(piece, snap.pos, turn_manager.current_player_index)
-	var sprite := Sprite2D.new()
-	sprite.texture = piece_database.get_texture(piece)
-	sprite.rotation_degrees = snap.rotation
-	sprite.position = snap.pos
-	sprite.modulate = local_player.get_color()
-	sprite.z_index = 2
-	board_view.add_child(sprite)
+	if piece == PieceTypes.Type.CITY:
+		board_renderer.remove_piece_at(snap.pos)
+	board_renderer.place_piece(piece_database.get_texture(piece), snap.pos, local_player.get_color(), snap.rotation)
 
 
 func add_border(coord_to_tile: Dictionary) -> void:
@@ -402,6 +456,11 @@ func _on_hand_changed() -> void:
 	action_panel.refresh(local_player.hand)
 
 
-func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, total: int) -> void:
-	turn_manager.on_dice_rolled()
-	_distribute_resources(total)
+func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, dice_total: int) -> void:
+	turn_manager.advance_from_roll()
+	print(dice_total)
+	if game_config.has_robber() and dice_total == 7:
+		# TODO: handle discard for players over robber_discard_hand_threshold
+		turn_manager.enter_robber_phase()
+		return
+	_distribute_resources(dice_total)

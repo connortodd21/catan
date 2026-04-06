@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CardDefinition" format=3 uid="uid://dpnd88rf220m1"]
+
+[ext_resource type="Script" uid="uid://ckdpnuqei70yb" path="res://resources/cards/card_definition.gd" id="1_214q5"]
+[ext_resource type="Texture2D" uid="uid://dhrxqjts2dkue" path="res://assets/cards/development_cards/vp_dev_card_2.png" id="2_214q5"]
+
+[resource]
+script = ExtResource("1_214q5")
+card_type = 1
+texture = ExtResource("2_214q5")
+metadata/_custom_type_script = "uid://ckdpnuqei70yb"

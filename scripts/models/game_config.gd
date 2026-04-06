@@ -20,6 +20,10 @@ func add_expansion(expansion: ExpansionTypes.Expansion) -> void:
 	expansions.append(expansion)
 
 
+func has_robber() -> bool:
+	return not HouseRules.RULE_NAMES.NO_ROBBER in house_rules
+
+
 func _debug_print() -> void:
 	print("=== GameConfig ===")
 	print("  board: ", board.size if board else Vector2i.ZERO)

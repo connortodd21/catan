@@ -181,6 +181,61 @@ func can_place_city(world_pos: Vector2, player_index: int) -> bool:
 
 
 #############################################
+### SPECIAL TITLE CHECKS
+### TODO: optimize with DP and early exits
+#############################################
+func calculate_longest_road(player_index: int) -> int:
+	var max_length := 0
+	for vertex: Vector2i in _vertex_to_edges:
+		var has_player_road := false
+		for edge: Vector2i in _vertex_to_edges[vertex]:
+			var owner: Dictionary = edge_ownership.get(edge, {})
+			if not owner.is_empty() and owner.player_index == player_index:
+				has_player_road = true
+				break
+		if not has_player_road:
+			continue
+		max_length = max(max_length, _dfs_road(vertex, {}, player_index))
+	return max_length
+
+
+func calculate_army_size(_player_index: int) -> int:
+	return 0 # TODO: implement when knight tracking is added
+
+
+func calculate_harbormaster_count(_player_index: int) -> int:
+	return 0 # TODO: implement when port tracking is added
+
+
+func _dfs_road(vertex: Vector2i, visited: Dictionary, player_index: int) -> int:
+	# Opponent's settlement or city on this vertex breaks road continuity
+	var vertex_owner: Dictionary = vertex_ownership.get(vertex, {})
+	if not vertex_owner.is_empty() and vertex_owner.player_index != player_index:
+		return 0
+	var best := 0
+	for edge: Vector2i in _vertex_to_edges.get(vertex, []):
+		if edge in visited:
+			continue
+		var edge_owner: Dictionary = edge_ownership.get(edge, {})
+		if edge_owner.is_empty() or edge_owner.player_index != player_index:
+			continue
+		var endpoints: Array = _edge_to_vertices[edge]
+		var next: Vector2i = endpoints[0] if endpoints[1] == vertex else endpoints[1]
+		visited[edge] = true
+		best = max(best, 1 + _dfs_road(next, visited, player_index))
+		visited.erase(edge)
+	return best
+
+
+func _get_all_road_player_indices() -> Array[int]:
+	var indices: Array[int] = []
+	for entry: Dictionary in edge_ownership.values():
+		if entry.player_index not in indices:
+			indices.append(entry.player_index)
+	return indices
+
+
+#############################################
 ### INTERNAL
 #############################################
 func _to_key(world_pos: Vector2) -> Vector2i:

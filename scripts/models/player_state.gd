@@ -5,8 +5,9 @@ var player: Player
 var hand: Hand = Hand.new()
 
 var score: int = 0
-var has_longest_road: bool = false
-var has_largest_army: bool = false
+var longest_road_length: int = 0
+var army_size: int = 0
+var harbormaster_count: int = 0
 
 
 func _init(p: Player) -> void:

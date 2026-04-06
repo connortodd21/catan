@@ -14,6 +14,37 @@ func emit_phase_changed(phase: GamePhase.Phase) -> void:
 
 
 #############################################
+### SCORE SIGNALS
+#############################################
+signal score_changed(player_index: int, score: int)
+func emit_score_changed(player_index: int, score: int) -> void:
+	score_changed.emit(player_index, score)
+
+
+#############################################
+### STAT SIGNALS
+#############################################
+signal player_stats_changed(player_index: int)
+func emit_player_stats_changed(player_index: int) -> void:
+	player_stats_changed.emit(player_index)
+
+
+signal longest_road_holder_changed(player_index: int)
+func emit_longest_road_holder_changed(player_index: int) -> void:
+	longest_road_holder_changed.emit(player_index)
+
+
+signal largest_army_holder_changed(player_index: int)
+func emit_largest_army_holder_changed(player_index: int) -> void:
+	largest_army_holder_changed.emit(player_index)
+
+
+signal harbormaster_holder_changed(player_index: int)
+func emit_harbormaster_holder_changed(player_index: int) -> void:
+	harbormaster_holder_changed.emit(player_index)
+
+
+#############################################
 ### HAND SIGNALS
 #############################################
 signal hand_changed()

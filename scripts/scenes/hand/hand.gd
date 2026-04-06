@@ -10,15 +10,15 @@ var cards: Array[CardDefinition] = []
 #############################################
 ### RESOURCES
 #############################################
-func add_resource(type: ResourceTypes.Type) -> void:
-	resource_counts[type] = resource_counts.get(type, 0) + 1
+func add_resource(type: ResourceTypes.Type, amount: int = 1) -> void:
+	resource_counts[type] = resource_counts.get(type, 0) + amount
 	hand_add_remove.emit()
 
 
-func remove_resource(type: ResourceTypes.Type) -> bool:
+func remove_resource(type: ResourceTypes.Type, amount: int = 1) -> bool:
 	if resource_counts.get(type, 0) == 0:
 		return false
-	resource_counts[type] -= 1
+	resource_counts[type] -= amount
 	hand_add_remove.emit()
 	return true
 

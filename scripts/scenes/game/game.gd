@@ -9,6 +9,10 @@ extends Node2D
 @export var number_offset: Vector2 = Vector2.ZERO
 @export var robber_offset: Vector2 = Vector2(-40, 0)
 @export var game_config: GameConfig = null
+@export var min_longest_road: int = 5
+@export var min_largest_army: int = 3
+@export var min_harbormaster: int = 3
+@export var robber_discard_hand_threshold : int = 7
 
 @onready var board_tile_map: TileMapLayer = $BoardView/BoardTileMap
 @onready var board_view: Node2D = $BoardView
@@ -27,6 +31,10 @@ var turn_manager: TurnManager
 var board_state: BoardState
 var board: SerializedBoard
 
+var _longest_road_holder: PlayerState = null
+var _largest_army_holder: PlayerState = null
+var _harbormaster_holder: PlayerState = null
+
 
 func _ready() -> void:
 	if game_config:
@@ -34,7 +42,7 @@ func _ready() -> void:
 		board_state = BoardState.new()
 		render_board()
 		board_state.build(board, board_tile_map)
-		if not HouseRules.RULE_NAMES.NO_ROBBER in game_config.house_rules:
+		if game_config.has_robber():
 			place_robber_on_desert()
 		_init_players()
 
@@ -50,9 +58,10 @@ func _unhandled_input(event: InputEvent) -> void:
 func _init_players() -> void:
 	for player in game_config.players:
 		player_states.append(PlayerState.new(player))
+		player_hud.init(player_states)
+	
 	local_player = player_states[0]
 	hand_manager.set_hand(local_player.hand)
-	player_hud.init(player_states)
 
 	for type in [ResourceTypes.Type.WOOD, ResourceTypes.Type.BRICK, ResourceTypes.Type.SHEEP, ResourceTypes.Type.WHEAT, ResourceTypes.Type.ROCK]:
 		local_player.hand.add_resource(type)
@@ -60,28 +69,24 @@ func _init_players() -> void:
 		local_player.hand.add_resource(type)
 
 	turn_manager = TurnManager.new()
-	GameSignals.player_changed.connect(_on_player_changed)
-	GameSignals.phase_changed.connect(_on_phase_changed)
-	GameSignals.dice_rolled.connect(_on_dice_rolled)
-	GameSignals.action_button_pressed.connect(_on_action_button_pressed)
-	GameSignals.action_executed.connect(_on_action_executed)
-	GameSignals.hand_changed.connect(_on_hand_changed)
-	end_turn_button.pressed.connect(turn_manager.end_turn)
 
 	for action in action_database.actions:
 		action_manager.register_action(action)
-	_register_validators()
+	_register_action_validators()
 	action_panel.init(action_manager)
 	action_panel.build_buttons()
 
+	register_signals()
+
 	turn_manager.start_game(player_states.size())
+	
 
 
 #############################################
 ### GAME LOGIC
 #############################################
 func _distribute_resources(total: int) -> void:
-	if total == 7:
+	if game_config.has_robber() and total == 7:
 		return
 	if not board_state.has_number(total):
 		return
@@ -96,9 +101,8 @@ func _distribute_resources(total: int) -> void:
 			var vertex_owner := board_state.get_vertex_owner(hex_center + snap)
 			if vertex_owner.is_empty():
 				continue
-			var amount := 2 if vertex_owner.piece_type == PieceTypes.Type.CITY else 1
-			for i in amount:
-				player_states[vertex_owner.player_index].hand.add_resource(resource)
+			var resource_amount : int = 2 if vertex_owner.piece_type == PieceTypes.Type.CITY else 1
+			player_states[vertex_owner.player_index].hand.add_resource(resource, resource_amount)
 	GameSignals.emit_hand_changed()
 
 
@@ -155,7 +159,7 @@ func place_robber_on_desert() -> void:
 #############################################
 ### ACTION VALIDATORS
 #############################################
-func _register_validators() -> void:
+func _register_action_validators() -> void:
 	action_manager.register_validator(ActionTypes.Type.BUILD_SETTLEMENT, _can_perform_settlement)
 	action_manager.register_validator(ActionTypes.Type.BUILD_ROAD, _can_perform_road)
 	action_manager.register_validator(ActionTypes.Type.BUILD_CITY, _can_perform_city)
@@ -192,8 +196,8 @@ static var _action_to_piece: Dictionary = {
 	ActionTypes.Type.BUILD_CITY: PieceTypes.Type.CITY,
 }
 
-func _on_action_executed(type: ActionTypes.Type, action_position: Vector2) -> void:
-	var definition := action_manager.get_action(type)
+func _on_action_executed(action: ActionTypes.Type, action_position: Vector2) -> void:
+	var definition := action_manager.get_action(action)
 	if definition == null:
 		return
 
@@ -201,7 +205,7 @@ func _on_action_executed(type: ActionTypes.Type, action_position: Vector2) -> vo
 		_deduct_cost(definition)
 		return
 
-	var piece_type: PieceTypes.Type = _action_to_piece.get(type, PieceTypes.Type.UNKNOWN)
+	var piece_type: PieceTypes.Type = _action_to_piece.get(action, PieceTypes.Type.UNKNOWN)
 	if piece_type == PieceTypes.Type.UNKNOWN:
 		return
 
@@ -209,16 +213,18 @@ func _on_action_executed(type: ActionTypes.Type, action_position: Vector2) -> vo
 	if snap.is_empty():
 		return
 
-	if not _can_place(type, snap.pos):
+	if not _can_place(action, snap.pos):
 		return
 
 	_place_piece_at(piece_type, snap)
 	_deduct_cost(definition)
+	_update_score(action, turn_manager.current_player_index)
+	_check_titles(action, turn_manager.current_player_index)
 
 
-func _can_place(type: ActionTypes.Type, snapped_pos: Vector2) -> bool:
+func _can_place(action: ActionTypes.Type, snapped_pos: Vector2) -> bool:
 	var player_index := turn_manager.current_player_index
-	match type:
+	match action:
 		ActionTypes.Type.BUILD_SETTLEMENT:
 			return board_state.can_place_settlement(snapped_pos, player_index)
 		ActionTypes.Type.BUILD_ROAD:
@@ -226,6 +232,78 @@ func _can_place(type: ActionTypes.Type, snapped_pos: Vector2) -> bool:
 		ActionTypes.Type.BUILD_CITY:
 			return board_state.can_place_city(snapped_pos, player_index)
 	return true
+
+
+func _update_score(action: ActionTypes.Type, player_index: int) -> void:
+	var victory_points_delta : int = GameUtils.action_to_victory_points(action)
+	player_states[player_index].score += victory_points_delta
+	GameSignals.emit_score_changed(player_index, player_states[player_index].score)
+
+
+#############################################
+### TITLE CHECKS
+#############################################
+func _check_titles(action: ActionTypes.Type, player_index: int) -> void:
+	match action:
+		ActionTypes.Type.BUILD_ROAD:
+			_check_longest_road(player_index)
+
+
+func _check_longest_road(player_index: int) -> void:
+	var player_longest_road : int = board_state.calculate_longest_road(player_index)
+	player_states[player_index].longest_road_length = player_longest_road
+	GameSignals.emit_player_stats_changed(player_index)
+	
+	var longest_road : int = _longest_road_holder.longest_road_length if _longest_road_holder else 0
+	if player_longest_road < min_longest_road or player_longest_road <= longest_road:
+		return
+	
+	var player : PlayerState = player_states[player_index]
+	if player != _longest_road_holder:
+		_award_title(_longest_road_holder, player, player_index)
+		_longest_road_holder = player
+		GameSignals.emit_longest_road_holder_changed(player_index)
+
+
+func _check_largest_army(player_index: int) -> void:
+	var player_army_size : int = board_state.calculate_army_size(player_index)
+	player_states[player_index].army_size = player_army_size
+	GameSignals.emit_player_stats_changed(player_index)
+
+	var largest_army : int = _largest_army_holder.army_size if _largest_army_holder else 0
+	if player_army_size < min_largest_army or player_army_size <= largest_army:
+		return
+
+	var player : PlayerState = player_states[player_index]
+	if player != _largest_army_holder:
+		_award_title(_largest_army_holder, player, player_index)
+		_largest_army_holder = player
+		GameSignals.emit_largest_army_holder_changed(player_index)
+
+
+func _check_harbormaster(player_index: int) -> void:
+	var player_harbor_count : int = board_state.calculate_harbormaster_count(player_index)
+	player_states[player_index].harbormaster_count = player_harbor_count
+	GameSignals.emit_player_stats_changed(player_index)
+
+	var harbormaster_count : int = _harbormaster_holder.harbormaster_count if _harbormaster_holder else 0
+	if player_harbor_count < min_harbormaster or player_harbor_count <= harbormaster_count:
+		return
+
+	var player : PlayerState = player_states[player_index]
+	if player != _harbormaster_holder:
+		_award_title(_harbormaster_holder, player, player_index)
+		_harbormaster_holder = player
+		GameSignals.emit_harbormaster_holder_changed(player_index)
+
+
+func _award_title(old_holder: PlayerState, new_holder: PlayerState, new_index: int) -> void:
+	if old_holder != null:
+		var old_index := player_states.find(old_holder)
+		old_holder.score -= 2
+		GameSignals.emit_score_changed(old_index, old_holder.score)
+	new_holder.score += 2
+	GameSignals.emit_score_changed(new_index, new_holder.score)
 
 
 func _deduct_cost(definition: ActionDefinition) -> void:
@@ -260,10 +338,10 @@ func _snap_to_nearest(mouse_pos: Vector2, placement: PlacementType.Type) -> Dict
 	return { "pos": nearest_pos, "rotation": nearest_rotation }
 
 
-func _place_piece_at(type: PieceTypes.Type, snap: Dictionary) -> void:
-	board_state.record_placement(type, snap.pos, turn_manager.current_player_index)
+func _place_piece_at(piece: PieceTypes.Type, snap: Dictionary) -> void:
+	board_state.record_placement(piece, snap.pos, turn_manager.current_player_index)
 	var sprite := Sprite2D.new()
-	sprite.texture = piece_database.get_texture(type)
+	sprite.texture = piece_database.get_texture(piece)
 	sprite.rotation_degrees = snap.rotation
 	sprite.position = snap.pos
 	sprite.modulate = local_player.get_color()
@@ -287,6 +365,16 @@ func add_border(coord_to_tile: Dictionary) -> void:
 #############################################
 ### SIGNALS
 #############################################
+func register_signals() -> void:
+	GameSignals.player_changed.connect(_on_player_changed)
+	GameSignals.phase_changed.connect(_on_phase_changed)
+	GameSignals.dice_rolled.connect(_on_dice_rolled)
+	GameSignals.action_button_pressed.connect(_on_action_button_pressed)
+	GameSignals.action_executed.connect(_on_action_executed)
+	GameSignals.hand_changed.connect(_on_hand_changed)
+	end_turn_button.pressed.connect(turn_manager.end_turn)
+
+
 func _on_player_changed(index: int) -> void:
 	local_player = player_states[index]
 	hand_manager.set_hand(local_player.hand)

@@ -215,10 +215,6 @@ func calculate_longest_road(player_index: int) -> int:
 	return max_length
 
 
-func calculate_army_size(_player_index: int) -> int:
-	return 0 # TODO: implement when knight tracking is added
-
-
 func calculate_harbormaster_count(_player_index: int) -> int:
 	return 0 # TODO: implement when port tracking is added
 

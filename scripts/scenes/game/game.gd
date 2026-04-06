@@ -81,7 +81,9 @@ func _init_players() -> void:
 	local_player = player_states[0]
 	hand_manager.set_hand(local_player.hand)
 
-	for type in [ResourceTypes.Type.WOOD, ResourceTypes.Type.BRICK, ResourceTypes.Type.SHEEP, ResourceTypes.Type.WHEAT, ResourceTypes.Type.ROCK]:
+	for type in [ResourceTypes.Type.SHEEP, ResourceTypes.Type.WHEAT, ResourceTypes.Type.ROCK]:
+		local_player.hand.add_resource(type)
+		local_player.hand.add_resource(type)
 		local_player.hand.add_resource(type)
 		local_player.hand.add_resource(type)
 		local_player.hand.add_resource(type)
@@ -232,7 +234,10 @@ func _on_play_victory_point() -> void:
 
 
 func _on_play_knight() -> void:
-	pass # TODO: move robber + steal
+	var player_index := turn_manager.current_player_index
+	player_states[player_index].army_size += 1
+	_check_largest_army(player_index)
+	turn_manager.enter_robber_phase()
 
 
 func _on_play_road_building() -> void:
@@ -360,8 +365,7 @@ func _check_longest_road(player_index: int) -> void:
 
 
 func _check_largest_army(player_index: int) -> void:
-	var player_army_size : int = board_state.calculate_army_size(player_index)
-	player_states[player_index].army_size = player_army_size
+	var player_army_size : int = player_states[player_index].army_size
 	GameSignals.emit_player_stats_changed(player_index)
 
 	var largest_army : int = _largest_army_holder.army_size if _largest_army_holder else 0

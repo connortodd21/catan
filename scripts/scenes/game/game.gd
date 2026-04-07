@@ -63,13 +63,14 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_RIGHT:
-			action_manager.cancel()
+			if turn_manager.current_phase != GamePhase.Phase.PLAYING_CARD:
+				action_manager.cancel()
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			var mouse_pos := board_view.get_local_mouse_position()
 			match turn_manager.current_phase:
 				GamePhase.Phase.ROBBER:
 					_handle_robber_placement(mouse_pos)
-				GamePhase.Phase.ACTION:
+				GamePhase.Phase.ACTION, GamePhase.Phase.PLAYING_CARD:
 					action_manager.handle_board_click(mouse_pos)
 
 
@@ -81,12 +82,13 @@ func _init_players() -> void:
 	local_player = player_states[0]
 	hand_manager.set_hand(local_player.hand)
 
-	for type in [ResourceTypes.Type.SHEEP, ResourceTypes.Type.WHEAT, ResourceTypes.Type.ROCK]:
-		local_player.hand.add_resource(type)
-		local_player.hand.add_resource(type)
-		local_player.hand.add_resource(type)
-		local_player.hand.add_resource(type)
-		local_player.hand.add_resource(type)
+	local_player.hand.add_resource(ResourceTypes.Type.WOOD)
+	local_player.hand.add_resource(ResourceTypes.Type.BRICK)
+	local_player.hand.add_resource(ResourceTypes.Type.SHEEP)
+	local_player.hand.add_resource(ResourceTypes.Type.SHEEP)
+	local_player.hand.add_resource(ResourceTypes.Type.WHEAT)
+	local_player.hand.add_resource(ResourceTypes.Type.WHEAT)
+	local_player.hand.add_resource(ResourceTypes.Type.ROCK)
 
 	_load_dev_decks()
 
@@ -98,8 +100,11 @@ func _init_players() -> void:
 	action_panel.init(action_manager)
 	action_panel.build_buttons()
 
+	card_manager.action_manager = action_manager
+	card_manager.turn_manager = turn_manager
+
 	_register_card_handlers()
-	
+
 	_register_signals()
 
 	turn_manager.start_game(player_states.size())
@@ -121,6 +126,8 @@ func _draw_dev_card(deck_type: Deck.Type) -> void:
 	if pile.is_empty():
 		return
 	var card: CardDefinition = pile.pop_back()
+	while card.card_type != CardTypes.Type.ROAD_BUILDING:
+		card = pile.pop_back()
 	player_states[turn_manager.current_player_index].hand.add_card(card)
 
 
@@ -241,7 +248,7 @@ func _on_play_knight() -> void:
 
 
 func _on_play_road_building() -> void:
-	pass # TODO: place 2 roads
+	card_manager.begin_road_building()
 
 
 func _on_play_year_of_plenty() -> void:
@@ -316,7 +323,8 @@ func _on_action_executed(action: ActionTypes.Type, action_position: Vector2) -> 
 		return
 
 	_place_piece_at(piece_type, snap)
-	_deduct_cost(definition)
+	if turn_manager.current_phase != GamePhase.Phase.PLAYING_CARD:
+		_deduct_cost(definition)
 	_update_score(action, turn_manager.current_player_index)
 	_check_titles(action, turn_manager.current_player_index)
 
@@ -493,8 +501,8 @@ func _update_debug_label() -> void:
 	debug_label.text = "Player: %s | Phase: %s" % [local_player.get_name(), turn_manager.phase_name()]
 
 
-func _on_action_button_pressed(type: ActionTypes.Type) -> void:
-	action_manager.select_action(type, local_player.hand)
+func _on_action_button_pressed(action_type: ActionTypes.Type) -> void:
+	action_manager.select_action(action_type, local_player.hand)
 
 
 func _on_hand_changed() -> void:

@@ -34,10 +34,10 @@ func refresh(hand: Hand) -> void:
 		_buttons[type].disabled = not _action_manager.can_perform_action(type, hand)
 
 
-func _on_action_mode_entered(type: ActionTypes.Type) -> void:
-	_active_type = type
-	if type in _buttons:
-		_buttons[type].button_pressed = true
+func _on_action_mode_entered(action_type: ActionTypes.Type) -> void:
+	_active_type = action_type
+	if action_type in _buttons:
+		_buttons[action_type].button_pressed = true
 
 
 func _on_action_deactivated() -> void:

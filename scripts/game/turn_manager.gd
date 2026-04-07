@@ -31,6 +31,16 @@ func advance_from_robber() -> void:
 	_set_phase(GamePhase.Phase.ACTION)
 
 
+func enter_card_play_phase() -> void:
+	_set_phase(GamePhase.Phase.PLAYING_CARD)
+
+
+func advance_from_card_play() -> void:
+	if current_phase != GamePhase.Phase.PLAYING_CARD:
+		return
+	_set_phase(GamePhase.Phase.ACTION)
+
+
 func end_turn() -> void:
 	if current_phase != GamePhase.Phase.ACTION:
 		return
@@ -40,11 +50,7 @@ func end_turn() -> void:
 
 
 func phase_name() -> String:
-	match current_phase:
-		GamePhase.Phase.ROLL: return "Roll"
-		GamePhase.Phase.ROBBER: return "Robber"
-		GamePhase.Phase.ACTION: return "Action"
-	return ""
+	return GamePhase.phase_to_string(current_phase)
 
 
 func _set_phase(phase: GamePhase.Phase) -> void:

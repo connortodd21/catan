@@ -24,14 +24,14 @@ extends Node2D
 @onready var dice_roller: DiceRoller = $UI/DiceRoller
 @onready var debug_label: Label = $UI/DebugLabel
 @onready var end_turn_button: Button = $UI/EndTurnButton
-@onready var action_manager: ActionManager = $ActionManager
-@onready var card_manager: CardManager = $CardManager
 @onready var action_panel: ActionPanel = $UI/ActionPanel
 
 var tile_coords: Array[Vector2i] = []
 var player_states: Array[PlayerState] = []
 var local_player: PlayerState = null
 var turn_manager: TurnManager
+var action_manager: ActionManager
+var card_manager: CardManager
 var board_state: BoardState
 var board: SerializedBoard
 
@@ -94,14 +94,19 @@ func _init_players() -> void:
 
 	turn_manager = TurnManager.new()
 
+	action_manager = ActionManager.new()
+	action_manager.init()
+
 	for action in action_database.actions:
 		action_manager.register_action(action)
 	_register_action_validators()
 	action_panel.init(action_manager)
 	action_panel.build_buttons()
 
+	card_manager = CardManager.new()
 	card_manager.action_manager = action_manager
 	card_manager.turn_manager = turn_manager
+	card_manager.init()
 
 	_register_card_handlers()
 

@@ -1,5 +1,5 @@
 class_name CardManager
-extends Node
+extends RefCounted
 
 var action_manager: ActionManager
 var turn_manager: TurnManager
@@ -8,7 +8,7 @@ var _handlers: Dictionary[CardTypes.Type, Callable] = {}
 var _roads_remaining: int = 0
 
 
-func _ready() -> void:
+func init() -> void:
 	GameSignals.action_executed.connect(_on_action_executed)
 
 

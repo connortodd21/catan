@@ -1,5 +1,5 @@
 class_name ActionManager
-extends Node
+extends RefCounted
 
 var _actions: Dictionary[ActionTypes.Type, ActionDefinition] = {}
 var _validators: Dictionary[ActionTypes.Type, Callable] = {}
@@ -7,7 +7,7 @@ var _active_action: ActionDefinition = null
 var _current_phase: GamePhase.Phase = GamePhase.Phase.ROLL
 
 
-func _ready() -> void:
+func init() -> void:
 	GameSignals.phase_changed.connect(_on_phase_changed)
 
 

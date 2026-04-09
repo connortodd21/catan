@@ -15,6 +15,10 @@ func start_game(player_count: int) -> void:
 	GameSignals.emit_player_changed(current_player_index)
 
 
+func enter_setup_phase() -> void:
+	_set_phase(GamePhase.Phase.SETUP)
+
+
 func advance_from_roll() -> void:
 	if current_phase != GamePhase.Phase.ROLL:
 		return

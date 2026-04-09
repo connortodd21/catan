@@ -32,6 +32,7 @@ var local_player: PlayerState = null
 var turn_manager: TurnManager
 var action_manager: ActionManager
 var card_manager: CardManager
+var setup_manager: SetupManager
 var board_state: BoardState
 var board: SerializedBoard
 
@@ -58,6 +59,7 @@ func _ready() -> void:
 			place_robber_on_desert()
 		
 		_init_players()
+		start_game()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -70,7 +72,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			match turn_manager.current_phase:
 				GamePhase.Phase.ROBBER:
 					_handle_robber_placement(mouse_pos)
-				GamePhase.Phase.ACTION, GamePhase.Phase.PLAYING_CARD:
+				GamePhase.Phase.ACTION, GamePhase.Phase.PLAYING_CARD, GamePhase.Phase.SETUP:
 					action_manager.handle_board_click(mouse_pos)
 
 
@@ -108,11 +110,19 @@ func _init_players() -> void:
 	card_manager.turn_manager = turn_manager
 	card_manager.init()
 
+	setup_manager = SetupManager.new()
+	setup_manager.action_manager = action_manager
+	setup_manager.turn_manager = turn_manager
+	setup_manager.board_state = board_state
+	setup_manager.init()
+
 	_register_card_handlers()
 
 	_register_signals()
 
-	turn_manager.start_game(player_states.size())
+
+func start_game() -> void:
+	setup_manager.begin(player_states.size())
 	
 
 
@@ -327,9 +337,12 @@ func _on_action_executed(action: ActionTypes.Type, action_position: Vector2) -> 
 	if not _can_place(action, snap.pos):
 		return
 
+	action_manager.clear_active_action()
 	_place_piece_at(piece_type, snap)
-	if turn_manager.current_phase != GamePhase.Phase.PLAYING_CARD:
-		_deduct_cost(definition)
+	if action == ActionTypes.Type.BUILD_SETTLEMENT and turn_manager.current_phase == GamePhase.Phase.SETUP:
+		setup_manager.record_last_settlement(snap.pos)
+	GameSignals.emit_piece_placed(piece_type, snap.pos)
+	_deduct_cost(definition)
 	_update_score(action, turn_manager.current_player_index)
 	_check_titles(action, turn_manager.current_player_index)
 
@@ -340,6 +353,8 @@ func _can_place(action: ActionTypes.Type, snapped_pos: Vector2) -> bool:
 		ActionTypes.Type.BUILD_SETTLEMENT:
 			return board_state.can_place_settlement(snapped_pos, player_index)
 		ActionTypes.Type.BUILD_ROAD:
+			if turn_manager.current_phase == GamePhase.Phase.SETUP:
+				return setup_manager.is_setup_road_valid(snapped_pos)
 			return board_state.can_place_road(snapped_pos, player_index)
 		ActionTypes.Type.BUILD_CITY:
 			return board_state.can_place_city(snapped_pos, player_index)
@@ -418,6 +433,8 @@ func _award_title(old_holder: PlayerState, new_holder: PlayerState, new_index: i
 
 
 func _deduct_cost(definition: ActionDefinition) -> void:
+	if CostUtils.is_free(definition.id, turn_manager.current_phase):
+		return
 	for resource_type: ResourceTypes.Type in definition.base_cost:
 		for i in definition.base_cost[resource_type]:
 			local_player.hand.remove_resource(resource_type)
@@ -498,6 +515,7 @@ func _on_player_changed(index: int) -> void:
 func _on_phase_changed(phase: GamePhase.Phase) -> void:
 	dice_roller.set_roll_enabled(phase == GamePhase.Phase.ROLL)
 	end_turn_button.disabled = (phase != GamePhase.Phase.ACTION)
+	action_panel.visible = (phase != GamePhase.Phase.SETUP)
 	action_panel.refresh(local_player.hand)
 	_update_debug_label()
 

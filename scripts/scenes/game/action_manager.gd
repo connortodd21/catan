@@ -61,9 +61,11 @@ func cancel() -> void:
 func handle_board_click(position: Vector2) -> void:
 	if _active_action == null:
 		return
-	var action_id : ActionTypes.Type = _active_action.id
+	GameSignals.emit_action_executed(_active_action.id, position)
+
+
+func clear_active_action() -> void:
 	_active_action = null
-	GameSignals.emit_action_executed(action_id, position)
 
 
 func _can_afford(type: ActionTypes.Type, hand: Hand) -> bool:

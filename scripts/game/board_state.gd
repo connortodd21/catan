@@ -100,6 +100,12 @@ func get_terrain(coord: Vector2i) -> TerrainTypes.Type:
 	return coord_to_terrain.get(coord, TerrainTypes.Type.UNKNOWN)
 
 
+func is_edge_adjacent_to_vertex(edge_pos: Vector2, vertex_pos: Vector2) -> bool:
+	var edge_key := _to_key(edge_pos)
+	var vertex_key := _to_key(vertex_pos)
+	return vertex_key in _edge_to_vertices.get(edge_key, [])
+
+
 func get_vertex_owner(world_pos: Vector2) -> Dictionary:
 	return vertex_ownership.get(_to_key(world_pos), {})
 

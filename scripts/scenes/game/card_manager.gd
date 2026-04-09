@@ -9,7 +9,7 @@ var _roads_remaining: int = 0
 
 
 func init() -> void:
-	GameSignals.action_executed.connect(_on_action_executed)
+	GameSignals.piece_placed.connect(_on_piece_placed)
 
 
 #############################################
@@ -40,12 +40,12 @@ func begin_road_building() -> void:
 #############################################
 ### SIGNALS
 #############################################
-func _on_action_executed(action_type: ActionTypes.Type, _position: Vector2) -> void:
+func _on_piece_placed(piece_type: PieceTypes.Type, _world_pos: Vector2) -> void:
 	if turn_manager.current_phase != GamePhase.Phase.PLAYING_CARD:
 		return
-	if action_type == ActionTypes.Type.BUILD_ROAD:
+	if piece_type == PieceTypes.Type.ROAD:
 		_roads_remaining -= 1
 		if _roads_remaining > 0:
 			action_manager.force_action(ActionTypes.Type.BUILD_ROAD)
 		else:
-			turn_manager.advance_from_card_play()
+			turn_manager.advance_from_card_play.call_deferred()

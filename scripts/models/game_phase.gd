@@ -1,6 +1,7 @@
 class_name GamePhase
 
 enum Phase {
+	SETUP,
 	ROLL,
 	ROBBER,
 	ACTION,
@@ -8,6 +9,7 @@ enum Phase {
 }
 
 static var phase_to_string_map = {
+	Phase.SETUP: "Setup",
 	Phase.ROLL: "Roll",
 	Phase.ROBBER: "Robber",
 	Phase.ACTION: "Action",

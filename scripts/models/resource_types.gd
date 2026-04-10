@@ -31,6 +31,15 @@ static func type_to_str(resource_type: Type) -> String:
 	return tile_type_to_str.get(resource_type, Type.UNKNOWN)
 
 
+const DISPLAY_ORDER: Array[Type] = [
+	Type.WOOD,
+	Type.BRICK,
+	Type.SHEEP,
+	Type.WHEAT,
+	Type.ROCK,
+]
+
+
 static func counts_toward_robber(type: Type) -> bool:
 	return type in [
 		Type.WOOD, Type.BRICK, Type.SHEEP,

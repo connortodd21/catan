@@ -1,8 +1,24 @@
 class_name SelectionPopup
 extends PopupPanel
 
+
+class SelectionOption:
+	var label: String
+	var value: Variant
+	var color: Color
+	var texture: Texture2D
+
+	func _init(p_label: String, p_value: Variant, p_color: Color = Color.BLACK, p_texture: Texture2D = null) -> void:
+		label = p_label
+		value = p_value
+		color = p_color
+		texture = p_texture
+
+
+@export var icon_max_width: int = 60
+
 var _title_label: Label
-var _options_container: VBoxContainer
+var _options_container: HBoxContainer
 var _on_selected_callback: Callable
 var _remaining: int = 0
 var _base_title: String = ""
@@ -16,7 +32,7 @@ func _ready() -> void:
 	_title_label = Label.new()
 	vbox.add_child(_title_label)
 
-	_options_container = VBoxContainer.new()
+	_options_container = HBoxContainer.new()
 	_options_container.add_theme_constant_override("separation", 4)
 	vbox.add_child(_options_container)
 
@@ -24,7 +40,7 @@ func _ready() -> void:
 #############################################
 ### DISPLAY
 #############################################
-func show_selection(base_title: String, options: Array[Dictionary], callback: Callable, required_count: int = 1) -> void:
+func show_selection(base_title: String, options: Array[SelectionOption], callback: Callable, required_count: int = 1) -> void:
 	_on_selected_callback = callback
 	_remaining = required_count
 	_base_title = base_title
@@ -33,20 +49,20 @@ func show_selection(base_title: String, options: Array[Dictionary], callback: Ca
 	popup_centered()
 
 
-func _build_options(options: Array[Dictionary]) -> void:
+func _build_options(options: Array[SelectionOption]) -> void:
 	for child in _options_container.get_children():
 		child.queue_free()
 	for option in options:
 		_options_container.add_child(_build_option_button(option))
 
 
-func _build_option_button(option: Dictionary) -> Button:
+func _build_option_button(option: SelectionOption) -> Button:
 	var button := Button.new()
-	button.text = option.get("label", "")
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	if option.has("texture"):
+	button.tooltip_text = option.label
+	if option.texture != null:
 		button.icon = option.texture
-	elif option.has("color"):
+		button.add_theme_constant_override("icon_max_width", icon_max_width)
+	elif option.color != Color.BLACK:
 		var style := StyleBoxFlat.new()
 		style.bg_color = option.color
 		button.add_theme_stylebox_override("normal", style)
@@ -64,7 +80,7 @@ func _refresh_title() -> void:
 #############################################
 ### SIGNALS
 #############################################
-func _on_option_pressed(option: Dictionary) -> void:
+func _on_option_pressed(option: SelectionOption) -> void:
 	_on_selected_callback.call(option.value)
 	_remaining -= 1
 	if _remaining <= 0:

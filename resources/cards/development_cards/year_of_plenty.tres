@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="CardDefinition" format=3 uid="uid://ci064m0lit63h"]
 
 [ext_resource type="Script" uid="uid://ckdpnuqei70yb" path="res://resources/cards/card_definition.gd" id="1_477qq"]
-[ext_resource type="Texture2D" uid="uid://bi10mkhpy70t0" path="res://assets/cards/development_cards/road_building.png" id="2_i3cdx"]
+[ext_resource type="Texture2D" uid="uid://bbnqbyioq4nub" path="res://assets/cards/development_cards/year_of_plenty.png" id="2_477qq"]
 
 [resource]
 script = ExtResource("1_477qq")
-card_type = 2
-texture = ExtResource("2_i3cdx")
+card_type = 3
+texture = ExtResource("2_477qq")
 metadata/_custom_type_script = "uid://ckdpnuqei70yb"

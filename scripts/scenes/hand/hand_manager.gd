@@ -1,13 +1,6 @@
 class_name HandManager
 extends Control
 
-const RESOURCE_ORDER: Array[ResourceTypes.Type] = [
-	ResourceTypes.Type.WOOD,
-	ResourceTypes.Type.BRICK,
-	ResourceTypes.Type.SHEEP,
-	ResourceTypes.Type.WHEAT,
-	ResourceTypes.Type.ROCK,
-]
 
 @export var resource_definitions: Array[ResourceDefinition] = []
 @export var card_size: Vector2 = Vector2(120, 178)
@@ -114,7 +107,7 @@ func _get_all_card_entries() -> Array:
 
 func get_sorted_resource_definitions() -> Array[ResourceDefinition]:
 	var sorted: Array[ResourceDefinition] = []
-	for type in RESOURCE_ORDER:
+	for type in ResourceTypes.DISPLAY_ORDER:
 		for def in resource_definitions:
 			if def.resource_type == type:
 				sorted.append(def)

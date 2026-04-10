@@ -14,13 +14,13 @@ func init(p_popup: SelectionPopup, p_resource_definitions: Array[ResourceDefinit
 ### PLAYER SELECT
 #############################################
 func show_player_select(player_indices: Array[int], player_states: Array[PlayerState], callback: Callable) -> void:
-	var options: Array[Dictionary] = []
+	var options: Array[SelectionPopup.SelectionOption] = []
 	for index in player_indices:
-		options.append({
-			"label": player_states[index].get_name(),
-			"color": player_states[index].get_color(),
-			"value": index,
-		})
+		options.append(SelectionPopup.SelectionOption.new(
+			player_states[index].get_name(),
+			index,
+			player_states[index].get_color(),
+		))
 	_popup.show_selection("Choose a player to steal from", options, callback)
 
 
@@ -28,13 +28,12 @@ func show_player_select(player_indices: Array[int], player_states: Array[PlayerS
 ### RESOURCE SELECT
 #############################################
 func show_resource_select(callback: Callable, count: int = 1) -> void:
-	var options: Array[Dictionary] = []
+	var options: Array[SelectionPopup.SelectionOption] = []
 	for resource_def in _resource_definitions:
-		if resource_def.resource_type == ResourceTypes.Type.UNKNOWN:
-			continue
-		options.append({
-			"label": ResourceTypes.type_to_str(resource_def.resource_type),
-			"texture": resource_def.texture,
-			"value": resource_def.resource_type,
-		})
+		options.append(SelectionPopup.SelectionOption.new(
+			ResourceTypes.type_to_str(resource_def.resource_type),
+			resource_def.resource_type,
+			Color.BLACK,
+			resource_def.texture,
+		))
 	_popup.show_selection("Choose a resource", options, callback, count)

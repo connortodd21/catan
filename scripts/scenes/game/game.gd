@@ -123,7 +123,7 @@ func _init_players() -> void:
 	setup_manager.init()
 
 	popup_manager = PopupManager.new()
-	popup_manager.init(selection_popup, hand_manager.resource_definitions)
+	popup_manager.init(selection_popup, hand_manager.get_sorted_resource_definitions())
 
 	_register_card_handlers()
 
@@ -147,12 +147,9 @@ func _load_dev_decks() -> void:
 
 func _draw_dev_card(deck_type: Deck.Type) -> void:
 	var pile: Array[CardDefinition] = _draw_piles.get(deck_type, [])
-	if pile.is_empty():
-		return
-	var card: CardDefinition = pile.pop_back()
-	while card.card_type != CardTypes.Type.ROAD_BUILDING:
-		card = pile.pop_back()
-	player_states[turn_manager.current_player_index].hand.add_card(card)
+	if not pile.is_empty():
+		var card: CardDefinition = pile.pop_back()
+		player_states[turn_manager.current_player_index].hand.add_card(card)
 
 
 #############################################
@@ -303,11 +300,27 @@ func _on_play_road_building() -> void:
 
 
 func _on_play_year_of_plenty() -> void:
-	pass # TODO: choose 2 resources
+	popup_manager.show_resource_select(_on_year_of_plenty_resource_selected, 2)
+
+
+func _on_year_of_plenty_resource_selected(resource: ResourceTypes.Type) -> void:
+	player_states[turn_manager.current_player_index].hand.add_resource(resource)
+	GameSignals.emit_hand_changed()
 
 
 func _on_play_monopoly() -> void:
-	pass # TODO: choose resource type, take all from opponents
+	popup_manager.show_resource_select(_on_monopoly_resource_selected)
+
+
+func _on_monopoly_resource_selected(resource: ResourceTypes.Type) -> void:
+	var player_index := turn_manager.current_player_index
+	for i in player_states.size():
+		if i != player_index:
+			var count := player_states[i].hand.resource_count(resource)
+			if count > 0:
+				player_states[i].hand.remove_resource(resource, count)
+				player_states[player_index].hand.add_resource(resource, count)
+	GameSignals.emit_hand_changed()
 
 
 #############################################

@@ -5,9 +5,9 @@
 [resource]
 script = ExtResource("1_ycvcd")
 base_cost = Dictionary[int, int]({
-0: 1,
-1: 1
+1: 1,
+2: 1
 })
 placement = 2
-phases = Array[int]([2])
+phases = Array[int]([3])
 metadata/_custom_type_script = "uid://d7ikctt0onm7"

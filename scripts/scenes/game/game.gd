@@ -25,6 +25,7 @@ extends Node2D
 @onready var debug_label: Label = $UI/DebugLabel
 @onready var end_turn_button: Button = $UI/EndTurnButton
 @onready var action_panel: ActionPanel = $UI/ActionPanel
+@onready var selection_popup: SelectionPopup = $UI/SelectionPopup
 
 var tile_coords: Array[Vector2i] = []
 var player_states: Array[PlayerState] = []
@@ -33,6 +34,7 @@ var turn_manager: TurnManager
 var action_manager: ActionManager
 var card_manager: CardManager
 var setup_manager: SetupManager
+var popup_manager: PopupManager
 var board_state: BoardState
 var board: SerializedBoard
 
@@ -120,6 +122,9 @@ func _init_players() -> void:
 	setup_manager.board_state = board_state
 	setup_manager.init()
 
+	popup_manager = PopupManager.new()
+	popup_manager.init(selection_popup, hand_manager.resource_definitions)
+
 	_register_card_handlers()
 
 	_register_signals()
@@ -161,6 +166,8 @@ func _distribute_resources(dice_total: int) -> void:
 	var snap_points := PlacementType.get_snap_points(PlacementType.Type.HEX_VERTEX)
 	var coords : Array[Vector2i] = board_state.get_coords_for_number(dice_total)
 	for coord in coords:
+		if game_config.has_robber() and coord == _robber_coord:
+			continue
 		var resource = TerrainTypes.to_resource(board_state.get_terrain(coord))
 		if resource == null:
 			continue
@@ -240,15 +247,31 @@ func _handle_robber_placement(mouse_pos: Vector2) -> void:
 
 	var stealable_players: Array[int] = board_state.get_stealable_players(coord, turn_manager.current_player_index, board_tile_map)
 	if not stealable_players.is_empty():
-		var target_index: int = stealable_players[randi() % stealable_players.size()]
-		# TODO: let player choose target when multiple opponents are present
-		_steal_resource(target_index)
+		popup_manager.show_player_select(stealable_players, player_states, _on_robber_target_selected)
+	else:
+		_finish_robber_phase()
 
+
+func _finish_robber_phase() -> void:
 	turn_manager.advance_from_robber()
 
 
-func _steal_resource(_target_index: int) -> void:
-	pass # TODO: implement steal logic
+func _on_robber_target_selected(target_index: int) -> void:
+	_steal_resource(target_index)
+	_finish_robber_phase()
+
+
+func _steal_resource(target_index: int) -> void:
+	var target_hand : Hand = player_states[target_index].hand
+	var available_resources : Array[ResourceTypes.Type] = []
+	for resource_type: ResourceTypes.Type in target_hand.resource_counts:
+		for _i in target_hand.resource_count(resource_type):
+			available_resources.append(resource_type)
+	if not available_resources.is_empty():
+		var stolen_resource : ResourceTypes.Type = ArrayUtils.get_random_item(available_resources)
+		target_hand.remove_resource(stolen_resource)
+		player_states[turn_manager.current_player_index].hand.add_resource(stolen_resource)
+		GameSignals.emit_hand_changed()
 
 
 #############################################
@@ -364,7 +387,8 @@ func _can_place(action: ActionTypes.Type, snapped_pos: Vector2) -> bool:
 	var player_index := turn_manager.current_player_index
 	match action:
 		ActionTypes.Type.BUILD_SETTLEMENT:
-			return board_state.can_place_settlement(snapped_pos, player_index)
+			var require_road := turn_manager.current_phase != GamePhase.Phase.SETUP
+			return board_state.can_place_settlement(snapped_pos, player_index, require_road)
 		ActionTypes.Type.BUILD_ROAD:
 			if turn_manager.current_phase == GamePhase.Phase.SETUP:
 				return setup_manager.is_setup_road_valid(snapped_pos)

@@ -6,3 +6,7 @@ static func sum_array(numbers_array: Array) -> Variant:
 	for number in numbers_array:
 		total_sum += number
 	return total_sum
+
+
+static func get_random_item(array: Array) -> Variant:
+	return array[randi() % array.size()]

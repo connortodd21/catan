@@ -183,14 +183,24 @@ func has_valid_city_placement(player_index: int) -> bool:
 	return false
 
 
-func can_place_settlement(world_pos: Vector2, player_index: int) -> bool:
+func can_place_settlement(world_pos: Vector2, player_index: int, require_road_connection: bool = false) -> bool:
 	var key := _to_key(world_pos)
 	if key in vertex_ownership:
 		return false
 	for adj in _vertex_adjacency.get(key, []):
 		if adj in vertex_ownership:
 			return false
+	if require_road_connection and not _has_adjacent_road(key, player_index):
+		return false
 	return true
+
+
+func _has_adjacent_road(vertex_key: Vector2i, player_index: int) -> bool:
+	for edge in _vertex_to_edges.get(vertex_key, []):
+		var owner: Dictionary = edge_ownership.get(edge, {})
+		if not owner.is_empty() and owner.player_index == player_index:
+			return true
+	return false
 
 
 func can_place_road(world_pos: Vector2, player_index: int) -> bool:

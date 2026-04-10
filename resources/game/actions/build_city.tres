@@ -6,9 +6,9 @@
 script = ExtResource("1_anhnk")
 id = 2
 base_cost = Dictionary[int, int]({
-3: 2,
-4: 3
+4: 2,
+5: 3
 })
 placement = 1
-phases = Array[int]([2])
+phases = Array[int]([3])
 metadata/_custom_type_script = "uid://d7ikctt0onm7"

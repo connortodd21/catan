@@ -97,6 +97,10 @@ static func get_progress_science_deck() -> Array[Type]:
 	return progress_science_deck
 
 
+static func type_to_str(type: Type) -> String:
+	return Type.keys()[type].capitalize().replace("_", " ")
+
+
 static func max_in_hand(type: Type) -> int:
 	if type in progress_trade_deck or type in progress_politics_deck or type in progress_science_deck:
 		return 5

@@ -5,4 +5,5 @@
 
 [resource]
 script = ExtResource("1_07upv")
+resource_type = 1
 texture = ExtResource("2_qq5q5")

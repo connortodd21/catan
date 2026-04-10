@@ -7,6 +7,7 @@ var board_state: BoardState
 
 var _setup_order: Array[int] = []
 var _setup_index: int = 0
+var _rounds: int = 0
 var _awaiting_road: bool = false
 var _last_settlement_pos: Vector2 = Vector2.ZERO
 
@@ -18,7 +19,8 @@ func init() -> void:
 #############################################
 ### SETUP
 #############################################
-func begin(player_count: int) -> void:
+func begin(player_count: int, rounds: int = 2) -> void:
+	_rounds = rounds
 	_setup_order = _build_setup_order(player_count)
 	_setup_index = 0
 	_awaiting_road = false
@@ -29,6 +31,12 @@ func begin(player_count: int) -> void:
 
 func record_last_settlement(pos: Vector2) -> void:
 	_last_settlement_pos = pos
+
+
+func is_last_round() -> bool:
+	@warning_ignore("integer_division")
+	var player_count : int = _setup_order.size() / _rounds
+	return _setup_index >= (_rounds - 1) * player_count
 
 
 func is_setup_road_valid(snapped_pos: Vector2) -> bool:
@@ -61,7 +69,10 @@ func _on_piece_placed(piece_type: PieceTypes.Type, _world_pos: Vector2) -> void:
 		_awaiting_road = true
 	elif piece_type == PieceTypes.Type.ROAD:
 		_awaiting_road = false
+		var was_last_round := is_last_round()
 		_setup_index += 1
+		if was_last_round:
+			GameSignals.emit_setup_phase_ended_for_player(turn_manager.current_player_index, _last_settlement_pos)
 
 	if _awaiting_road:
 		action_manager.force_action(ActionTypes.Type.BUILD_ROAD)
@@ -69,4 +80,5 @@ func _on_piece_placed(piece_type: PieceTypes.Type, _world_pos: Vector2) -> void:
 		_set_player(_setup_order[_setup_index])
 		action_manager.force_action(ActionTypes.Type.BUILD_SETTLEMENT)
 	else:
-		turn_manager.start_game.call_deferred(_setup_order.size() / 2)
+		@warning_ignore("integer_division")
+		turn_manager.start_game.call_deferred(_setup_order.size() / _rounds)

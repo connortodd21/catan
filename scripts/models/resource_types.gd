@@ -1,6 +1,7 @@
 class_name ResourceTypes
 
 enum Type {
+	UNKNOWN,
 	WOOD,
 	BRICK,
 	SHEEP,
@@ -11,6 +12,23 @@ enum Type {
 	PAPER,
 	FISH,
 }
+
+
+static var tile_type_to_str = { 
+	Type.WOOD: "Wood",
+	Type.BRICK: "Brick",
+	Type.SHEEP: "Sheep",
+	Type.WHEAT: "Wheat",
+	Type.ROCK: "Rock",
+	Type.CLOTH: "Cloth",
+	Type.COIN: "Coin",
+	Type.PAPER: "Paper",
+	Type.FISH: "Fish",
+}
+
+
+static func type_to_str(resource_type: Type) -> String:
+	return tile_type_to_str.get(resource_type, Type.UNKNOWN)
 
 
 static func counts_toward_robber(type: Type) -> bool:

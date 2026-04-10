@@ -70,6 +70,12 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 6
 
+[node name="ColorPickerPopup" type="PopupPanel" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=519741552]
+
+[node name="AddPlayerButton" type="Button" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=464561624]
+layout_mode = 2
+text = "Add Player"
+
 [node name="StartGameButton" type="Button" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=1827364059]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
@@ -153,4 +159,5 @@ horizontal_alignment = 1
 layout_mode = 2
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Header/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Body/PlayerPanel/AddPlayerButton" to="." method="_on_add_player_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Body/PlayerPanel/StartGameButton" to="." method="_on_start_game_button_pressed"]

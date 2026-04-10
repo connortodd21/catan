@@ -13,6 +13,11 @@ func emit_phase_changed(phase: GamePhase.Phase) -> void:
 	phase_changed.emit(phase)
 
 
+signal setup_phase_ended_for_player(player_index: int, settlement_pos: Vector2)
+func emit_setup_phase_ended_for_player(player_index: int, settlement_pos: Vector2) -> void:
+	setup_phase_ended_for_player.emit(player_index, settlement_pos)
+
+
 #############################################
 ### SCORE SIGNALS
 #############################################

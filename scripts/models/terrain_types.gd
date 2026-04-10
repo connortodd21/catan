@@ -13,8 +13,8 @@ enum Type {
 	FISH_4_10,
 	GOLD,
 	FOG,
-	UNKNOWN,
-	BORDER
+	BORDER,
+	UNKNOWN
 }
 
 
@@ -58,5 +58,5 @@ static var _terrain_to_resource: Dictionary = {
 	Type.ROCK: ResourceTypes.Type.ROCK,
 }
 
-static func to_resource(terrain: Type) -> Variant:
-	return _terrain_to_resource.get(terrain, null)
+static func to_resource(terrain: Type) -> ResourceTypes.Type:
+	return _terrain_to_resource.get(terrain, ResourceTypes.Type.UNKNOWN)

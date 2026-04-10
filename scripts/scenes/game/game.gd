@@ -79,7 +79,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _init_players() -> void:
 	for player in game_config.players:
 		player_states.append(PlayerState.new(player))
-		player_hud.init(player_states)
+	player_hud.init(player_states)
 	
 	local_player = player_states[0]
 	hand_manager.set_hand(local_player.hand)
@@ -91,6 +91,10 @@ func _init_players() -> void:
 	local_player.hand.add_resource(ResourceTypes.Type.WHEAT)
 	local_player.hand.add_resource(ResourceTypes.Type.WHEAT)
 	local_player.hand.add_resource(ResourceTypes.Type.ROCK)
+
+	for i in range(1, player_states.size()):
+		player_states[i].hand.add_resource(ResourceTypes.Type.WOOD, 2)
+		player_states[i].hand.add_resource(ResourceTypes.Type.BRICK, 2)
 
 	_load_dev_decks()
 
@@ -167,6 +171,15 @@ func _distribute_resources(dice_total: int) -> void:
 				continue
 			var resource_amount : int = 2 if vertex_owner.piece_type == PieceTypes.Type.CITY else 1
 			player_states[vertex_owner.player_index].hand.add_resource(resource, resource_amount)
+	GameSignals.emit_hand_changed()
+
+
+func _collect_resources_at_vertex(player_index: int, world_pos: Vector2) -> void:
+	var terrain_types := board_state.get_terrain_at_vertex(world_pos)
+	for terrain in terrain_types:
+		var resource: ResourceTypes.Type = TerrainTypes.to_resource(terrain)
+		if resource != ResourceTypes.Type.UNKNOWN:
+			player_states[player_index].hand.add_resource(resource)
 	GameSignals.emit_hand_changed()
 
 
@@ -497,7 +510,12 @@ func _register_signals() -> void:
 	GameSignals.action_executed.connect(_on_action_executed)
 	GameSignals.hand_changed.connect(_on_hand_changed)
 	GameSignals.card_clicked.connect(_on_card_clicked)
+	GameSignals.setup_phase_ended_for_player.connect(_on_setup_phase_ended_for_player)
 	end_turn_button.pressed.connect(turn_manager.end_turn)
+
+
+func _on_setup_phase_ended_for_player(player_index: int, settlement_pos: Vector2) -> void:
+	_collect_resources_at_vertex(player_index, settlement_pos)
 
 
 func _on_card_clicked(card: CardDefinition) -> void:

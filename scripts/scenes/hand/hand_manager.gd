@@ -102,9 +102,11 @@ func _rebuild_fan() -> void:
 
 func _get_all_card_entries() -> Array:
 	var entries: Array = []
-	for def in get_sorted_resource_definitions():
-		for _j in hand.resource_count(def.resource_type):
-			entries.append({HandUtils.TEXTURE_KEY: def.texture})
+	var sorted_resource_definitions : Array[ResourceDefinition] = get_sorted_resource_definitions()
+	for resource_definition in sorted_resource_definitions:
+		var hand_resource_count : int = hand.resource_count(resource_definition.resource_type)
+		for _j in hand_resource_count:
+			entries.append({HandUtils.TEXTURE_KEY: resource_definition.texture})
 	for card_def in hand.get_cards():
 		entries.append({HandUtils.TEXTURE_KEY: card_def.texture, HandUtils.CARD_DEF_META: card_def})
 	return entries

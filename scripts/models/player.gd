@@ -36,4 +36,4 @@ func get_color() -> Color:
 
 
 func get_player_name() -> String:
-	return PALETTE[player_color].get_name()
+	return player_name

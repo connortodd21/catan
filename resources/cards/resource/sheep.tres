@@ -5,5 +5,5 @@
 
 [resource]
 script = ExtResource("1_oqif2")
-resource_type = 2
+resource_type = 3
 texture = ExtResource("2_bxx1y")

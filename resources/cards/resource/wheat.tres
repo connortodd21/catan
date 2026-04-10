@@ -5,5 +5,5 @@
 
 [resource]
 script = ExtResource("1_h8osp")
-resource_type = 3
+resource_type = 4
 texture = ExtResource("2_bitsg")

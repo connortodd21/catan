@@ -18,6 +18,10 @@ var _vertex_to_edges: Dictionary[Vector2i, Array] = {}
 ## Used to check what vertices a road connects.
 var _edge_to_vertices: Dictionary[Vector2i, Array] = {}
 
+## Maps each vertex key to the axial coords of tiles that share it.
+## Used to look up terrain types when collecting initial resources.
+var _vertex_to_coords: Dictionary[Vector2i, Array] = {}
+
 
 func build(board: SerializedBoard, board_tile_map: TileMapLayer) -> void:
 	for tile: TileEntry in board.tiles:
@@ -46,6 +50,11 @@ func _build_graph(board: SerializedBoard, board_tile_map: TileMapLayer) -> void:
 		var vertex_keys: Array[Vector2i] = []
 		for offset in HexUtils.VERTEX_OFFSETS:
 			vertex_keys.append(_to_key(hex_center + offset))
+
+		for vertex_key in vertex_keys:
+			if vertex_key not in _vertex_to_coords:
+				_vertex_to_coords[vertex_key] = []
+			_vertex_to_coords[vertex_key].append(coord)
 
 		var edge_keys: Array[Vector2i] = []
 		for midpoint in HexUtils.EDGE_MIDPOINTS:
@@ -98,6 +107,13 @@ func get_coords_for_number(number: int) -> Array[Vector2i]:
 
 func get_terrain(coord: Vector2i) -> TerrainTypes.Type:
 	return coord_to_terrain.get(coord, TerrainTypes.Type.UNKNOWN)
+
+
+func get_terrain_at_vertex(world_pos: Vector2) -> Array[TerrainTypes.Type]:
+	var result: Array[TerrainTypes.Type] = []
+	for coord: Vector2i in _vertex_to_coords.get(_to_key(world_pos), []):
+		result.append(coord_to_terrain.get(coord, TerrainTypes.Type.UNKNOWN))
+	return result
 
 
 func is_edge_adjacent_to_vertex(edge_pos: Vector2, vertex_pos: Vector2) -> bool:

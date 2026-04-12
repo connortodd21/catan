@@ -13,6 +13,7 @@
 [ext_resource type="Resource" uid="uid://b75vl6j3vsoux" path="res://resources/cards/decks/development_cards.tres" id="7_trtic"]
 [ext_resource type="PackedScene" path="res://scenes/action_panel.tscn" id="9_ap"]
 [ext_resource type="Script" uid="uid://dawgwpjqtumrm" path="res://scripts/scenes/game/selection_popup.gd" id="13_kvuet"]
+[ext_resource type="Script" uid="uid://ccjem18okc8cy" path="res://scripts/scenes/game/discard_popup.gd" id="14_trtic"]
 
 [node name="Game" type="Node2D" unique_id=67801416]
 script = ExtResource("1_80nbo")
@@ -86,3 +87,38 @@ grow_vertical = 0
 [node name="SelectionPopup" type="PopupPanel" parent="UI" unique_id=339881957]
 script = ExtResource("13_kvuet")
 icon_max_width = 100
+
+[node name="DiscardPopup" type="PopupPanel" parent="UI" unique_id=535493211]
+oversampling_override = 1.0
+size = Vector2i(200, 131)
+script = ExtResource("14_trtic")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/DiscardPopup" unique_id=89049638]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 196.0
+offset_bottom = 127.0
+
+[node name="TitleLabel" type="Label" parent="UI/DiscardPopup/VBoxContainer" unique_id=1580086372]
+layout_mode = 2
+text = "Discard"
+
+[node name="HandLabel" type="Label" parent="UI/DiscardPopup/VBoxContainer" unique_id=1962260200]
+layout_mode = 2
+text = "Hand"
+
+[node name="HandContainer" type="HBoxContainer" parent="UI/DiscardPopup/VBoxContainer" unique_id=49827448]
+layout_mode = 2
+
+[node name="DiscardLabel" type="Label" parent="UI/DiscardPopup/VBoxContainer" unique_id=10169855]
+layout_mode = 2
+
+[node name="DiscardContainer" type="HBoxContainer" parent="UI/DiscardPopup/VBoxContainer" unique_id=1431963112]
+layout_mode = 2
+
+[node name="DiscardButton" type="Button" parent="UI/DiscardPopup/VBoxContainer" unique_id=1531884675]
+layout_mode = 2
+disabled = true
+text = "Discard"
+
+[connection signal="pressed" from="UI/DiscardPopup/VBoxContainer/DiscardButton" to="UI/DiscardPopup" method="_on_discard_button_pressed"]

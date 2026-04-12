@@ -1,8 +1,6 @@
 class_name Hand
 extends Resource
 
-signal hand_add_remove
-
 var resource_counts: Dictionary = {}
 var cards: Array[CardDefinition] = []
 
@@ -12,14 +10,14 @@ var cards: Array[CardDefinition] = []
 #############################################
 func add_resource(type: ResourceTypes.Type, amount: int = 1) -> void:
 	resource_counts[type] = resource_counts.get(type, 0) + amount
-	hand_add_remove.emit()
+	GameSignals.emit_hand_add_remove()
 
 
 func remove_resource(type: ResourceTypes.Type, amount: int = 1) -> bool:
 	if resource_counts.get(type, 0) == 0:
 		return false
 	resource_counts[type] -= amount
-	hand_add_remove.emit()
+	GameSignals.emit_hand_add_remove()
 	return true
 
 
@@ -27,11 +25,10 @@ func resource_count(type: ResourceTypes.Type) -> int:
 	return resource_counts.get(type, 0)
 
 
-func robber_count() -> int:
+func total_resource_count() -> int:
 	var total := 0
 	for type: ResourceTypes.Type in resource_counts:
-		if ResourceTypes.counts_toward_robber(type):
-			total += resource_counts[type]
+		total += resource_counts[type]
 	return total
 
 
@@ -47,7 +44,7 @@ func is_over_resource_limit(type: ResourceTypes.Type) -> bool:
 #############################################
 func add_card(definition: CardDefinition) -> void:
 	cards.append(definition)
-	hand_add_remove.emit()
+	GameSignals.emit_hand_add_remove()
 
 
 func remove_card(definition: CardDefinition) -> bool:
@@ -55,7 +52,7 @@ func remove_card(definition: CardDefinition) -> bool:
 	if idx == -1:
 		return false
 	cards.remove_at(idx)
-	hand_add_remove.emit()
+	GameSignals.emit_hand_add_remove()
 	return true
 
 

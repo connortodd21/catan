@@ -40,6 +40,10 @@ const DISPLAY_ORDER: Array[Type] = [
 ]
 
 
+static func compare_display_order(a: Type, b: Type) -> bool:
+	return DISPLAY_ORDER.find(a) < DISPLAY_ORDER.find(b)
+
+
 static func counts_toward_robber(type: Type) -> bool:
 	return type in [
 		Type.WOOD, Type.BRICK, Type.SHEEP,

@@ -24,7 +24,6 @@ func init(_player_states: Array[PlayerState]) -> void:
 	for i in player_states.size():
 		var row := _add_row(player_states[i])
 		_rows.append(row)
-		player_states[i].hand.hand_add_remove.connect(func() -> void: _update_row(i))
 	_register_signals()
 	_refresh_highlights()
 
@@ -84,7 +83,7 @@ func _update_row(index: int) -> void:
 	var state := player_states[index]
 	var row := _rows[index]
 	row.score_label.text = "VP: %d" % state.score
-	row.resource_label.text = "Resources: %d" % state.hand.robber_count()
+	row.resource_label.text = "Resources: %d" % state.hand.total_resource_count()
 	row.road_label.text = "Road: %d" % state.longest_road_length
 	row.army_label.text = "Army: %d" % state.army_size
 	row.harbor_label.text = "Harbor: %d" % state.harbormaster_count
@@ -114,10 +113,16 @@ func _refresh_title_highlights(index: int) -> void:
 #############################################
 func _register_signals() -> void:
 	GameSignals.score_changed.connect(_on_score_changed)
+	GameSignals.hand_add_remove.connect(_on_hand_add_remove)
 	GameSignals.player_stats_changed.connect(_on_player_stats_changed)
 	GameSignals.longest_road_holder_changed.connect(_on_longest_road_holder_changed)
 	GameSignals.largest_army_holder_changed.connect(_on_largest_army_holder_changed)
 	GameSignals.harbormaster_holder_changed.connect(_on_harbormaster_holder_changed)
+
+
+func _on_hand_add_remove() -> void:
+	for i in _rows.size():
+		_update_row(i)
 
 
 func _on_score_changed(player_index: int, score: int) -> void:

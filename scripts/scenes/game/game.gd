@@ -26,6 +26,7 @@ extends Node2D
 @onready var end_turn_button: Button = $UI/EndTurnButton
 @onready var action_panel: ActionPanel = $UI/ActionPanel
 @onready var selection_popup: SelectionPopup = $UI/SelectionPopup
+@onready var discard_panel: DiscardPanel = $UI/DiscardPopup
 
 var tile_coords: Array[Vector2i] = []
 var player_states: Array[PlayerState] = []
@@ -184,6 +185,15 @@ func _collect_resources_at_vertex(player_index: int, world_pos: Vector2) -> void
 		var resource: ResourceTypes.Type = TerrainTypes.to_resource(terrain)
 		if resource != ResourceTypes.Type.UNKNOWN:
 			player_states[player_index].hand.add_resource(resource)
+	GameSignals.emit_hand_changed()
+
+
+func _on_discard_confirmed(resources_after_discard: Array[ResourceTypes.Type]) -> void:
+	var new_counts: Dictionary = {}
+	for resource in resources_after_discard:
+		new_counts[resource] = new_counts.get(resource, 0) + 1
+	local_player.hand.resource_counts = new_counts
+	GameSignals.emit_hand_add_remove()
 	GameSignals.emit_hand_changed()
 
 
@@ -590,7 +600,9 @@ func _on_hand_changed() -> void:
 func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, dice_total: int) -> void:
 	turn_manager.advance_from_roll()
 	if game_config.has_robber() and dice_total == 7:
-		# TODO: handle discard for players over robber_discard_hand_threshold
+		var hand_size := local_player.hand.total_resource_count()
+		if hand_size > robber_discard_hand_threshold:
+			discard_panel.init(local_player.hand, hand_manager.get_sorted_resource_definitions(), floor(hand_size / 2.0), _on_discard_confirmed)
 		turn_manager.enter_robber_phase()
 		return
 	_distribute_resources(dice_total)

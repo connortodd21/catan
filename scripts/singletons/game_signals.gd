@@ -57,6 +57,11 @@ func emit_hand_changed() -> void:
 	hand_changed.emit()
 
 
+signal hand_add_remove()
+func emit_hand_add_remove() -> void:
+	hand_add_remove.emit()
+
+
 signal piece_placed(piece_type: PieceTypes.Type, world_pos: Vector2)
 func emit_piece_placed(piece_type: PieceTypes.Type, world_pos: Vector2) -> void:
 	piece_placed.emit(piece_type, world_pos)

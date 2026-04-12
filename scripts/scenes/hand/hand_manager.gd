@@ -15,7 +15,7 @@ var _hovered_card: TextureRect = null
 
 
 func _ready() -> void:
-	pass
+	GameSignals.hand_add_remove.connect(_on_hand_add_remove)
 
 
 func _input(event: InputEvent) -> void:
@@ -58,10 +58,7 @@ func _unhover(card: TextureRect) -> void:
 
 
 func set_hand(new_hand: Hand) -> void:
-	if hand:
-		hand.hand_add_remove.disconnect(_on_hand_add_remove)
 	hand = new_hand
-	hand.hand_add_remove.connect(_on_hand_add_remove)
 	_rebuild_fan()
 
 

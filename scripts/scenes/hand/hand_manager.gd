@@ -10,6 +10,7 @@ extends Control
 @onready var fan_container: Control = $FanContainer
 
 var hand: Hand
+var _hover_enabled: bool = true
 var _cards: Array[TextureRect] = []
 var _hovered_card: TextureRect = null
 
@@ -26,7 +27,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
-	if _cards.is_empty():
+	if _cards.is_empty() or not _hover_enabled:
 		return
 	var card_under_mouse := get_card_at_position(fan_container.get_local_mouse_position())
 	if card_under_mouse == _hovered_card:
@@ -36,6 +37,17 @@ func _process(_delta: float) -> void:
 	_hovered_card = card_under_mouse
 	if _hovered_card:
 		_hover(_hovered_card)
+
+
+func enable_hover() -> void:
+	_hover_enabled = true
+
+
+func disable_hover() -> void:
+	if _hovered_card != null:
+		_unhover(_hovered_card)
+		_hovered_card = null
+	_hover_enabled = false
 
 
 func get_card_at_position(pos: Vector2) -> TextureRect:

@@ -34,7 +34,6 @@ func _on_roll_button_pressed() -> void:
 	var total : int = val1 + val2 if val1 != -1 and val2 != -1 else -1
 
 	roll_button.disabled = false
-	total = 7
 	GameSignals.roll_dice(face1.dice_face, face2.dice_face, total)
 
 

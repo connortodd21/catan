@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" path="res://scenes/action_panel.tscn" id="9_ap"]
 [ext_resource type="Script" uid="uid://dawgwpjqtumrm" path="res://scripts/scenes/game/selection_popup.gd" id="13_kvuet"]
 [ext_resource type="Script" uid="uid://ccjem18okc8cy" path="res://scripts/scenes/game/discard_popup.gd" id="14_trtic"]
+[ext_resource type="Script" uid="uid://d1aum84kl2jf5" path="res://scripts/scenes/game/bank_trade_popup.gd" id="15_ir15t"]
 
 [node name="Game" type="Node2D" unique_id=67801416]
 script = ExtResource("1_80nbo")
@@ -66,23 +67,43 @@ offset_bottom = 46.0
 grow_horizontal = 0
 text = "End Turn"
 
-[node name="ActionPanel" parent="UI" unique_id=355308023 instance=ExtResource("9_ap")]
+[node name="GameMenu" type="VBoxContainer" parent="UI" unique_id=210807487]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -160.0
-offset_top = 60.0
-offset_right = -16.0
+offset_left = -212.0
+offset_top = 104.0
+offset_right = -12.0
+offset_bottom = 1000.0
 grow_horizontal = 0
 
-[node name="DiceRoller" parent="UI" unique_id=298739416 instance=ExtResource("5_dice")]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 0
-grow_vertical = 0
+[node name="ActionPanel" parent="UI/GameMenu" unique_id=355308023 instance=ExtResource("9_ap")]
+layout_mode = 2
+
+[node name="Spacer1" type="Control" parent="UI/GameMenu" unique_id=1520000156]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TradePanel" type="VBoxContainer" parent="UI/GameMenu" unique_id=886297053]
+layout_mode = 2
+
+[node name="BankTradeButton" type="Button" parent="UI/GameMenu/TradePanel" unique_id=1746990644]
+layout_mode = 2
+disabled = true
+text = "Trade with Bank"
+
+[node name="PlayerTradeButton" type="Button" parent="UI/GameMenu/TradePanel" unique_id=566723472]
+layout_mode = 2
+disabled = true
+text = "Propose Trade"
+
+[node name="Spacer2" type="Control" parent="UI/GameMenu" unique_id=1025482393]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DiceRoller" parent="UI/GameMenu" unique_id=298739416 instance=ExtResource("5_dice")]
+layout_mode = 2
 
 [node name="SelectionPopup" type="PopupPanel" parent="UI" unique_id=339881957]
 script = ExtResource("13_kvuet")
@@ -121,4 +142,61 @@ layout_mode = 2
 disabled = true
 text = "Discard"
 
+[node name="BankTradePopup" type="PopupPanel" parent="UI" unique_id=1035010889]
+script = ExtResource("15_ir15t")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/BankTradePopup" unique_id=1961268269]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TitleLabel" type="Label" parent="UI/BankTradePopup/VBoxContainer" unique_id=794806452]
+layout_mode = 2
+text = "Exchange with bank"
+
+[node name="HandLabel" type="Label" parent="UI/BankTradePopup/VBoxContainer" unique_id=1945332083]
+layout_mode = 2
+text = "Hand"
+
+[node name="HandContainer" type="HBoxContainer" parent="UI/BankTradePopup/VBoxContainer" unique_id=159623095]
+layout_mode = 2
+
+[node name="TradeLabel" type="Label" parent="UI/BankTradePopup/VBoxContainer" unique_id=115312445]
+layout_mode = 2
+text = "Trade"
+
+[node name="TradeContainer" type="HBoxContainer" parent="UI/BankTradePopup/VBoxContainer" unique_id=282430557]
+layout_mode = 2
+
+[node name="ReceiveLabel" type="Label" parent="UI/BankTradePopup/VBoxContainer" unique_id=210783956]
+layout_mode = 2
+text = "Receive"
+
+[node name="ReceiveContainer" type="HBoxContainer" parent="UI/BankTradePopup/VBoxContainer" unique_id=177067293]
+layout_mode = 2
+
+[node name="BankLabel" type="Label" parent="UI/BankTradePopup/VBoxContainer" unique_id=183114267]
+layout_mode = 2
+text = "Bank"
+
+[node name="BankContainer" type="HBoxContainer" parent="UI/BankTradePopup/VBoxContainer" unique_id=65403540]
+layout_mode = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="UI/BankTradePopup/VBoxContainer" unique_id=805894778]
+layout_mode = 2
+
+[node name="TradeButton" type="Button" parent="UI/BankTradePopup/VBoxContainer/ButtonContainer" unique_id=1249310814]
+layout_mode = 2
+text = "Trade"
+
+[node name="ClearButton" type="Button" parent="UI/BankTradePopup/VBoxContainer/ButtonContainer" unique_id=1305541702]
+layout_mode = 2
+text = "Clear"
+
+[node name="CancelButton" type="Button" parent="UI/BankTradePopup/VBoxContainer/ButtonContainer" unique_id=315904072]
+layout_mode = 2
+text = "Cancel"
+
 [connection signal="pressed" from="UI/DiscardPopup/VBoxContainer/DiscardButton" to="UI/DiscardPopup" method="_on_discard_button_pressed"]
+[connection signal="pressed" from="UI/BankTradePopup/VBoxContainer/ButtonContainer/TradeButton" to="UI/BankTradePopup" method="_on_trade_button_pressed"]
+[connection signal="pressed" from="UI/BankTradePopup/VBoxContainer/ButtonContainer/ClearButton" to="UI/BankTradePopup" method="_on_clear_button_pressed"]
+[connection signal="pressed" from="UI/BankTradePopup/VBoxContainer/ButtonContainer/CancelButton" to="UI/BankTradePopup" method="_on_cancel_button_pressed"]

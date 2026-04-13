@@ -21,12 +21,16 @@ extends Node2D
 @onready var board_view: Node2D = $BoardView
 @onready var hand_manager: HandManager = $UI/HandManager
 @onready var player_hud: PlayerHUD = $UI/PlayerHUD
-@onready var dice_roller: DiceRoller = $UI/DiceRoller
 @onready var debug_label: Label = $UI/DebugLabel
 @onready var end_turn_button: Button = $UI/EndTurnButton
-@onready var action_panel: ActionPanel = $UI/ActionPanel
 @onready var selection_popup: SelectionPopup = $UI/SelectionPopup
 @onready var discard_panel: DiscardPanel = $UI/DiscardPopup
+@onready var bank_trade_popup: BankTradePopup = $UI/BankTradePopup
+@onready var action_panel: ActionPanel = $UI/GameMenu/ActionPanel
+@onready var dice_roller: DiceRoller = $UI/GameMenu/DiceRoller
+@onready var trade_panel: VBoxContainer = $UI/GameMenu/TradePanel
+@onready var bank_trade_button: Button = $UI/GameMenu/TradePanel/BankTradeButton
+@onready var player_trade_button: Button = $UI/GameMenu/TradePanel/PlayerTradeButton
 
 var tile_coords: Array[Vector2i] = []
 var player_states: Array[PlayerState] = []
@@ -67,9 +71,6 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
-		if event.button_index == MOUSE_BUTTON_RIGHT:
-			if turn_manager.current_phase != GamePhase.Phase.PLAYING_CARD:
-				action_manager.cancel()
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			var mouse_pos := board_view.get_local_mouse_position()
 			match turn_manager.current_phase:
@@ -88,12 +89,9 @@ func _init_players() -> void:
 	hand_manager.set_hand(local_player.hand)
 
 	local_player.hand.add_resource(ResourceTypes.Type.WOOD)
-	local_player.hand.add_resource(ResourceTypes.Type.BRICK)
-	local_player.hand.add_resource(ResourceTypes.Type.SHEEP)
-	local_player.hand.add_resource(ResourceTypes.Type.SHEEP)
-	local_player.hand.add_resource(ResourceTypes.Type.WHEAT)
-	local_player.hand.add_resource(ResourceTypes.Type.WHEAT)
-	local_player.hand.add_resource(ResourceTypes.Type.ROCK)
+	local_player.hand.add_resource(ResourceTypes.Type.WOOD)
+	local_player.hand.add_resource(ResourceTypes.Type.WOOD)
+	local_player.hand.add_resource(ResourceTypes.Type.WOOD)
 
 	for i in range(1, player_states.size()):
 		player_states[i].hand.add_resource(ResourceTypes.Type.WOOD, 2)
@@ -113,15 +111,10 @@ func _init_players() -> void:
 	action_panel.build_buttons()
 
 	card_manager = CardManager.new()
-	card_manager.action_manager = action_manager
-	card_manager.turn_manager = turn_manager
-	card_manager.init()
+	card_manager.init(action_manager, turn_manager)
 
 	setup_manager = SetupManager.new()
-	setup_manager.action_manager = action_manager
-	setup_manager.turn_manager = turn_manager
-	setup_manager.board_state = board_state
-	setup_manager.init()
+	setup_manager.init(action_manager, turn_manager, board_state)
 
 	popup_manager = PopupManager.new()
 	popup_manager.init(selection_popup, hand_manager.get_sorted_resource_definitions())
@@ -254,6 +247,7 @@ func _handle_robber_placement(mouse_pos: Vector2) -> void:
 
 	var stealable_players: Array[int] = board_state.get_stealable_players(coord, turn_manager.current_player_index, board_tile_map)
 	if not stealable_players.is_empty():
+		hand_manager.disable_hover()
 		popup_manager.show_player_select(stealable_players, player_states, _on_robber_target_selected)
 	else:
 		_finish_robber_phase()
@@ -310,6 +304,7 @@ func _on_play_road_building() -> void:
 
 
 func _on_play_year_of_plenty() -> void:
+	hand_manager.disable_hover()
 	popup_manager.show_resource_select(_on_year_of_plenty_resource_selected, 2)
 
 
@@ -319,6 +314,7 @@ func _on_year_of_plenty_resource_selected(resource: ResourceTypes.Type) -> void:
 
 
 func _on_play_monopoly() -> void:
+	hand_manager.disable_hover()
 	popup_manager.show_resource_select(_on_monopoly_resource_selected)
 
 
@@ -548,6 +544,21 @@ func add_border(coord_to_tile: Dictionary) -> void:
 
 
 #############################################
+### HUD RENDERING
+#############################################
+func _refresh_hud() -> void:
+	var phase := turn_manager.current_phase
+	dice_roller.set_roll_enabled(phase == GamePhase.Phase.ROLL)
+	end_turn_button.disabled = (phase != GamePhase.Phase.ACTION)
+	action_panel.visible = (phase != GamePhase.Phase.SETUP)
+	trade_panel.visible = (phase != GamePhase.Phase.SETUP)
+	bank_trade_button.disabled = (phase != GamePhase.Phase.ACTION)
+	player_trade_button.disabled = (phase != GamePhase.Phase.ACTION)
+	action_panel.refresh(local_player.hand)
+	_update_debug_label()
+
+
+#############################################
 ### SIGNALS
 #############################################
 func _register_signals() -> void:
@@ -560,6 +571,11 @@ func _register_signals() -> void:
 	GameSignals.card_clicked.connect(_on_card_clicked)
 	GameSignals.setup_phase_ended_for_player.connect(_on_setup_phase_ended_for_player)
 	end_turn_button.pressed.connect(turn_manager.end_turn)
+	bank_trade_button.pressed.connect(_on_bank_trade_button_pressed)
+	player_trade_button.pressed.connect(_on_player_trade_button_pressed)
+	bank_trade_popup.popup_hide.connect(_on_popup_closed)
+	discard_panel.popup_hide.connect(_on_popup_closed)
+	selection_popup.popup_hide.connect(_on_popup_closed)
 
 
 func _on_setup_phase_ended_for_player(player_index: int, settlement_pos: Vector2) -> void:
@@ -578,12 +594,8 @@ func _on_player_changed(index: int) -> void:
 	_update_debug_label()
 
 
-func _on_phase_changed(phase: GamePhase.Phase) -> void:
-	dice_roller.set_roll_enabled(phase == GamePhase.Phase.ROLL)
-	end_turn_button.disabled = (phase != GamePhase.Phase.ACTION)
-	action_panel.visible = (phase != GamePhase.Phase.SETUP)
-	action_panel.refresh(local_player.hand)
-	_update_debug_label()
+func _on_phase_changed(_phase: GamePhase.Phase) -> void:
+	_refresh_hud()
 
 
 func _update_debug_label() -> void:
@@ -603,7 +615,29 @@ func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, dice_total: int) 
 	if game_config.has_robber() and dice_total == 7:
 		var hand_size := local_player.hand.total_resource_count()
 		if hand_size > robber_discard_hand_threshold:
+			hand_manager.disable_hover()
 			discard_panel.init(local_player.hand, hand_manager.get_sorted_resource_definitions(), floor(hand_size / 2.0), _on_discard_confirmed)
 		turn_manager.enter_robber_phase()
 		return
 	_distribute_resources(dice_total)
+
+
+func _on_bank_trade_button_pressed() -> void:
+	hand_manager.disable_hover()
+	bank_trade_popup.init(local_player.hand, hand_manager.get_sorted_resource_definitions(), _on_bank_trade_confirmed)
+
+
+func _on_popup_closed() -> void:
+	hand_manager.enable_hover()
+
+
+func _on_bank_trade_confirmed(traded: Array[ResourceTypes.Type], received: Array[ResourceTypes.Type]) -> void:
+	for resource in traded:
+		local_player.hand.remove_resource(resource)
+	for resource in received:
+		local_player.hand.add_resource(resource)
+	GameSignals.emit_hand_changed()
+
+
+func _on_player_trade_button_pressed() -> void:
+	pass

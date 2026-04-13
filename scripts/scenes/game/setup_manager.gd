@@ -12,7 +12,10 @@ var _awaiting_road: bool = false
 var _last_settlement_pos: Vector2 = Vector2.ZERO
 
 
-func init() -> void:
+func init(_action_manager: ActionManager, _turn_manager: TurnManager, _board_state: BoardState) -> void:
+	action_manager = _action_manager
+	turn_manager = _turn_manager
+	board_state = _board_state
 	GameSignals.piece_placed.connect(_on_piece_placed)
 
 

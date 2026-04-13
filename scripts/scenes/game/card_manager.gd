@@ -8,7 +8,9 @@ var _handlers: Dictionary[CardTypes.Type, Callable] = {}
 var _roads_remaining: int = 0
 
 
-func init() -> void:
+func init(_action_manager: ActionManager, _turn_manager: TurnManager) -> void:
+	action_manager = _action_manager
+	turn_manager = _turn_manager
 	GameSignals.piece_placed.connect(_on_piece_placed)
 
 

@@ -161,9 +161,9 @@ func record_placement(piece_type: PieceTypes.Type, world_pos: Vector2, player_in
 #############################################
 ### PLACEMENT AVAILABILITY
 #############################################
-func has_valid_settlement_placement(_player_index: int) -> bool:
+func player_has_valid_settlement_placement(_player_index: int, require_road_connection: bool = false) -> bool:
 	for vertex_key in _vertex_adjacency:
-		if can_place_settlement(Vector2(vertex_key), _player_index):
+		if can_place_settlement(Vector2(vertex_key), _player_index, require_road_connection):
 			return true
 	return false
 

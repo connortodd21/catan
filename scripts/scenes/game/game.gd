@@ -345,7 +345,8 @@ func _register_action_validators() -> void:
 
 
 func _can_perform_settlement() -> bool:
-	return board_state.has_valid_settlement_placement(turn_manager.current_player_index)
+	var require_road := turn_manager.current_phase != GamePhase.Phase.SETUP
+	return board_state.player_has_valid_settlement_placement(turn_manager.current_player_index, require_road)
 
 
 func _can_perform_road() -> bool:

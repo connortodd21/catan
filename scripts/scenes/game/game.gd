@@ -624,7 +624,8 @@ func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, dice_total: int) 
 
 func _on_bank_trade_button_pressed() -> void:
 	hand_manager.disable_hover()
-	bank_trade_popup.init(local_player.hand, hand_manager.get_sorted_resource_definitions(), _on_bank_trade_confirmed)
+	var trade_rates := board_state.get_bank_trade_rates_for_player(turn_manager.current_player_index)
+	bank_trade_popup.init(local_player.hand, hand_manager.get_sorted_resource_definitions(), trade_rates, _on_bank_trade_confirmed)
 
 
 func _on_popup_closed() -> void:

@@ -143,11 +143,15 @@ disabled = true
 text = "Discard"
 
 [node name="BankTradePopup" type="PopupPanel" parent="UI" unique_id=1035010889]
+oversampling_override = 1.0
+size = Vector2i(178, 198)
 script = ExtResource("15_ir15t")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/BankTradePopup" unique_id=1961268269]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 174.0
+offset_bottom = 194.0
 
 [node name="TitleLabel" type="Label" parent="UI/BankTradePopup/VBoxContainer" unique_id=794806452]
 layout_mode = 2
@@ -165,6 +169,9 @@ layout_mode = 2
 text = "Trade"
 
 [node name="TradeContainer" type="HBoxContainer" parent="UI/BankTradePopup/VBoxContainer" unique_id=282430557]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="UI/BankTradePopup/VBoxContainer" unique_id=656512389]
 layout_mode = 2
 
 [node name="ReceiveLabel" type="Label" parent="UI/BankTradePopup/VBoxContainer" unique_id=210783956]

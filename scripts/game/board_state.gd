@@ -280,6 +280,16 @@ func _get_all_road_player_indices() -> Array[int]:
 
 
 #############################################
+### HARBORS
+#############################################
+func get_bank_trade_rates_for_player(_player_index: int) -> Dictionary[ResourceTypes.Type, int]:
+	var rates: Dictionary[ResourceTypes.Type, int] = {}
+	for resource_type: ResourceTypes.Type in ResourceTypes.DISPLAY_ORDER:
+		rates[resource_type] = 4
+	return rates
+
+
+#############################################
 ### INTERNAL
 #############################################
 func _to_key(world_pos: Vector2) -> Vector2i:

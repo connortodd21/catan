@@ -1,8 +1,8 @@
-class_name DiscardPanel
+class_name DiscardPopup
 extends PopupPanel
 
+@onready var _header: DraggableHeader = $VBoxContainer/DraggableHeader
 @onready var _hand_container: HBoxContainer = $VBoxContainer/HandContainer
-@onready var _discard_label: Label = $VBoxContainer/DiscardLabel
 @onready var _discard_container: HBoxContainer = $VBoxContainer/DiscardContainer
 @onready var _discard_button: Button = $VBoxContainer/DiscardButton
 
@@ -25,7 +25,7 @@ func init(player_hand: Hand, resource_definitions: Array[ResourceDefinition], re
 	for resource_def in _resource_definitions:
 		for _i in player_hand.resource_count(resource_def.resource_type):
 			_hand_resources.append(resource_def.resource_type)
-	_refresh_discard_label()
+	_refresh_title()
 	_rebuild_hand()
 	_rebuild_discard()
 	reset_size()
@@ -35,8 +35,8 @@ func init(player_hand: Hand, resource_definitions: Array[ResourceDefinition], re
 #############################################
 ### DISPLAY
 #############################################
-func _refresh_discard_label() -> void:
-	_discard_label.text = "Discard (%d / %d)" % [_discarded.size(), _required_count]
+func _refresh_title() -> void:
+	_header.set_title("Discard (%d / %d)" % [_discarded.size(), _required_count])
 
 
 func _refresh_confirm() -> void:
@@ -99,7 +99,7 @@ func _on_card_pressed(resource_type: ResourceTypes.Type, from_hand: bool) -> voi
 		_hand_resources.append(resource_type)
 	_hand_resources.sort_custom(ResourceTypes.compare_display_order)
 	_discarded.sort_custom(ResourceTypes.compare_display_order)
-	_refresh_discard_label()
+	_refresh_title()
 	_refresh_confirm()
 	_rebuild_hand.call_deferred()
 	_rebuild_discard.call_deferred()

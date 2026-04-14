@@ -13,6 +13,7 @@
 [ext_resource type="Resource" uid="uid://b75vl6j3vsoux" path="res://resources/cards/decks/development_cards.tres" id="7_trtic"]
 [ext_resource type="PackedScene" path="res://scenes/action_panel.tscn" id="9_ap"]
 [ext_resource type="Script" uid="uid://dawgwpjqtumrm" path="res://scripts/scenes/game/selection_popup.gd" id="13_kvuet"]
+[ext_resource type="PackedScene" uid="uid://8gowp5njylda" path="res://scenes/draggable_header.tscn" id="14_ca42v"]
 [ext_resource type="Script" uid="uid://ccjem18okc8cy" path="res://scripts/scenes/game/discard_popup.gd" id="14_trtic"]
 [ext_resource type="Script" uid="uid://d1aum84kl2jf5" path="res://scripts/scenes/game/bank_trade_popup.gd" id="15_ir15t"]
 
@@ -106,8 +107,21 @@ size_flags_vertical = 3
 layout_mode = 2
 
 [node name="SelectionPopup" type="PopupPanel" parent="UI" unique_id=339881957]
+oversampling_override = 1.0
 script = ExtResource("13_kvuet")
 icon_max_width = 100
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/SelectionPopup" unique_id=54236947]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 96.0
+offset_bottom = 96.0
+
+[node name="DraggableHeader" parent="UI/SelectionPopup/VBoxContainer" unique_id=17310905 instance=ExtResource("14_ca42v")]
+layout_mode = 2
+
+[node name="OptionsContainer" type="HBoxContainer" parent="UI/SelectionPopup/VBoxContainer" unique_id=448849301]
+layout_mode = 2
 
 [node name="DiscardPopup" type="PopupPanel" parent="UI" unique_id=535493211]
 oversampling_override = 1.0
@@ -120,9 +134,8 @@ offset_top = 4.0
 offset_right = 196.0
 offset_bottom = 127.0
 
-[node name="TitleLabel" type="Label" parent="UI/DiscardPopup/VBoxContainer" unique_id=1580086372]
+[node name="DraggableHeader" parent="UI/DiscardPopup/VBoxContainer" unique_id=938552446 instance=ExtResource("14_ca42v")]
 layout_mode = 2
-text = "Discard"
 
 [node name="HandLabel" type="Label" parent="UI/DiscardPopup/VBoxContainer" unique_id=1962260200]
 layout_mode = 2
@@ -153,9 +166,8 @@ offset_top = 4.0
 offset_right = 174.0
 offset_bottom = 194.0
 
-[node name="TitleLabel" type="Label" parent="UI/BankTradePopup/VBoxContainer" unique_id=794806452]
+[node name="DraggableHeader" parent="UI/BankTradePopup/VBoxContainer" unique_id=1447230423 instance=ExtResource("14_ca42v")]
 layout_mode = 2
-text = "Exchange with bank"
 
 [node name="HandLabel" type="Label" parent="UI/BankTradePopup/VBoxContainer" unique_id=1945332083]
 layout_mode = 2
@@ -203,7 +215,12 @@ text = "Clear"
 layout_mode = 2
 text = "Cancel"
 
+[connection signal="pressed" from="UI/GameMenu/TradePanel/BankTradeButton" to="." method="_on_bank_trade_button_pressed"]
+[connection signal="pressed" from="UI/GameMenu/TradePanel/PlayerTradeButton" to="." method="_on_player_trade_button_pressed"]
+[connection signal="popup_hide" from="UI/SelectionPopup" to="." method="_on_popup_closed"]
+[connection signal="popup_hide" from="UI/DiscardPopup" to="." method="_on_popup_closed"]
 [connection signal="pressed" from="UI/DiscardPopup/VBoxContainer/DiscardButton" to="UI/DiscardPopup" method="_on_discard_button_pressed"]
+[connection signal="popup_hide" from="UI/BankTradePopup" to="." method="_on_popup_closed"]
 [connection signal="pressed" from="UI/BankTradePopup/VBoxContainer/ButtonContainer/TradeButton" to="UI/BankTradePopup" method="_on_trade_button_pressed"]
 [connection signal="pressed" from="UI/BankTradePopup/VBoxContainer/ButtonContainer/ClearButton" to="UI/BankTradePopup" method="_on_clear_button_pressed"]
 [connection signal="pressed" from="UI/BankTradePopup/VBoxContainer/ButtonContainer/CancelButton" to="UI/BankTradePopup" method="_on_cancel_button_pressed"]

@@ -15,26 +15,14 @@ class SelectionOption:
 		texture = p_texture
 
 
+@onready var _header: DraggableHeader = $VBoxContainer/DraggableHeader
+@onready var _options_container: HBoxContainer = $VBoxContainer/OptionsContainer
+
 @export var icon_max_width: int = 60
 
-var _title_label: Label
-var _options_container: HBoxContainer
 var _on_selected_callback: Callable
 var _remaining: int = 0
 var _base_title: String = ""
-
-
-func _ready() -> void:
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 8)
-	add_child(vbox)
-
-	_title_label = Label.new()
-	vbox.add_child(_title_label)
-
-	_options_container = HBoxContainer.new()
-	_options_container.add_theme_constant_override("separation", 4)
-	vbox.add_child(_options_container)
 
 
 #############################################
@@ -72,9 +60,9 @@ func _build_option_button(option: SelectionOption) -> Button:
 
 func _refresh_title() -> void:
 	if _remaining > 1:
-		_title_label.text = "%s (%d remaining)" % [_base_title, _remaining]
+		_header.set_title("%s (%d remaining)" % [_base_title, _remaining])
 	else:
-		_title_label.text = _base_title
+		_header.set_title(_base_title)
 
 
 #############################################

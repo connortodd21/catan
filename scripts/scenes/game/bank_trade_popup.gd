@@ -1,6 +1,7 @@
 class_name BankTradePopup
 extends PopupPanel
 
+@onready var _header: DraggableHeader = $VBoxContainer/DraggableHeader
 @onready var _hand_container: HBoxContainer = $VBoxContainer/HandContainer
 @onready var _trade_container: HBoxContainer = $VBoxContainer/TradeContainer
 @onready var _receive_container: HBoxContainer = $VBoxContainer/ReceiveContainer
@@ -29,6 +30,7 @@ func _ready() -> void:
 
 
 func init(hand: Hand, resource_definitions: Array[ResourceDefinition], trade_rates: Dictionary[ResourceTypes.Type, int], callback: Callable) -> void:
+	_header.set_title("Bank Trade")
 	_on_confirmed_callback = callback
 	_resource_definitions = resource_definitions
 	_trade_rates = trade_rates

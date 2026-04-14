@@ -24,7 +24,7 @@ extends Node2D
 @onready var debug_label: Label = $UI/DebugLabel
 @onready var end_turn_button: Button = $UI/EndTurnButton
 @onready var selection_popup: SelectionPopup = $UI/SelectionPopup
-@onready var discard_panel: DiscardPanel = $UI/DiscardPopup
+@onready var discard_popup: DiscardPopup = $UI/DiscardPopup
 @onready var bank_trade_popup: BankTradePopup = $UI/BankTradePopup
 @onready var action_panel: ActionPanel = $UI/GameMenu/ActionPanel
 @onready var dice_roller: DiceRoller = $UI/GameMenu/DiceRoller
@@ -571,11 +571,6 @@ func _register_signals() -> void:
 	GameSignals.card_clicked.connect(_on_card_clicked)
 	GameSignals.setup_phase_ended_for_player.connect(_on_setup_phase_ended_for_player)
 	end_turn_button.pressed.connect(turn_manager.end_turn)
-	bank_trade_button.pressed.connect(_on_bank_trade_button_pressed)
-	player_trade_button.pressed.connect(_on_player_trade_button_pressed)
-	bank_trade_popup.popup_hide.connect(_on_popup_closed)
-	discard_panel.popup_hide.connect(_on_popup_closed)
-	selection_popup.popup_hide.connect(_on_popup_closed)
 
 
 func _on_setup_phase_ended_for_player(player_index: int, settlement_pos: Vector2) -> void:
@@ -616,7 +611,7 @@ func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, dice_total: int) 
 		var hand_size := local_player.hand.total_resource_count()
 		if hand_size > robber_discard_hand_threshold:
 			hand_manager.disable_hover()
-			discard_panel.init(local_player.hand, hand_manager.get_sorted_resource_definitions(), floor(hand_size / 2.0), _on_discard_confirmed)
+			discard_popup.init(local_player.hand, hand_manager.get_sorted_resource_definitions(), floor(hand_size / 2.0), _on_discard_confirmed)
 		turn_manager.enter_robber_phase()
 		return
 	_distribute_resources(dice_total)

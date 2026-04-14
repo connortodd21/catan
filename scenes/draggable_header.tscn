@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://8gowp5njylda"]
+
+[ext_resource type="Script" uid="uid://b3vosplnkex64" path="res://scripts/scenes/draggable_popup/draggable_header.gd" id="1_i7aur"]
+
+[node name="DraggableHeader" type="PanelContainer" unique_id=17310905]
+script = ExtResource("1_i7aur")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1324925090]
+layout_mode = 2
+
+[node name="DragHandle" type="PanelContainer" parent="VBoxContainer" unique_id=884205897]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer/DragHandle" unique_id=2135426479]
+layout_mode = 2
+
+[connection signal="gui_input" from="VBoxContainer/DragHandle" to="." method="_on_drag_handle_gui_input"]

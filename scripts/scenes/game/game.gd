@@ -26,6 +26,7 @@ extends Node2D
 @onready var selection_popup: SelectionPopup = $UI/SelectionPopup
 @onready var discard_popup: DiscardPopup = $UI/DiscardPopup
 @onready var bank_trade_popup: BankTradePopup = $UI/BankTradePopup
+@onready var game_over_popup: GameOverPopup = $UI/GameOverPopup
 @onready var action_panel: ActionPanel = $UI/GameMenu/ActionPanel
 @onready var dice_roller: DiceRoller = $UI/GameMenu/DiceRoller
 @onready var trade_panel: VBoxContainer = $UI/GameMenu/TradePanel
@@ -47,6 +48,7 @@ var board_renderer: BoardRenderer
 
 var _draw_piles: Dictionary = {}
 
+var target_vp: int = 10
 var _longest_road_holder: PlayerState = null
 var _largest_army_holder: PlayerState = null
 var _harbormaster_holder: PlayerState = null
@@ -55,6 +57,7 @@ var _robber_coord: Vector2i = Vector2i(-999, -999)
 
 func _ready() -> void:
 	if game_config:
+		target_vp = game_config.victory_points
 		board = game_config.board
 		board_renderer = BoardRenderer.new(board_view, board_tile_map)
 		render_board()
@@ -181,6 +184,21 @@ func _collect_resources_at_vertex(player_index: int, world_pos: Vector2) -> void
 	GameSignals.emit_hand_changed()
 
 
+func _on_score_changed(player_index: int, score: int) -> void:
+	if score >= target_vp:
+		_game_over(player_index)
+
+
+func _game_over(winner_index: int) -> void:
+	var standings := player_states.duplicate()
+	standings.sort_custom(func(a, b): return a.score > b.score)
+	game_over_popup.init(player_states[winner_index], standings, _on_game_over_exit)
+
+
+func _on_game_over_exit() -> void:
+	GlobalSignals.go_back_to_menu()
+
+
 func _on_discard_confirmed(resources_after_discard: Array[ResourceTypes.Type]) -> void:
 	var new_counts: Dictionary = {}
 	for resource in resources_after_discard:
@@ -245,7 +263,8 @@ func _handle_robber_placement(mouse_pos: Vector2) -> void:
 	var world_pos: Vector2 = board_tile_map.map_to_local(HexUtils.axial_to_offset(coord))
 	board_renderer.move_robber_to(world_pos, robber_offset)
 
-	var stealable_players: Array[int] = board_state.get_stealable_players(coord, turn_manager.current_player_index, board_tile_map)
+	var stealable_players: Array[int] = board_state.get_players_on_hex_vertex(coord, turn_manager.current_player_index)
+	stealable_players.assign(stealable_players.filter(func(i: int) -> bool: return player_states[i].hand.total_resource_count() > 0))
 	if not stealable_players.is_empty():
 		hand_manager.disable_hover()
 		popup_manager.show_player_select(stealable_players, player_states, _on_robber_target_selected)
@@ -564,6 +583,7 @@ func _refresh_hud() -> void:
 func _register_signals() -> void:
 	GameSignals.player_changed.connect(_on_player_changed)
 	GameSignals.phase_changed.connect(_on_phase_changed)
+	GameSignals.score_changed.connect(_on_score_changed)
 	GameSignals.dice_rolled.connect(_on_dice_rolled)
 	GameSignals.action_button_pressed.connect(_on_action_button_pressed)
 	GameSignals.action_executed.connect(_on_action_executed)

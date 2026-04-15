@@ -1,6 +1,8 @@
 class_name Game
 extends Node2D
 
+const NEWLY_BOUGHT_CARD_META = "newly_bought"
+
 @export var terrain_database: TerrainDatabaseResource
 @export var number_database: NumberDatabaseResource
 @export var piece_database: PieceDatabaseResource
@@ -145,8 +147,14 @@ func _load_dev_decks() -> void:
 func _draw_dev_card(deck_type: Deck.Type) -> void:
 	var pile: Array[CardDefinition] = _draw_piles.get(deck_type, [])
 	if not pile.is_empty():
-		var card: CardDefinition = pile.pop_back()
+		var card: CardDefinition = pile.pop_back().duplicate()
+		card.set_meta(NEWLY_BOUGHT_CARD_META, true)
 		player_states[turn_manager.current_player_index].hand.add_card(card)
+
+
+func _clear_newly_bought_cards(player_index: int) -> void:
+	for card in player_states[player_index].hand.get_cards():
+		card.set_meta(NEWLY_BOUGHT_CARD_META, false)
 
 
 #############################################
@@ -416,10 +424,11 @@ func _on_action_executed(action: ActionTypes.Type, action_position: Vector2) -> 
 	_place_piece_at(piece_type, snap)
 	if action == ActionTypes.Type.BUILD_SETTLEMENT and turn_manager.current_phase == GamePhase.Phase.SETUP:
 		setup_manager.record_last_settlement(snap.pos)
+	var current_player := turn_manager.current_player_index
 	GameSignals.emit_piece_placed(piece_type, snap.pos)
 	_deduct_cost(definition)
-	_update_score(action, turn_manager.current_player_index)
-	_check_titles(action, turn_manager.current_player_index)
+	_update_score(action, current_player)
+	_check_titles(action, current_player)
 
 
 func _can_place(action: ActionTypes.Type, snapped_pos: Vector2) -> bool:
@@ -598,10 +607,13 @@ func _on_setup_phase_ended_for_player(player_index: int, settlement_pos: Vector2
 
 
 func _on_card_clicked(card: CardDefinition) -> void:
+	if card.get_meta(NEWLY_BOUGHT_CARD_META, false):
+		return
 	card_manager.play_card(card, player_states[turn_manager.current_player_index])
 
 
 func _on_player_changed(index: int) -> void:
+	_clear_newly_bought_cards(index)
 	local_player = player_states[index]
 	hand_manager.set_hand(local_player.hand)
 	player_hud.set_active_player(index)

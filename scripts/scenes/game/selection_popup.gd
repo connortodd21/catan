@@ -46,11 +46,11 @@ func _build_options(options: Array[SelectionOption]) -> void:
 
 func _build_option_button(option: SelectionOption) -> Button:
 	var button := Button.new()
-	button.tooltip_text = option.label
 	if option.texture != null:
 		button.icon = option.texture
 		button.add_theme_constant_override("icon_max_width", icon_max_width)
 	elif option.color != Color.BLACK:
+		button.text = option.label
 		var style := StyleBoxFlat.new()
 		style.bg_color = option.color
 		button.add_theme_stylebox_override("normal", style)

@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://djyt554w7rwkq"]
+
+[ext_resource type="Script" uid="uid://cdiyh0sjkw6wq" path="res://scripts/scenes/port/port.gd" id="1_4bvp8"]
+
+[node name="Port" type="Node2D" unique_id=1541474654]
+script = ExtResource("1_4bvp8")
+
+[node name="TradeRateLabel" type="Label" parent="." unique_id=1230113844]
+offset_left = -64.0
+offset_top = -152.0
+offset_right = 64.0
+offset_bottom = -85.0
+theme_override_font_sizes/font_size = 48
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Resource" type="Sprite2D" parent="." unique_id=2070521529]
+position = Vector2(0, -48)
+scale = Vector2(0.15, 0.15)

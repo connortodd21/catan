@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="PortIconDefinition" format=3 uid="uid://b28ldnjvi5m75"]
+
+[ext_resource type="Script" uid="uid://4la1863slaia" path="res://resources/ports/port_icon_definition.gd" id="1_8wfan"]
+[ext_resource type="Texture2D" uid="uid://cfn0rpb7dxe6p" path="res://assets/icons/wood_icon.png" id="2_uqabt"]
+
+[resource]
+script = ExtResource("1_8wfan")
+resource_type = 1
+texture = ExtResource("2_uqabt")
+trade_rate = 2
+metadata/_custom_type_script = "uid://4la1863slaia"

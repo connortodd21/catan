@@ -4,7 +4,9 @@
 [ext_resource type="Resource" uid="uid://dlk1rll7vemno" path="res://resources/numbers/number_database.tres" id="3_m4gbs"]
 [ext_resource type="Script" uid="uid://de65uyhbhanyc" path="res://scripts/scenes/board_editor_v2/editor_panel.gd" id="4_k17ee"]
 [ext_resource type="Script" uid="uid://cq255hswe5bm7" path="res://scripts/scenes/board_editor_v2/save_manager.gd" id="5_c65gf"]
+[ext_resource type="PackedScene" uid="uid://djyt554w7rwkq" path="res://scenes/port.tscn" id="5_k17ee"]
 [ext_resource type="Resource" uid="uid://i0k4rjpemdnx" path="res://resources/terrain/terrain_database.tres" id="5_u7doq"]
+[ext_resource type="Resource" uid="uid://cc6vat0immq2h" path="res://resources/ports/deck/base_port_deck.tres" id="7_m4gbs"]
 [ext_resource type="Script" uid="uid://2hkecl1vwe8a" path="res://scripts/scenes/board_editor_v2/board_generator/board_generation_window.gd" id="9_k17ee"]
 [ext_resource type="PackedScene" uid="uid://dbro2ruekwy4c" path="res://scenes/board_view.tscn" id="bv_scene"]
 
@@ -26,6 +28,8 @@ z_index = 1
 script = ExtResource("1_nxk3t")
 terrain_database = ExtResource("5_u7doq")
 numbers_database = ExtResource("3_m4gbs")
+port_deck = ExtResource("7_m4gbs")
+port_scene = ExtResource("5_k17ee")
 number_scale = 1.6
 number_offset = Vector2(-25, -25)
 
@@ -43,6 +47,7 @@ anchors_preset = 0
 script = ExtResource("4_k17ee")
 terrain_database = ExtResource("5_u7doq")
 numbers_database = ExtResource("3_m4gbs")
+port_deck = ExtResource("7_m4gbs")
 
 [node name="EditorPanel" type="CanvasLayer" parent="UI" unique_id=2126564521]
 
@@ -111,13 +116,13 @@ offset_right = 386.0
 offset_bottom = 40.0
 alignment = 2
 
-[node name="Label" type="Label" parent="UI/EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer" unique_id=557766780]
+[node name="TilesLabel" type="Label" parent="UI/EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer" unique_id=557766780]
 layout_mode = 2
 text = "SELECT TILE"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="GridContainer" type="GridContainer" parent="UI/EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer" unique_id=839705173]
+[node name="TilesContainer" type="GridContainer" parent="UI/EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer" unique_id=839705173]
 layout_mode = 2
 theme_override_constants/h_separation = 12
 theme_override_constants/v_separation = 5
@@ -133,15 +138,32 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Label" type="Label" parent="UI/EditorPanel/PanelContainer/MainVbox/TabContainer/Numbers/VBoxContainer" unique_id=79224445]
+[node name="NumbersLabel" type="Label" parent="UI/EditorPanel/PanelContainer/MainVbox/TabContainer/Numbers/VBoxContainer" unique_id=79224445]
 layout_mode = 2
 text = "SELECT NUMBER"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="GridContainer" type="GridContainer" parent="UI/EditorPanel/PanelContainer/MainVbox/TabContainer/Numbers/VBoxContainer" unique_id=539880903]
+[node name="NumbersContainer" type="GridContainer" parent="UI/EditorPanel/PanelContainer/MainVbox/TabContainer/Numbers/VBoxContainer" unique_id=539880903]
 layout_mode = 2
 columns = 4
+
+[node name="Ports" type="Control" parent="UI/EditorPanel/PanelContainer/MainVbox/TabContainer" unique_id=914145057]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/EditorPanel/PanelContainer/MainVbox/TabContainer/Ports" unique_id=47604375]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PortsLabel" type="Label" parent="UI/EditorPanel/PanelContainer/MainVbox/TabContainer/Ports/VBoxContainer" unique_id=858391288]
+layout_mode = 2
+
+[node name="PortsContainer" type="GridContainer" parent="UI/EditorPanel/PanelContainer/MainVbox/TabContainer/Ports/VBoxContainer" unique_id=1409107880]
+layout_mode = 2
+columns = 3
 
 [node name="board_generation_window" type="Window" parent="UI/EditorPanel" unique_id=1023699519]
 oversampling_override = 1.0

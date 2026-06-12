@@ -220,8 +220,10 @@ text = "Cancel"
 script = ExtResource("17_rysoc")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOverPopup" unique_id=403439927]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 159.0
+offset_bottom = 96.0
 
 [node name="DraggableHeader" parent="UI/GameOverPopup/VBoxContainer" unique_id=912877277 instance=ExtResource("14_ca42v")]
 layout_mode = 2

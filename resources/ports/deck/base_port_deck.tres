@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PortDeck" format=3 uid="uid://cc6vat0immq2h"]
+
+[ext_resource type="Script" uid="uid://4la1863slaia" path="res://resources/ports/port_icon_definition.gd" id="1_82hjp"]
+[ext_resource type="Resource" uid="uid://b28ldnjvi5m75" path="res://resources/ports/resource/wood.tres" id="2_8ugpw"]
+[ext_resource type="Script" uid="uid://b1ku6nctvh3yu" path="res://resources/ports/port_deck.gd" id="2_b5ksa"]
+[ext_resource type="Resource" uid="uid://bxreio0gqmt0r" path="res://resources/ports/resource/brick.tres" id="3_rn1sq"]
+[ext_resource type="Resource" uid="uid://7o52gov5xt70" path="res://resources/ports/resource/sheep.tres" id="4_12tbo"]
+[ext_resource type="Resource" uid="uid://b55awv22w1bbv" path="res://resources/ports/resource/wheat.tres" id="5_0rvwu"]
+[ext_resource type="Resource" uid="uid://d0lqre2gtknrk" path="res://resources/ports/resource/rock.tres" id="6_mo07r"]
+[ext_resource type="Resource" uid="uid://bbh1f1akaqykk" path="res://resources/ports/trade/generic_trade.tres" id="7_lrhkk"]
+
+[resource]
+script = ExtResource("2_b5ksa")
+ports = Array[ExtResource("1_82hjp")]([ExtResource("2_8ugpw"), ExtResource("3_rn1sq"), ExtResource("4_12tbo"), ExtResource("5_0rvwu"), ExtResource("6_mo07r"), ExtResource("7_lrhkk")])
+metadata/_custom_type_script = "uid://b1ku6nctvh3yu"

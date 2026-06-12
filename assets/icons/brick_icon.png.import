@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://im3e5o01dctl"
-path="res://.godot/imported/border.png-89ac885cf8b25500bfd9b781a9889f3f.ctex"
+uid="uid://bbi60wv3t71c6"
+path="res://.godot/imported/brick_icon.png-cf511e3b22bc9750e089f380f8c7f25c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/tiles/border.png"
-dest_files=["res://.godot/imported/border.png-89ac885cf8b25500bfd9b781a9889f3f.ctex"]
+source_file="res://assets/icons/brick_icon.png"
+dest_files=["res://.godot/imported/brick_icon.png-cf511e3b22bc9750e089f380f8c7f25c.ctex"]
 
 [params]
 

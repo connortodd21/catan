@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="PortIconDefinition" format=3 uid="uid://b55awv22w1bbv"]
+
+[ext_resource type="Script" uid="uid://4la1863slaia" path="res://resources/ports/port_icon_definition.gd" id="1_2m3ro"]
+[ext_resource type="Texture2D" uid="uid://dgwskg5a07xwu" path="res://assets/icons/wheat_icon.png" id="2_hpcqu"]
+
+[resource]
+script = ExtResource("1_2m3ro")
+resource_type = 4
+texture = ExtResource("2_hpcqu")
+trade_rate = 2
+metadata/_custom_type_script = "uid://4la1863slaia"

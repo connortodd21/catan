@@ -2,16 +2,19 @@ extends Control
 
 @export var terrain_database: TerrainDatabaseResource
 @export var numbers_database: NumberDatabaseResource
+@export var port_deck: PortDeck
 
 @onready var panel_container: PanelContainer = $EditorPanel/PanelContainer
 
 @onready var tab_container: TabContainer = $EditorPanel/PanelContainer/MainVbox/TabContainer
-@onready var tile_grid_container: GridContainer = $EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer/GridContainer
-@onready var number_grid_container: GridContainer = $EditorPanel/PanelContainer/MainVbox/TabContainer/Numbers/VBoxContainer/GridContainer
+@onready var tile_grid_container: GridContainer = $EditorPanel/PanelContainer/MainVbox/TabContainer/Tiles/VBoxContainer/TilesContainer
+@onready var number_grid_container: GridContainer = $EditorPanel/PanelContainer/MainVbox/TabContainer/Numbers/VBoxContainer/NumbersContainer
+@onready var port_grid_container: GridContainer = $EditorPanel/PanelContainer/MainVbox/TabContainer/Ports/VBoxContainer/PortsContainer
 @onready var board_generation_window: Window = $EditorPanel/board_generation_window
 
 const TERRAIN_KEY := "terrain_key"
 const NUMBER_KEY := "number_value"
+const PORT_TYPE_KEY := "port_type"
 
 var selected_terrain: TerrainTypes.Type
 var selected_number: int
@@ -19,8 +22,9 @@ var selected_button: TextureButton
 
 
 func _ready() -> void:
-	generate_button_tiles()
+	generate_tile_buttons()
 	generate_number_buttons()
+	generate_port_buttons()
 
 
 #############################################
@@ -41,7 +45,22 @@ func generate_number_buttons():
 		number_grid_container.add_child(texture_button)
 
 
-func generate_button_tiles() -> void:
+func generate_port_buttons() -> void:
+	for port_def in port_deck.ports:
+		var texture_button := TextureButton.new()
+		texture_button.texture_normal = port_def.texture
+		texture_button.texture_hover = port_def.texture
+		texture_button.texture_pressed = port_def.texture
+		texture_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		texture_button.ignore_texture_size = true
+		texture_button.custom_minimum_size = Vector2(120, 140)
+		texture_button.toggle_mode = true
+		texture_button.set_meta(PORT_TYPE_KEY, port_def.resource_type)
+		texture_button.pressed.connect(_on_port_button_pressed.bind(texture_button))
+		port_grid_container.add_child(texture_button)
+
+
+func generate_tile_buttons() -> void:
 	for terrain_key in terrain_database.get_keys():
 		var texture = terrain_database.get_texture(terrain_key)
 		var texture_button := TextureButton.new()
@@ -63,6 +82,15 @@ func _on_terrain_button_pressed(button: TextureButton) -> void:
 	selected_terrain = new_value
 	EditorState.set_editor_state_to_terrain()
 	EditorState.select_tile(selected_terrain)
+	EditorState.clear_selected_number()
+	_update_button_visual(button)
+
+
+func _on_port_button_pressed(button: TextureButton) -> void:
+	var port_type = button.get_meta(PORT_TYPE_KEY)
+	EditorState.set_editor_state_to_port()
+	EditorState.select_port(port_type)
+	EditorState.clear_selected_tile()
 	EditorState.clear_selected_number()
 	_update_button_visual(button)
 
@@ -110,6 +138,8 @@ func _on_tab_container_tab_changed(tab_index: int) -> void:
 			EditorState.set_editor_state_to_terrain()
 		1: # Numbers tab
 			EditorState.set_editor_state_to_number()
+		2: # Ports tab
+			EditorState.set_editor_state_to_port()
 
 
 #############################################

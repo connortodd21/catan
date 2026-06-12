@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://im3e5o01dctl"
-path="res://.godot/imported/border.png-89ac885cf8b25500bfd9b781a9889f3f.ctex"
+uid="uid://dgwskg5a07xwu"
+path="res://.godot/imported/wheat_icon.png-b1122696bbdc34fbef2ad05fee20353b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/tiles/border.png"
-dest_files=["res://.godot/imported/border.png-89ac885cf8b25500bfd9b781a9889f3f.ctex"]
+source_file="res://assets/icons/wheat_icon.png"
+dest_files=["res://.godot/imported/wheat_icon.png-b1122696bbdc34fbef2ad05fee20353b.ctex"]
 
 [params]
 

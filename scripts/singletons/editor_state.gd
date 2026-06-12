@@ -29,7 +29,8 @@ func load_board() -> void:
 enum SelectionType {
 	NONE,
 	TERRAIN,
-	NUMBER
+	NUMBER,
+	PORT
 }
 
 var editor_state : SelectionType = SelectionType.NONE
@@ -39,6 +40,9 @@ func set_editor_state_to_terrain() -> void:
 
 func set_editor_state_to_number() -> void:
 	editor_state = SelectionType.NUMBER
+
+func set_editor_state_to_port() -> void:
+	editor_state = SelectionType.PORT
 
 func get_editor_state() -> SelectionType:
 	return editor_state
@@ -89,3 +93,27 @@ func select_number(number: int) -> void:
 
 func get_selected_number() -> int:
 	return selected_number
+
+
+#############################################
+### BOARD EDITOR PORT SELECTION
+#############################################
+signal port_selected(port_type: PortTypes.Type)
+
+var selected_port : PortTypes.Type = PortTypes.Type.UNKNOWN
+
+func clear_selected_port() -> void:
+	selected_port = PortTypes.Type.UNKNOWN
+
+
+func select_port(port_type: PortTypes.Type) -> void:
+	if port_type == selected_port:
+		selected_port = PortTypes.Type.UNKNOWN
+		return
+
+	selected_port = port_type
+	port_selected.emit(selected_port)
+
+
+func get_selected_port() -> PortTypes.Type:
+	return selected_port

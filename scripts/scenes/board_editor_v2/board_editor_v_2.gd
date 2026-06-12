@@ -2,6 +2,8 @@ extends Node2D
 
 @export var terrain_database : TerrainDatabaseResource
 @export var numbers_database : NumberDatabaseResource
+@export var port_deck: PortDeck
+@export var port_scene: PackedScene
 
 @onready var board_tile_map: TileMapLayer = $editor/BoardView/BoardTileMap
 @onready var board_view: Node2D = $editor/BoardView
@@ -11,6 +13,7 @@ extends Node2D
 var tileset_source_id = 0
 var default_tile_atlas_coords : Vector2i = Vector2i(4,0)
 var border_tile_atlas_coords : Vector2i = Vector2i(5,0)
+var water_tile_atlas_coords : Vector2i = Vector2i(6,0)
 
 @export var board_width := 9
 @export var board_height := 9
@@ -20,6 +23,7 @@ var border_tile_atlas_coords : Vector2i = Vector2i(5,0)
 
 var tile_metadata_cache : TypedCache = TypedCache.new(Variant.Type.TYPE_VECTOR2I, TileMetadata)
 var number_metadata_cache : TypedCache = TypedCache.new(Variant.Type.TYPE_VECTOR2I, NumberMetadata)
+var port_metadata_cache : TypedCache = TypedCache.new(Variant.Type.TYPE_VECTOR2I, PortMetadata)
 var number_sprites: Dictionary = {}
 
 func _ready() -> void:
@@ -35,12 +39,16 @@ func _unhandled_input(event: InputEvent) -> void:
 					place_tile_at_mouse()
 				EditorState.SelectionType.NUMBER:
 					place_number_at_mouse()
+				EditorState.SelectionType.PORT:
+					place_port_at_mouse()
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			match editor_state:
 				EditorState.SelectionType.TERRAIN:
 					remove_tile_at_mouse()
 				EditorState.SelectionType.NUMBER:
 					remove_number_at_mouse()
+				EditorState.SelectionType.PORT:
+					remove_port_at_mouse()
 
 
 #############################################
@@ -82,6 +90,7 @@ func is_cell_editable(cell: Vector2i) -> bool:
 func clear_board() -> void:
 	clear_tiles()
 	clear_numbers()
+	clear_ports()
 
 
 func clear_tiles() -> void:
@@ -195,6 +204,95 @@ func remove_number_at_mouse():
 
 	var number = EditorState.get_selected_number()
 	remove_number(axial, number)
+
+
+func _is_water_cell(axial: Vector2i) -> bool:
+	return board_tile_map.get_cell_atlas_coords(HexUtils.axial_to_offset(axial)) == water_tile_atlas_coords
+
+
+func place_port_at_mouse() -> void:
+	var port_type = EditorState.get_selected_port()
+	if port_type == PortTypes.Type.UNKNOWN:
+		return
+
+	var mouse_local = get_local_mouse_position()
+	var best_water_axial := Vector2i.ZERO
+	var best_land_dir := -1
+	var best_dist := INF
+
+	for land_axial in tile_metadata_cache.get_keys():
+		for d in range(6):
+			var neighbor_axial = land_axial + HexUtils.HEX_DIRECTIONS[d]
+			if _is_water_cell(neighbor_axial):
+				var dir_water_to_land = (d + 3) % 6
+				var water_center = board_tile_map.map_to_local(HexUtils.axial_to_offset(neighbor_axial))
+				var edge_pos = water_center + HexUtils.EDGE_MIDPOINTS[(dir_water_to_land + 1) % 6]
+				var dist = mouse_local.distance_to(edge_pos)
+				if dist < best_dist:
+					best_dist = dist
+					best_water_axial = neighbor_axial
+					best_land_dir = dir_water_to_land
+
+	if best_land_dir == -1:
+		return
+
+	var port_def = _get_port_def(port_type)
+	if port_def == null:
+		return
+
+	remove_port(best_water_axial)
+
+	var port_node: Node2D = port_scene.instantiate()
+	port_node.scale = Vector2.ONE * 0.5
+	var water_center = board_tile_map.map_to_local(HexUtils.axial_to_offset(best_water_axial))
+	var edge_mid = HexUtils.EDGE_MIDPOINTS[(best_land_dir + 1) % 6]
+	port_node.position = water_center + edge_mid
+	board_view.add_child(port_node)
+	var edge_rotation = rad_to_deg(edge_mid.angle()) - 90.0
+	port_node.setup(port_def.trade_rate, port_def.texture, edge_rotation)
+
+	port_metadata_cache.set_val(best_water_axial, PortMetadata.new(port_type, best_land_dir, edge_rotation, port_node))
+
+
+func remove_port_at_mouse() -> void:
+	var mouse_local = get_local_mouse_position()
+	var best_axial: Variant = null
+	var best_dist := INF
+
+	for axial in port_metadata_cache.get_keys():
+		var metadata: PortMetadata = port_metadata_cache.get_val(axial)
+		var water_center = board_tile_map.map_to_local(HexUtils.axial_to_offset(axial))
+		var edge_pos = water_center + HexUtils.EDGE_MIDPOINTS[(metadata.direction + 1) % 6]
+		var dist = mouse_local.distance_to(edge_pos)
+		if dist < best_dist:
+			best_dist = dist
+			best_axial = axial
+
+	if best_axial != null:
+		remove_port(best_axial)
+
+
+func remove_port(axial: Vector2i) -> void:
+	var metadata: PortMetadata = port_metadata_cache.get_val(axial)
+	if metadata == null:
+		return
+	metadata.node.queue_free()
+	port_metadata_cache.evict(axial)
+
+
+func clear_ports() -> void:
+	for axial in port_metadata_cache.get_keys():
+		var metadata: PortMetadata = port_metadata_cache.get_val(axial)
+		if metadata != null:
+			metadata.node.queue_free()
+	port_metadata_cache.clear_cache()
+
+
+func _get_port_def(port_type: PortTypes.Type) -> PortIconDefinition:
+	for port_def in port_deck.ports:
+		if port_def.resource_type == port_type:
+			return port_def
+	return null
 
 #############################################
 ### METADATA

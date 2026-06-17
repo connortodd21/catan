@@ -22,6 +22,10 @@ var _edge_to_vertices: Dictionary[Vector2i, Array] = {}
 ## Used to look up terrain types when collecting initial resources.
 var _vertex_to_coords: Dictionary[Vector2i, Array] = {}
 
+## Maps each port-adjacent vertex key to its port type.
+## Used for trade rates and harbormaster.
+var _vertex_to_port: Dictionary[Vector2i, PortTypes.Type] = {}
+
 
 func build(board: SerializedBoard, board_tile_map: TileMapLayer) -> void:
 	for tile: TileEntry in board.tiles:
@@ -37,6 +41,7 @@ func build(board: SerializedBoard, board_tile_map: TileMapLayer) -> void:
 		number_to_coords[number].append(coord)
 
 	_build_graph(board, board_tile_map)
+	_build_ports(board, board_tile_map)
 
 
 func _build_graph(board: SerializedBoard, board_tile_map: TileMapLayer) -> void:
@@ -88,6 +93,15 @@ func _build_graph(board: SerializedBoard, board_tile_map: TileMapLayer) -> void:
 
 			if edge not in _edge_to_vertices:
 				_edge_to_vertices[edge] = [left_vertex, right_vertex]
+
+
+func _build_ports(board: SerializedBoard, board_tile_map: TileMapLayer) -> void:
+	for port: PortEntry in board.ports:
+		var water_center := board_tile_map.map_to_local(HexUtils.axial_to_offset(Vector2i(port.x, port.y)))
+		var vertex1 := _to_key(water_center + HexUtils.VERTEX_OFFSETS[(port.direction + 1) % 6])
+		var vertex2 := _to_key(water_center + HexUtils.VERTEX_OFFSETS[(port.direction + 2) % 6])
+		_vertex_to_port[vertex1] = port.type
+		_vertex_to_port[vertex2] = port.type
 
 
 #############################################
@@ -280,10 +294,25 @@ func _get_all_road_player_indices() -> Array[int]:
 #############################################
 ### HARBORS
 #############################################
-func get_bank_trade_rates_for_player(_player_index: int) -> Dictionary[ResourceTypes.Type, int]:
+func get_bank_trade_rates_for_player(player_index: int) -> Dictionary[ResourceTypes.Type, int]:
 	var rates: Dictionary[ResourceTypes.Type, int] = {}
 	for resource_type: ResourceTypes.Type in ResourceTypes.DISPLAY_ORDER:
 		rates[resource_type] = 4
+
+	for vertex_key: Vector2i in vertex_ownership:
+		var owner: Dictionary = vertex_ownership[vertex_key]
+		if owner.player_index == player_index and vertex_key in _vertex_to_port:
+			var port_type: PortTypes.Type = _vertex_to_port[vertex_key]
+			var port_rate: int = PortTypes.get_trade_rate(port_type)
+			# Generic ports lower the rate for all resources; specific ports lower only their resource
+			if port_type == PortTypes.Type.GENERIC:
+				for resource_type: ResourceTypes.Type in rates:
+					rates[resource_type] = min(rates[resource_type], port_rate)
+			else:
+				var resource := PortTypes.to_resource(port_type)
+				if resource != ResourceTypes.Type.UNKNOWN:
+					rates[resource] = min(rates[resource], port_rate)
+
 	return rates
 
 

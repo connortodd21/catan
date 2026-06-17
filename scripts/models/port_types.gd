@@ -39,6 +39,19 @@ static func str_to_type(s: String) -> Type:
 	return str_to_type_map.get(s, Type.GENERIC)
 
 
+static var type_to_resource_map: Dictionary = {
+	Type.WOOD: ResourceTypes.Type.WOOD,
+	Type.BRICK: ResourceTypes.Type.BRICK,
+	Type.SHEEP: ResourceTypes.Type.SHEEP,
+	Type.WHEAT: ResourceTypes.Type.WHEAT,
+	Type.ROCK: ResourceTypes.Type.ROCK,
+}
+
+
+static func to_resource(type: Type) -> ResourceTypes.Type:
+	return type_to_resource_map.get(type, ResourceTypes.Type.UNKNOWN)
+
+
 static func get_trade_rate(type: Type) -> int:
 	if type == Type.GENERIC:
 		return 3

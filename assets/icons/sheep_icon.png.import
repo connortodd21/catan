@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://im3e5o01dctl"
-path="res://.godot/imported/border.png-89ac885cf8b25500bfd9b781a9889f3f.ctex"
+uid="uid://cqqf85coef6b6"
+path="res://.godot/imported/sheep_icon.png-1659fee322981ff2190e317226c5488c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/tiles/border.png"
-dest_files=["res://.godot/imported/border.png-89ac885cf8b25500bfd9b781a9889f3f.ctex"]
+source_file="res://assets/icons/sheep_icon.png"
+dest_files=["res://.godot/imported/sheep_icon.png-1659fee322981ff2190e317226c5488c.ctex"]
 
 [params]
 

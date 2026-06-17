@@ -7,6 +7,8 @@ const NEWLY_BOUGHT_CARD_META = "newly_bought"
 @export var number_database: NumberDatabaseResource
 @export var piece_database: PieceDatabaseResource
 @export var action_database: ActionDatabaseResource
+@export var port_scene: PackedScene
+@export var port_deck: PortDeck
 @export var decks: Array[CardDeck] = []
 
 @export var number_scale: float = 1.0
@@ -90,6 +92,7 @@ func _init_players() -> void:
 		player_states.append(PlayerState.new(player))
 	player_hud.init(player_states)
 	
+	player_hud.set_harbormaster_enabled(game_config.has_harbormaster())
 	local_player = player_states[0]
 	hand_manager.set_hand(local_player.hand)
 
@@ -231,7 +234,23 @@ func render_board() -> void:
 		coord_to_tile[coord] = true
 		tile_coords.append(coord)
 	render_numbers()
+	render_ports()
 	add_border(coord_to_tile)
+
+
+func render_ports() -> void:
+	for port_entry: PortEntry in board.ports:
+		var port_def := port_deck.get_def(port_entry.type)
+		if port_def == null:
+			continue
+		var water_center := board_tile_map.map_to_local(HexUtils.axial_to_offset(Vector2i(port_entry.x, port_entry.y)))
+		var edge_mid := HexUtils.EDGE_MIDPOINTS[(port_entry.direction + 1) % 6]
+		var port_node: Node2D = port_scene.instantiate()
+		port_node.scale = Vector2.ONE * 0.5
+		port_node.position = water_center + edge_mid
+		board_view.add_child(port_node)
+		var edge_rotation := rad_to_deg(edge_mid.angle()) - 90.0
+		port_node.setup(port_def.trade_rate, port_def.texture, edge_rotation)
 
 
 func render_numbers() -> void:
@@ -459,6 +478,8 @@ func _check_titles(action: ActionTypes.Type, player_index: int) -> void:
 	match action:
 		ActionTypes.Type.BUILD_ROAD:
 			_check_longest_road(player_index)
+		ActionTypes.Type.BUILD_SETTLEMENT, ActionTypes.Type.BUILD_CITY:
+			_check_harbormaster(player_index)
 
 
 func _check_longest_road(player_index: int) -> void:
@@ -493,6 +514,8 @@ func _check_largest_army(player_index: int) -> void:
 
 
 func _check_harbormaster(player_index: int) -> void:
+	if not game_config.has_harbormaster():
+		return
 	var player_harbor_count : int = board_state.calculate_harbormaster_count(player_index)
 	player_states[player_index].harbormaster_count = player_harbor_count
 	GameSignals.emit_player_stats_changed(player_index)

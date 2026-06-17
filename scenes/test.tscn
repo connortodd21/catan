@@ -1,10 +1,13 @@
 [gd_scene format=4 uid="uid://bqmdh87vh11li"]
 
+[ext_resource type="Script" uid="uid://cfs61hiulh1h2" path="res://scripts/scenes/test/test.gd" id="1_at5dv"]
 [ext_resource type="Texture2D" uid="uid://cc6kj3nvq0hxc" path="res://assets/custom_tiles/tree_animated.png" id="1_errlg"]
 [ext_resource type="Texture2D" uid="uid://csgoe61oi0pyv" path="res://assets/custom_tiles/brick_animated.png" id="1_j5jx5"]
 [ext_resource type="Texture2D" uid="uid://ci28boyssuy8b" path="res://assets/tiles/tileset.png" id="2_bl13t"]
+[ext_resource type="Texture2D" uid="uid://cfn0rpb7dxe6p" path="res://assets/icons/wood_icon.png" id="2_jcd4p"]
 [ext_resource type="Texture2D" uid="uid://krlj4euuliu4" path="res://assets/custom_tiles/water_animated.png" id="3_iyx0m"]
 [ext_resource type="Texture2D" uid="uid://c0rxpxs6tsoj6" path="res://assets/custom_tiles/stone_animated.png" id="4_74lek"]
+[ext_resource type="PackedScene" uid="uid://djyt554w7rwkq" path="res://scenes/port.tscn" id="6_lpvoh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_at5dv"]
 texture = ExtResource("1_j5jx5")
@@ -67,6 +70,8 @@ sources/8 = SubResource("TileSetAtlasSource_j5jx5")
 sources/0 = SubResource("TileSetAtlasSource_at5dv")
 
 [node name="test" type="Node2D" unique_id=844079791]
+script = ExtResource("1_at5dv")
+wood_icon = ExtResource("2_jcd4p")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=207981909]
 visible = false
@@ -84,3 +89,8 @@ tile_set = SubResource("TileSet_iyx0m")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1815354332]
 position = Vector2(712, 364)
 zoom = Vector2(4, 4)
+
+[node name="Port" parent="." unique_id=1541474654 instance=ExtResource("6_lpvoh")]
+position = Vector2(648, 376)
+rotation = 1.5707964
+scale = Vector2(0.3, 0.3)

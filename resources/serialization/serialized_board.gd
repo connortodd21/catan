@@ -7,6 +7,7 @@ class_name SerializedBoard
 
 var tiles: Array[TileEntry] = []
 var numbers: Array[NumberEntry] = []
+var ports: Array[PortEntry] = []
 var metadata: Dictionary = {
 	"version": 1
 }
@@ -28,6 +29,10 @@ func add_numbers(x: int, y: int, value: Array[int]) -> void:
 	numbers.append(NumberEntry.new(x, y, value))
 
 
+func add_port(x: int, y: int, type: PortTypes.Type, direction: int) -> void:
+	ports.append(PortEntry.new(x, y, type, direction))
+
+
 func to_dict() -> Dictionary:
 	return {
 		"size": {
@@ -36,6 +41,7 @@ func to_dict() -> Dictionary:
 		},
 		"tiles": tiles.map(func(tile): return tile.to_dict()),
 		"numbers": numbers.map(func(num): return num.to_dict()),
+		"ports": ports.map(func(port): return port.to_dict()),
 		"metadata": metadata
 	}
 
@@ -44,6 +50,8 @@ func from_dict(dict: Dictionary) -> SerializedBoard:
 	size = Vector2i(dict.size.width, dict.size.height)
 	for t in dict.tiles:
 		add_tile(t.x, t.y, t.type)
+	for p in dict.get("ports", []):
+		add_port(p.x, p.y, p.type, p.direction)
 	for n in dict.numbers:
 		var nums_array: Array[int] = []
 		for v in n["value"]:

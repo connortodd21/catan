@@ -24,6 +24,10 @@ func has_robber() -> bool:
 	return not HouseRules.RULE_NAMES.NO_ROBBER in house_rules
 
 
+func has_harbormaster() -> bool:
+	return ExpansionTypes.Expansion.HARBORMASTER in expansions
+
+
 func _debug_print() -> void:
 	print("=== GameConfig ===")
 	print("  board: ", board.size if board else Vector2i.ZERO)

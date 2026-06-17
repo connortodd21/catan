@@ -259,8 +259,13 @@ func calculate_longest_road(player_index: int) -> int:
 	return max_length
 
 
-func calculate_harbormaster_count(_player_index: int) -> int:
-	return 0 # TODO: implement when port tracking is added
+func calculate_harbormaster_count(player_index: int) -> int:
+	var player_harbor_count := 0
+	for vertex_key: Vector2i in vertex_ownership:
+		var owner: Dictionary = vertex_ownership[vertex_key]
+		if owner.player_index == player_index and vertex_key in _vertex_to_port:
+			player_harbor_count += 2 if owner.piece_type == PieceTypes.Type.CITY else 1
+	return player_harbor_count
 
 
 func _dfs_road(vertex: Vector2i, visited: Dictionary, player_index: int) -> int:

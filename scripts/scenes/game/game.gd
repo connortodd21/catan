@@ -92,6 +92,7 @@ func _init_players() -> void:
 		player_states.append(PlayerState.new(player))
 	player_hud.init(player_states)
 	
+	player_hud.set_harbormaster_enabled(game_config.has_harbormaster())
 	local_player = player_states[0]
 	hand_manager.set_hand(local_player.hand)
 
@@ -477,6 +478,8 @@ func _check_titles(action: ActionTypes.Type, player_index: int) -> void:
 	match action:
 		ActionTypes.Type.BUILD_ROAD:
 			_check_longest_road(player_index)
+		ActionTypes.Type.BUILD_SETTLEMENT, ActionTypes.Type.BUILD_CITY:
+			_check_harbormaster(player_index)
 
 
 func _check_longest_road(player_index: int) -> void:
@@ -511,6 +514,8 @@ func _check_largest_army(player_index: int) -> void:
 
 
 func _check_harbormaster(player_index: int) -> void:
+	if not game_config.has_harbormaster():
+		return
 	var player_harbor_count : int = board_state.calculate_harbormaster_count(player_index)
 	player_states[player_index].harbormaster_count = player_harbor_count
 	GameSignals.emit_player_stats_changed(player_index)

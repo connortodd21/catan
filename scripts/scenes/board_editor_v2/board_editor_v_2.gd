@@ -236,7 +236,7 @@ func place_port_at_mouse() -> void:
 	if best_land_dir == -1:
 		return
 
-	var port_def = _get_port_def(port_type)
+	var port_def := port_deck.get_def(port_type)
 	if port_def == null:
 		return
 
@@ -244,7 +244,7 @@ func place_port_at_mouse() -> void:
 
 
 func place_port(water_axial: Vector2i, port_type: PortTypes.Type, direction: int) -> void:
-	var port_def = _get_port_def(port_type)
+	var port_def := port_deck.get_def(port_type)
 	if port_def == null:
 		return
 
@@ -294,13 +294,6 @@ func clear_ports() -> void:
 		if metadata != null:
 			metadata.node.queue_free()
 	board_cache.ports.clear_cache()
-
-
-func _get_port_def(port_type: PortTypes.Type) -> PortIconDefinition:
-	for port_def in port_deck.ports:
-		if port_def.resource_type == port_type:
-			return port_def
-	return null
 
 #############################################
 ### METADATA

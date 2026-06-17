@@ -7,8 +7,10 @@
 [ext_resource type="Resource" uid="uid://dcrup1kpiwxdw" path="res://resources/pieces/piece_database.tres" id="4_iywne"]
 [ext_resource type="PackedScene" uid="uid://d26hbf0pdv6yl" path="res://scenes/dice_roller.tscn" id="5_dice"]
 [ext_resource type="Resource" uid="uid://brdcbi8ajmttf" path="res://resources/game/actions/action_database.tres" id="5_kvpfn"]
+[ext_resource type="PackedScene" uid="uid://djyt554w7rwkq" path="res://scenes/port.tscn" id="6_264po"]
 [ext_resource type="PackedScene" uid="uid://b3q7m8xnp0yvw" path="res://scenes/hand_manager.tscn" id="6_hm"]
 [ext_resource type="Script" uid="uid://cpvwjyhyd43xy" path="res://resources/cards/card_deck.gd" id="6_kvuet"]
+[ext_resource type="Resource" uid="uid://cc6vat0immq2h" path="res://resources/ports/deck/base_port_deck.tres" id="7_1kice"]
 [ext_resource type="PackedScene" path="res://scenes/player_hud.tscn" id="7_phud"]
 [ext_resource type="Resource" uid="uid://b75vl6j3vsoux" path="res://resources/cards/decks/development_cards.tres" id="7_trtic"]
 [ext_resource type="PackedScene" path="res://scenes/action_panel.tscn" id="9_ap"]
@@ -24,6 +26,8 @@ terrain_database = ExtResource("2_fc0e3")
 number_database = ExtResource("3_lbhrr")
 piece_database = ExtResource("4_iywne")
 action_database = ExtResource("5_kvpfn")
+port_scene = ExtResource("6_264po")
+port_deck = ExtResource("7_1kice")
 decks = Array[ExtResource("6_kvuet")]([ExtResource("7_trtic")])
 number_scale = 1.6
 number_offset = Vector2(-25, -25)

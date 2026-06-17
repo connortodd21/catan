@@ -7,6 +7,8 @@ const NEWLY_BOUGHT_CARD_META = "newly_bought"
 @export var number_database: NumberDatabaseResource
 @export var piece_database: PieceDatabaseResource
 @export var action_database: ActionDatabaseResource
+@export var port_scene: PackedScene
+@export var port_deck: PortDeck
 @export var decks: Array[CardDeck] = []
 
 @export var number_scale: float = 1.0
@@ -231,7 +233,23 @@ func render_board() -> void:
 		coord_to_tile[coord] = true
 		tile_coords.append(coord)
 	render_numbers()
+	render_ports()
 	add_border(coord_to_tile)
+
+
+func render_ports() -> void:
+	for port_entry: PortEntry in board.ports:
+		var port_def := port_deck.get_def(port_entry.type)
+		if port_def == null:
+			continue
+		var water_center := board_tile_map.map_to_local(HexUtils.axial_to_offset(Vector2i(port_entry.x, port_entry.y)))
+		var edge_mid := HexUtils.EDGE_MIDPOINTS[(port_entry.direction + 1) % 6]
+		var port_node: Node2D = port_scene.instantiate()
+		port_node.scale = Vector2.ONE * 0.5
+		port_node.position = water_center + edge_mid
+		board_view.add_child(port_node)
+		var edge_rotation := rad_to_deg(edge_mid.angle()) - 90.0
+		port_node.setup(port_def.trade_rate, port_def.texture, edge_rotation)
 
 
 func render_numbers() -> void:

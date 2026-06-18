@@ -50,8 +50,10 @@ const NEWLY_BOUGHT_CARD_META = "newly_bought"
 @onready var player_hud: PlayerHUD = $UI/PlayerHUD
 @onready var player_trade_button: Button = $UI/GameMenu/TradePanel/PlayerTradeButton
 @onready var selection_popup: SelectionPopup = $UI/SelectionPopup
-@onready var settings_button: TextureButton = $UI/SettingsButton
+@onready var settings_button: TextureButton = $UI/MenuHbox/SettingsButton
 @onready var settings_popup: SettingsPopup = $UI/SettingsPopup
+@onready var stats_button: TextureButton = $UI/MenuHbox/StatsButton
+@onready var stats_popup: StatsPopup = $UI/StatsPopup
 @onready var trade_panel: VBoxContainer = $UI/GameMenu/TradePanel
 
 
@@ -61,6 +63,7 @@ const NEWLY_BOUGHT_CARD_META = "newly_bought"
 
 var action_manager: ActionManager
 var board: SerializedBoard
+var game_stats: GameStats = GameStats.new()
 var board_renderer: BoardRenderer
 var board_state: BoardState
 var card_manager: CardManager
@@ -653,6 +656,10 @@ func _register_signals() -> void:
 	end_turn_button.pressed.connect(turn_manager.end_turn)
 
 
+func _on_stats_button_pressed() -> void:
+	stats_popup.show_stats(game_stats)
+
+
 func _on_settings_button_pressed() -> void:
 	settings_popup.popup_centered()
 
@@ -693,6 +700,7 @@ func _on_hand_changed() -> void:
 
 
 func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, dice_total: int) -> void:
+	game_stats.dice.record_roll(dice_total)
 	turn_manager.advance_from_roll()
 	if game_config.has_robber() and dice_total == 7:
 		var hand_size := local_player.hand.total_resource_count()

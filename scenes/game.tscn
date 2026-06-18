@@ -15,12 +15,14 @@
 [ext_resource type="Resource" uid="uid://b75vl6j3vsoux" path="res://resources/cards/decks/development_cards.tres" id="7_trtic"]
 [ext_resource type="PackedScene" path="res://scenes/action_panel.tscn" id="9_ap"]
 [ext_resource type="Texture2D" uid="uid://dn7ucr5poup0d" path="res://assets/buttons/settings.png" id="13_5newe"]
+[ext_resource type="Texture2D" uid="uid://ouxclww0s2at" path="res://assets/buttons/stats.png" id="13_37s47"]
 [ext_resource type="Script" uid="uid://dawgwpjqtumrm" path="res://scripts/scenes/game/selection_popup.gd" id="13_kvuet"]
 [ext_resource type="PackedScene" uid="uid://8gowp5njylda" path="res://scenes/draggable_header.tscn" id="14_ca42v"]
 [ext_resource type="Script" uid="uid://ccjem18okc8cy" path="res://scripts/scenes/game/discard_popup.gd" id="14_trtic"]
 [ext_resource type="Script" uid="uid://d1aum84kl2jf5" path="res://scripts/scenes/game/bank_trade_popup.gd" id="15_ir15t"]
 [ext_resource type="Script" uid="uid://ds4tty57qgpod" path="res://scripts/scenes/game/game_over_popup.gd" id="17_rysoc"]
 [ext_resource type="Script" uid="uid://cloe8kcib008c" path="res://scripts/scenes/game/settings_popup.gd" id="20_1kice"]
+[ext_resource type="Script" uid="uid://cfcsf7cxxyd27" path="res://scripts/scenes/game/stats_popup.gd" id="23_bt5mj"]
 
 [node name="Game" type="Node2D" unique_id=67801416]
 script = ExtResource("1_80nbo")
@@ -64,12 +66,18 @@ offset_bottom = 34.0
 grow_horizontal = 2
 horizontal_alignment = 1
 
-[node name="SettingsButton" type="TextureButton" parent="UI" unique_id=191300773]
-offset_left = 1416.0
-offset_top = 32.0
-offset_right = 1524.0
-offset_bottom = 140.0
-scale = Vector2(0.6, 0.6)
+[node name="MenuHbox" type="HBoxContainer" parent="UI" unique_id=323179013]
+offset_left = 1280.0
+offset_top = 16.0
+offset_right = 1484.0
+offset_bottom = 116.0
+
+[node name="StatsButton" type="TextureButton" parent="UI/MenuHbox" unique_id=1302516460]
+layout_mode = 2
+texture_normal = ExtResource("13_37s47")
+
+[node name="SettingsButton" type="TextureButton" parent="UI/MenuHbox" unique_id=191300773]
+layout_mode = 2
 texture_normal = ExtResource("13_5newe")
 
 [node name="GameMenu" type="VBoxContainer" parent="UI" unique_id=210807487]
@@ -251,8 +259,9 @@ layout_mode = 2
 layout_mode = 2
 text = "Exit to main memu"
 
-[node name="SettingsPopup" type="PopupPanel" parent="UI" unique_id=433489397]
+[node name="SettingsPopup" type="PopupPanel" parent="UI" unique_id=813481789]
 script = ExtResource("20_1kice")
+metadata/_custom_type_script = "uid://cloe8kcib008c"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/SettingsPopup" unique_id=1679787055]
 offset_left = 4.0
@@ -271,7 +280,38 @@ text = "Exit to Menu"
 title = "Exit Game"
 dialog_text = "Return to main menu?"
 
-[connection signal="pressed" from="UI/SettingsButton" to="." method="_on_settings_button_pressed"]
+[node name="StatsPopup" type="PopupPanel" parent="UI" unique_id=2005646569]
+oversampling_override = 1.0
+script = ExtResource("23_bt5mj")
+metadata/_custom_type_script = "uid://cfcsf7cxxyd27"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/StatsPopup" unique_id=2005646570]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DraggableHeader" parent="UI/StatsPopup/VBoxContainer" unique_id=2005646571 instance=ExtResource("14_ca42v")]
+layout_mode = 2
+
+[node name="DiceStatsContainer" type="VBoxContainer" parent="UI/StatsPopup/VBoxContainer" unique_id=45966301]
+layout_mode = 2
+
+[node name="DiceStatsLabel" type="Label" parent="UI/StatsPopup/VBoxContainer/DiceStatsContainer" unique_id=2067657334]
+layout_mode = 2
+text = "Dice Stats"
+
+[node name="ChartContainer" type="HBoxContainer" parent="UI/StatsPopup/VBoxContainer/DiceStatsContainer" unique_id=2005646572]
+layout_mode = 2
+
+[connection signal="pressed" from="UI/MenuHbox/StatsButton" to="." method="_on_stats_button_pressed"]
+[connection signal="pressed" from="UI/MenuHbox/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="UI/GameMenu/TradePanel/BankTradeButton" to="." method="_on_bank_trade_button_pressed"]
 [connection signal="pressed" from="UI/GameMenu/TradePanel/PlayerTradeButton" to="." method="_on_player_trade_button_pressed"]
 [connection signal="popup_hide" from="UI/SelectionPopup" to="." method="_on_popup_closed"]

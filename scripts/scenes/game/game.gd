@@ -127,15 +127,6 @@ func _init_players() -> void:
 	local_player = player_states[0]
 	hand_manager.set_hand(local_player.hand)
 
-	local_player.hand.add_resource(ResourceTypes.Type.WOOD)
-	local_player.hand.add_resource(ResourceTypes.Type.WOOD)
-	local_player.hand.add_resource(ResourceTypes.Type.WOOD)
-	local_player.hand.add_resource(ResourceTypes.Type.WOOD)
-
-	for i in range(1, player_states.size()):
-		player_states[i].hand.add_resource(ResourceTypes.Type.WOOD, 2)
-		player_states[i].hand.add_resource(ResourceTypes.Type.BRICK, 2)
-
 	_load_dev_decks()
 
 	turn_manager = TurnManager.new()
@@ -214,6 +205,7 @@ func _distribute_resources(dice_total: int) -> void:
 				continue
 			var resource_amount : int = 2 if vertex_owner.piece_type == PieceTypes.Type.CITY else 1
 			player_states[vertex_owner.player_index].hand.add_resource(resource, resource_amount)
+			game_stats.resources.record_resource(resource, resource_amount)
 	GameSignals.emit_hand_changed()
 
 
@@ -223,6 +215,7 @@ func _collect_resources_at_vertex(player_index: int, world_pos: Vector2) -> void
 		var resource: ResourceTypes.Type = TerrainTypes.to_resource(terrain)
 		if resource != ResourceTypes.Type.UNKNOWN:
 			player_states[player_index].hand.add_resource(resource)
+			game_stats.resources.record_resource(resource)
 	GameSignals.emit_hand_changed()
 
 

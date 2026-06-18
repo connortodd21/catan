@@ -266,7 +266,7 @@ metadata/_custom_type_script = "uid://cloe8kcib008c"
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/SettingsPopup" unique_id=1679787055]
 offset_left = 4.0
 offset_top = 4.0
-offset_right = 110.0
+offset_right = 96.0
 offset_bottom = 96.0
 
 [node name="DraggableHeader" parent="UI/SettingsPopup/VBoxContainer" unique_id=625641396 instance=ExtResource("14_ca42v")]
@@ -286,14 +286,13 @@ script = ExtResource("23_bt5mj")
 metadata/_custom_type_script = "uid://cfcsf7cxxyd27"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/StatsPopup" unique_id=2005646570]
-layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 4.0
 offset_top = 4.0
-offset_right = -4.0
-offset_bottom = -4.0
+offset_right = 96.0
+offset_bottom = 96.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -310,6 +309,21 @@ text = "Dice Stats"
 [node name="ChartContainer" type="HBoxContainer" parent="UI/StatsPopup/VBoxContainer/DiceStatsContainer" unique_id=2005646572]
 layout_mode = 2
 
+[node name="HSeparator" type="HSeparator" parent="UI/StatsPopup/VBoxContainer" unique_id=1721241257]
+layout_mode = 2
+
+[node name="ResourceStatsContainer" type="VBoxContainer" parent="UI/StatsPopup/VBoxContainer" unique_id=2005646573]
+layout_mode = 2
+
+[node name="ResourceStatsLabel" type="Label" parent="UI/StatsPopup/VBoxContainer/ResourceStatsContainer" unique_id=2005646574]
+layout_mode = 2
+tooltip_text = "Excludes dev cards (Year of Plenty, Monopoly)"
+mouse_filter = 0
+text = "Resources"
+
+[node name="ResourceChartContainer" type="HBoxContainer" parent="UI/StatsPopup/VBoxContainer/ResourceStatsContainer" unique_id=2005646575]
+layout_mode = 2
+
 [connection signal="pressed" from="UI/MenuHbox/StatsButton" to="." method="_on_stats_button_pressed"]
 [connection signal="pressed" from="UI/MenuHbox/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="UI/GameMenu/TradePanel/BankTradeButton" to="." method="_on_bank_trade_button_pressed"]
@@ -323,3 +337,4 @@ layout_mode = 2
 [connection signal="pressed" from="UI/BankTradePopup/VBoxContainer/ButtonContainer/CancelButton" to="UI/BankTradePopup" method="_on_cancel_button_pressed"]
 [connection signal="pressed" from="UI/GameOverPopup/VBoxContainer/ExitButton" to="UI/GameOverPopup" method="_on_exit_button_pressed"]
 [connection signal="pressed" from="UI/SettingsPopup/VBoxContainer/QuitGameButton" to="UI/SettingsPopup" method="_on_quit_button_pressed"]
+[connection signal="popup_hide" from="UI/StatsPopup" to="UI/StatsPopup" method="_on_popup_hide"]

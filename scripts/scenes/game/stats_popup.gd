@@ -1,12 +1,18 @@
 class_name StatsPopup
 extends PopupPanel
 
-const MAX_BAR_HEIGHT: int = 120
-const BAR_WIDTH: int = 30
-const BAR_COLOR: Color = Color.STEEL_BLUE
+const DICE_BAR_COLOR: Color = Color.STEEL_BLUE
+const RESOURCE_COLORS: Dictionary = {
+	ResourceTypes.Type.WOOD: Color(0.13, 0.55, 0.13),
+	ResourceTypes.Type.BRICK: Color(0.70, 0.20, 0.10),
+	ResourceTypes.Type.WHEAT: Color(0.96, 0.76, 0.05),
+	ResourceTypes.Type.SHEEP: Color(0.56, 0.74, 0.56),
+	ResourceTypes.Type.ROCK: Color(0.50, 0.50, 0.50),
+}
 
 @onready var _header: DraggableHeader = $VBoxContainer/DraggableHeader
-@onready var _chart_container: HBoxContainer = $VBoxContainer/DiceStatsContainer/ChartContainer
+@onready var _dice_chart_container: HBoxContainer = $VBoxContainer/DiceStatsContainer/ChartContainer
+@onready var _resource_chart_container: HBoxContainer = $VBoxContainer/ResourceStatsContainer/ResourceChartContainer
 
 
 func _ready() -> void:
@@ -17,42 +23,41 @@ func _ready() -> void:
 	add_theme_stylebox_override("panel", bg)
 
 
+func _on_popup_hide() -> void:
+	for child in _dice_chart_container.get_children():
+		child.queue_free()
+	for child in _resource_chart_container.get_children():
+		child.queue_free()
+
+
 func show_stats(stats: GameStats) -> void:
 	_build_dice_chart(stats.dice)
+	_build_resource_chart(stats.resources)
 	popup_centered()
 	reset_size.call_deferred()
 
 
 func _build_dice_chart(dice_stats: DiceStats) -> void:
-	for child in _chart_container.get_children():
-		child.queue_free()
-
-	var max_count := dice_stats.get_max_roll_count()
-
+	var entries: Array[BarChart.Entry] = []
 	for roll_total in range(2, 13):
-		var count := dice_stats.get_roll_count(roll_total)
-		var bar_height := int(count / float(max_count) * MAX_BAR_HEIGHT) if max_count > 0 else 0
-		_chart_container.add_child(_build_column(roll_total, count, bar_height))
+		entries.append(BarChart.Entry.new(str(roll_total), dice_stats.get_roll_count(roll_total), DICE_BAR_COLOR))
+	for child in _dice_chart_container.get_children():
+		child.queue_free()
+	var chart := BarChart.new()
+	chart.set_data(entries)
+	_dice_chart_container.add_child(chart)
 
 
-func _build_column(roll_total: int, count: int, bar_height: int) -> VBoxContainer:
-	var column := VBoxContainer.new()
-	column.alignment = BoxContainer.ALIGNMENT_END
-
-	var count_label := Label.new()
-	count_label.text = str(count)
-	count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-
-	var bar := ColorRect.new()
-	bar.custom_minimum_size = Vector2(BAR_WIDTH, bar_height)
-	bar.color = BAR_COLOR
-
-	var number_label := Label.new()
-	number_label.text = str(roll_total)
-	number_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-
-	column.add_child(count_label)
-	column.add_child(bar)
-	column.add_child(number_label)
-
-	return column
+func _build_resource_chart(resource_stats: ResourceStats) -> void:
+	var entries: Array[BarChart.Entry] = []
+	for resource_type in ResourceTypes.DISPLAY_ORDER:
+		entries.append(BarChart.Entry.new(
+			ResourceTypes.type_to_str(resource_type),
+			resource_stats.get_resource_count(resource_type),
+			RESOURCE_COLORS.get(resource_type, Color.WHITE)
+		))
+	for child in _resource_chart_container.get_children():
+		child.queue_free()
+	var chart := BarChart.new()
+	chart.set_data(entries)
+	_resource_chart_container.add_child(chart)

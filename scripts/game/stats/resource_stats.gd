@@ -5,7 +5,11 @@ var resource_counts: Dictionary[ResourceTypes.Type, int] = {}
 
 
 func _init() -> void:
-	GameSignals.resource_collected.connect(record_resource)
+	GameSignals.resource_collected.connect(_on_resource_collected)
+
+
+func _on_resource_collected(_player: Player, resource: ResourceTypes.Type, amount: int) -> void:
+	record_resource(resource, amount)
 
 
 func record_resource(resource: ResourceTypes.Type, amount: int = 1) -> void:

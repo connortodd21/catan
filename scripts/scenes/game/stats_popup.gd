@@ -13,6 +13,7 @@ const RESOURCE_COLORS: Dictionary = {
 @onready var _header: DraggableHeader = $VBoxContainer/DraggableHeader
 @onready var _dice_chart_container: HBoxContainer = $VBoxContainer/DiceStatsContainer/ChartContainer
 @onready var _resource_chart_container: HBoxContainer = $VBoxContainer/ResourceStatsContainer/ResourceChartContainer
+@onready var _player_resource_table_container: HBoxContainer = $VBoxContainer/PlayerResourcesContainer/PlayerResourcesTableContainer
 
 
 func _ready() -> void:
@@ -28,11 +29,14 @@ func _on_popup_hide() -> void:
 		child.queue_free()
 	for child in _resource_chart_container.get_children():
 		child.queue_free()
+	for child in _player_resource_table_container.get_children():
+		child.queue_free()
 
 
 func show_stats(stats: GameStats) -> void:
 	_build_dice_chart(stats.dice)
 	_build_resource_chart(stats.resources)
+	_build_player_resource_table(stats.player_resources)
 	popup_centered()
 	reset_size.call_deferred()
 
@@ -41,11 +45,24 @@ func _build_dice_chart(dice_stats: DiceStats) -> void:
 	var entries: Array[BarChart.Entry] = []
 	for roll_total in range(2, 13):
 		entries.append(BarChart.Entry.new(str(roll_total), dice_stats.get_roll_count(roll_total), DICE_BAR_COLOR))
-	for child in _dice_chart_container.get_children():
-		child.queue_free()
 	var chart := BarChart.new()
 	chart.set_data(entries)
 	_dice_chart_container.add_child(chart)
+
+
+func _build_player_resource_table(player_resource_stats: PlayerResourceStats) -> void:
+	var headers: Array[String] = []
+	for resource in ResourceTypes.DISPLAY_ORDER:
+		headers.append(ResourceTypes.type_to_str(resource))
+	var rows: Array[Table.Row] = []
+	for player: Player in player_resource_stats.get_players():
+		var values: Array[int] = []
+		for resource in ResourceTypes.DISPLAY_ORDER:
+			values.append(player_resource_stats.get_resource_count(player, resource))
+		rows.append(Table.Row.new(player.player_name, player.get_color(), values))
+	var table := Table.new()
+	table.set_data(headers, rows)
+	_player_resource_table_container.add_child(table)
 
 
 func _build_resource_chart(resource_stats: ResourceStats) -> void:
@@ -56,8 +73,6 @@ func _build_resource_chart(resource_stats: ResourceStats) -> void:
 			resource_stats.get_resource_count(resource_type),
 			RESOURCE_COLORS.get(resource_type, Color.WHITE)
 		))
-	for child in _resource_chart_container.get_children():
-		child.queue_free()
 	var chart := BarChart.new()
 	chart.set_data(entries)
 	_resource_chart_container.add_child(chart)

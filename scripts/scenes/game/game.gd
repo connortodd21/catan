@@ -58,25 +58,22 @@ const NEWLY_BOUGHT_CARD_META = "newly_bought"
 
 
 #############################################
-### References
+### Globals
 #############################################
 
+# Managers/Singletons
 var action_manager: ActionManager
 var board: SerializedBoard
-var game_stats: GameStats = GameStats.new()
 var board_renderer: BoardRenderer
 var board_state: BoardState
 var card_manager: CardManager
+var game_stats: GameStats = GameStats.new()
 var local_player: PlayerState = null
 var popup_manager: PopupManager
 var setup_manager: SetupManager
 var turn_manager: TurnManager
 
-
-#############################################
-### Globals
-#############################################
-
+# Game states
 var _draw_piles: Dictionary = {}
 var _harbormaster_holder: PlayerState = null
 var _largest_army_holder: PlayerState = null
@@ -204,8 +201,9 @@ func _distribute_resources(dice_total: int) -> void:
 			if vertex_owner.is_empty():
 				continue
 			var resource_amount : int = 2 if vertex_owner.piece_type == PieceTypes.Type.CITY else 1
-			player_states[vertex_owner.player_index].hand.add_resource(resource, resource_amount)
-			GameSignals.emit_resource_collected(resource, resource_amount)
+			var collecting_player := player_states[vertex_owner.player_index]
+			collecting_player.hand.add_resource(resource, resource_amount)
+			GameSignals.emit_resource_collected(collecting_player.player, resource, resource_amount)
 	GameSignals.emit_hand_changed()
 
 
@@ -215,7 +213,7 @@ func _collect_resources_at_vertex(player_index: int, world_pos: Vector2) -> void
 		var resource: ResourceTypes.Type = TerrainTypes.to_resource(terrain)
 		if resource != ResourceTypes.Type.UNKNOWN:
 			player_states[player_index].hand.add_resource(resource)
-			GameSignals.emit_resource_collected(resource)
+			GameSignals.emit_resource_collected(player_states[player_index].player, resource)
 	GameSignals.emit_hand_changed()
 
 

@@ -107,6 +107,6 @@ func roll_dice(die1: DiceFaces.Type, die2: DiceFaces.Type, total: int) -> void:
 #############################################
 ### RESOURCE SIGNALS
 #############################################
-signal resource_collected(resource: ResourceTypes.Type, amount: int)
-func emit_resource_collected(resource: ResourceTypes.Type, amount: int = 1) -> void:
-	resource_collected.emit(resource, amount)
+signal resource_collected(player: Player, resource: ResourceTypes.Type, amount: int)
+func emit_resource_collected(player: Player, resource: ResourceTypes.Type, amount: int = 1) -> void:
+	resource_collected.emit(player, resource, amount)

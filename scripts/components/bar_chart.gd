@@ -14,7 +14,7 @@ class Entry:
 
 @export var max_bar_height: int = 120
 @export var bar_width: int = 30
-@export var bar_spacing: int = 8
+@export var bar_spacing: int = 15
 
 
 func _ready() -> void:

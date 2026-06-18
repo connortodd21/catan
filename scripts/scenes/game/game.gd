@@ -3,62 +3,90 @@ extends Node2D
 
 const NEWLY_BOUGHT_CARD_META = "newly_bought"
 
-@export var terrain_database: TerrainDatabaseResource
-@export var number_database: NumberDatabaseResource
-@export var piece_database: PieceDatabaseResource
-@export var action_database: ActionDatabaseResource
-@export var port_scene: PackedScene
-@export var port_deck: PortDeck
-@export var decks: Array[CardDeck] = []
 
+#############################################
+### EXPORTS
+#############################################
+
+# Resources
+@export var action_database: ActionDatabaseResource
+@export var decks: Array[CardDeck] = []
+@export var piece_database: PieceDatabaseResource
+@export var port_deck: PortDeck
+@export var number_database: NumberDatabaseResource
+@export var terrain_database: TerrainDatabaseResource
+
+# Scenes
+@export var port_scene: PackedScene
+
+# Game config
+@export var game_config: GameConfig = null
+@export var min_harbormaster: int = 3
+@export var min_longest_road: int = 5
+@export var min_largest_army: int = 3
+@export var robber_discard_hand_threshold : int = 7
+
+# UI
 @export var number_scale: float = 1.0
 @export var number_offset: Vector2 = Vector2.ZERO
 @export var robber_offset: Vector2 = Vector2(-40, 0)
 
-@export var game_config: GameConfig = null
-@export var min_longest_road: int = 5
-@export var min_largest_army: int = 3
-@export var min_harbormaster: int = 3
-@export var robber_discard_hand_threshold : int = 7
 
+#############################################
+### Nodes
+#############################################
+
+@onready var action_panel: ActionPanel = $UI/GameMenu/ActionPanel
+@onready var bank_trade_button: Button = $UI/GameMenu/TradePanel/BankTradeButton
+@onready var bank_trade_popup: BankTradePopup = $UI/BankTradePopup
 @onready var board_tile_map: TileMapLayer = $BoardView/BoardTileMap
 @onready var board_view: Node2D = $BoardView
+@onready var dice_roller: DiceRoller = $UI/GameMenu/DiceRoller
+@onready var debug_label: Label = $UI/DebugLabel
+@onready var discard_popup: DiscardPopup = $UI/DiscardPopup
+@onready var end_turn_button: Button = $UI/GameMenu/EndTurnButton
+@onready var game_over_popup: GameOverPopup = $UI/GameOverPopup
 @onready var hand_manager: HandManager = $UI/HandManager
 @onready var player_hud: PlayerHUD = $UI/PlayerHUD
-@onready var debug_label: Label = $UI/DebugLabel
-@onready var end_turn_button: Button = $UI/EndTurnButton
-@onready var selection_popup: SelectionPopup = $UI/SelectionPopup
-@onready var discard_popup: DiscardPopup = $UI/DiscardPopup
-@onready var bank_trade_popup: BankTradePopup = $UI/BankTradePopup
-@onready var game_over_popup: GameOverPopup = $UI/GameOverPopup
-@onready var action_panel: ActionPanel = $UI/GameMenu/ActionPanel
-@onready var dice_roller: DiceRoller = $UI/GameMenu/DiceRoller
-@onready var trade_panel: VBoxContainer = $UI/GameMenu/TradePanel
-@onready var bank_trade_button: Button = $UI/GameMenu/TradePanel/BankTradeButton
 @onready var player_trade_button: Button = $UI/GameMenu/TradePanel/PlayerTradeButton
+@onready var selection_popup: SelectionPopup = $UI/SelectionPopup
+@onready var settings_button: TextureButton = $UI/SettingsButton
+@onready var settings_popup: SettingsPopup = $UI/SettingsPopup
+@onready var trade_panel: VBoxContainer = $UI/GameMenu/TradePanel
 
-var tile_coords: Array[Vector2i] = []
-var player_states: Array[PlayerState] = []
-var local_player: PlayerState = null
-var turn_manager: TurnManager
+
+#############################################
+### References
+#############################################
+
 var action_manager: ActionManager
-var card_manager: CardManager
-var setup_manager: SetupManager
-var popup_manager: PopupManager
-var board_state: BoardState
 var board: SerializedBoard
-
 var board_renderer: BoardRenderer
+var board_state: BoardState
+var card_manager: CardManager
+var local_player: PlayerState = null
+var popup_manager: PopupManager
+var setup_manager: SetupManager
+var turn_manager: TurnManager
+
+
+#############################################
+### Globals
+#############################################
 
 var _draw_piles: Dictionary = {}
-
-var target_vp: int = 10
-var _longest_road_holder: PlayerState = null
-var _largest_army_holder: PlayerState = null
 var _harbormaster_holder: PlayerState = null
+var _largest_army_holder: PlayerState = null
+var _longest_road_holder: PlayerState = null
+var player_states: Array[PlayerState] = []
 var _robber_coord: Vector2i = Vector2i(-999, -999)
+var target_vp: int = 10
+var tile_coords: Array[Vector2i] = []
 
 
+#############################################
+### Game loop and setup
+#############################################
 func _ready() -> void:
 	if game_config:
 		target_vp = game_config.victory_points
@@ -623,6 +651,10 @@ func _register_signals() -> void:
 	GameSignals.card_clicked.connect(_on_card_clicked)
 	GameSignals.setup_phase_ended_for_player.connect(_on_setup_phase_ended_for_player)
 	end_turn_button.pressed.connect(turn_manager.end_turn)
+
+
+func _on_settings_button_pressed() -> void:
+	settings_popup.popup_centered()
 
 
 func _on_setup_phase_ended_for_player(player_index: int, settlement_pos: Vector2) -> void:

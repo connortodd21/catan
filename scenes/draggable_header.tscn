@@ -11,7 +11,17 @@ layout_mode = 2
 [node name="DragHandle" type="PanelContainer" parent="VBoxContainer" unique_id=884205897]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="VBoxContainer/DragHandle" unique_id=2135426479]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/DragHandle" unique_id=1111111111]
 layout_mode = 2
 
+[node name="TitleLabel" type="Label" parent="VBoxContainer/DragHandle/HBoxContainer" unique_id=2135426479]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CloseButton" type="Button" parent="VBoxContainer/DragHandle/HBoxContainer" unique_id=1111111112]
+layout_mode = 2
+text = "X"
+visible = false
+
 [connection signal="gui_input" from="VBoxContainer/DragHandle" to="." method="_on_drag_handle_gui_input"]
+[connection signal="pressed" from="VBoxContainer/DragHandle/HBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]

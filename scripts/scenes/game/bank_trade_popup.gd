@@ -27,6 +27,7 @@ func _ready() -> void:
 	_trade_container.set_meta(ON_CLICK_CALLBACK_KEY, _on_trade_card_pressed)
 	_receive_container.set_meta(ON_CLICK_CALLBACK_KEY, _on_receive_card_pressed)
 	_trade_button.pressed.connect(_on_trade_button_pressed)
+	_header.set_close_callback(hide)
 
 
 func init(hand: Hand, resource_definitions: Array[ResourceDefinition], trade_rates: Dictionary[ResourceTypes.Type, int], callback: Callable) -> void:

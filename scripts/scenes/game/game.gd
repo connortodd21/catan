@@ -205,7 +205,7 @@ func _distribute_resources(dice_total: int) -> void:
 				continue
 			var resource_amount : int = 2 if vertex_owner.piece_type == PieceTypes.Type.CITY else 1
 			player_states[vertex_owner.player_index].hand.add_resource(resource, resource_amount)
-			game_stats.resources.record_resource(resource, resource_amount)
+			GameSignals.emit_resource_collected(resource, resource_amount)
 	GameSignals.emit_hand_changed()
 
 
@@ -215,7 +215,7 @@ func _collect_resources_at_vertex(player_index: int, world_pos: Vector2) -> void
 		var resource: ResourceTypes.Type = TerrainTypes.to_resource(terrain)
 		if resource != ResourceTypes.Type.UNKNOWN:
 			player_states[player_index].hand.add_resource(resource)
-			game_stats.resources.record_resource(resource)
+			GameSignals.emit_resource_collected(resource)
 	GameSignals.emit_hand_changed()
 
 
@@ -693,7 +693,6 @@ func _on_hand_changed() -> void:
 
 
 func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, dice_total: int) -> void:
-	game_stats.dice.record_roll(dice_total)
 	turn_manager.advance_from_roll()
 	if game_config.has_robber() and dice_total == 7:
 		var hand_size := local_player.hand.total_resource_count()

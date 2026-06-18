@@ -4,6 +4,10 @@ extends RefCounted
 var resource_counts: Dictionary[ResourceTypes.Type, int] = {}
 
 
+func _init() -> void:
+	GameSignals.resource_collected.connect(record_resource)
+
+
 func record_resource(resource: ResourceTypes.Type, amount: int = 1) -> void:
 	resource_counts[resource] = resource_counts.get(resource, 0) + amount
 

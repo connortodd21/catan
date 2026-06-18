@@ -4,6 +4,14 @@ extends RefCounted
 var roll_counts: Dictionary[int, int] = {}
 
 
+func _init() -> void:
+	GameSignals.dice_rolled.connect(_on_dice_rolled)
+
+
+func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, total: int) -> void:
+	record_roll(total)
+
+
 func record_roll(roll_total: int) -> void:
 	roll_counts[roll_total] = roll_counts.get(roll_total, 0) + 1
 

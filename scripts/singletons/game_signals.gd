@@ -102,3 +102,11 @@ func emit_action_executed(type: ActionTypes.Type, position: Vector2) -> void:
 signal dice_rolled(die1: DiceFaces.Type, die2: DiceFaces.Type, total: int)
 func roll_dice(die1: DiceFaces.Type, die2: DiceFaces.Type, total: int) -> void:
 	dice_rolled.emit(die1, die2, total)
+
+
+#############################################
+### RESOURCE SIGNALS
+#############################################
+signal resource_collected(resource: ResourceTypes.Type, amount: int)
+func emit_resource_collected(resource: ResourceTypes.Type, amount: int = 1) -> void:
+	resource_collected.emit(resource, amount)

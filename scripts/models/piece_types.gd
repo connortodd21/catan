@@ -15,3 +15,12 @@ enum Type {
 	MERCHANT,
 	ROBBER
 }
+
+static var _display_names: Dictionary = {
+	Type.SETTLEMENT: "Settlement",
+	Type.CITY: "City",
+	Type.ROAD: "Road",
+}
+
+static func type_to_str(type: Type) -> String:
+	return _display_names.get(type, "Piece")

@@ -36,6 +36,8 @@ const NEWLY_BOUGHT_CARD_META = "newly_bought"
 ### Nodes
 #############################################
 
+@onready var activity_log_popup: ActivityLogPopup = $UI/ActivityLogPopup
+@onready var activity_log_button: TextureButton = $UI/MenuHbox/ActivityLogButton
 @onready var action_panel: ActionPanel = $UI/GameMenu/ActionPanel
 @onready var bank_trade_button: Button = $UI/GameMenu/TradePanel/BankTradeButton
 @onready var bank_trade_popup: BankTradePopup = $UI/BankTradePopup
@@ -63,6 +65,7 @@ const NEWLY_BOUGHT_CARD_META = "newly_bought"
 
 # Managers/Singletons
 var action_manager: ActionManager
+var activity_log: ActivityLog = ActivityLog.new()
 var board: SerializedBoard
 var board_renderer: BoardRenderer
 var board_state: BoardState
@@ -189,6 +192,8 @@ func _distribute_resources(dice_total: int) -> void:
 		return
 	var snap_points := PlacementType.get_snap_points(PlacementType.Type.HEX_VERTEX)
 	var coords : Array[Vector2i] = board_state.get_coords_for_number(dice_total)
+	var player_resources_to_distribute: Dictionary = {}
+	# Accumulate resources per player across all tiles and vertices
 	for coord in coords:
 		if game_config.has_robber() and coord == _robber_coord:
 			continue
@@ -201,19 +206,35 @@ func _distribute_resources(dice_total: int) -> void:
 			if vertex_owner.is_empty():
 				continue
 			var resource_amount : int = 2 if vertex_owner.piece_type == PieceTypes.Type.CITY else 1
-			var collecting_player := player_states[vertex_owner.player_index]
-			collecting_player.hand.add_resource(resource, resource_amount)
-			GameSignals.emit_resource_collected(collecting_player.player, resource, resource_amount)
+			if not player_resources_to_distribute.has(vertex_owner.player_index):
+				player_resources_to_distribute[vertex_owner.player_index] = PlayerResources.new()
+			player_resources_to_distribute[vertex_owner.player_index].add(resource, resource_amount)
+	# Hand out accumulated resources and emit signals once per player
+	for player_index: int in player_resources_to_distribute:
+		var ps := player_states[player_index]
+		var resources: PlayerResources = player_resources_to_distribute[player_index]
+		for resource in resources.counts:
+			ps.hand.add_resource(resource, resources.get_count(resource))
+			GameSignals.emit_resource_collected(ps.player, resource, resources.get_count(resource))
+		GameSignals.emit_resources_distributed(ps.player, resources)
 	GameSignals.emit_hand_changed()
 
 
 func _collect_resources_at_vertex(player_index: int, world_pos: Vector2) -> void:
+	var ps := player_states[player_index]
 	var terrain_types := board_state.get_terrain_at_vertex(world_pos)
+	# Accumulate resources from all adjacent terrain types
+	var resources := PlayerResources.new()
 	for terrain in terrain_types:
 		var resource: ResourceTypes.Type = TerrainTypes.to_resource(terrain)
 		if resource != ResourceTypes.Type.UNKNOWN:
-			player_states[player_index].hand.add_resource(resource)
-			GameSignals.emit_resource_collected(player_states[player_index].player, resource)
+			resources.add(resource)
+	# Add to hand and emit signals once per player
+	for resource in resources.counts:
+		ps.hand.add_resource(resource, resources.get_count(resource))
+		GameSignals.emit_resource_collected(ps.player, resource, resources.get_count(resource))
+	if not resources.is_empty():
+		GameSignals.emit_resources_distributed(ps.player, resources)
 	GameSignals.emit_hand_changed()
 
 
@@ -331,15 +352,17 @@ func _on_robber_target_selected(target_index: int) -> void:
 
 
 func _steal_resource(target_index: int) -> void:
-	var target_hand : Hand = player_states[target_index].hand
+	var target := player_states[target_index]
+	var thief := player_states[turn_manager.current_player_index]
 	var available_resources : Array[ResourceTypes.Type] = []
-	for resource_type: ResourceTypes.Type in target_hand.resource_counts:
-		for _i in target_hand.resource_count(resource_type):
+	for resource_type: ResourceTypes.Type in target.hand.resource_counts:
+		for _i in target.hand.resource_count(resource_type):
 			available_resources.append(resource_type)
 	if not available_resources.is_empty():
 		var stolen_resource : ResourceTypes.Type = ArrayUtils.get_random_item(available_resources)
-		target_hand.remove_resource(stolen_resource)
-		player_states[turn_manager.current_player_index].hand.add_resource(stolen_resource)
+		target.hand.remove_resource(stolen_resource)
+		thief.hand.add_resource(stolen_resource)
+		GameSignals.emit_resource_stolen(thief.player, target.player, stolen_resource)
 		GameSignals.emit_hand_changed()
 
 
@@ -466,7 +489,7 @@ func _on_action_executed(action: ActionTypes.Type, action_position: Vector2) -> 
 	if action == ActionTypes.Type.BUILD_SETTLEMENT and turn_manager.current_phase == GamePhase.Phase.SETUP:
 		setup_manager.record_last_settlement(snap.pos)
 	var current_player := turn_manager.current_player_index
-	GameSignals.emit_piece_placed(piece_type, snap.pos)
+	GameSignals.emit_piece_placed(player_states[current_player].player, piece_type, snap.pos)
 	_deduct_cost(definition)
 	_update_score(action, current_player)
 	_check_titles(action, current_player)
@@ -647,6 +670,11 @@ func _register_signals() -> void:
 	end_turn_button.pressed.connect(turn_manager.end_turn)
 
 
+func _on_activity_log_button_pressed() -> void:
+	var anchor := Vector2(activity_log_button.global_position.x, activity_log_button.global_position.y + activity_log_button.size.y)
+	activity_log_popup.show_log(activity_log, anchor)
+
+
 func _on_stats_button_pressed() -> void:
 	stats_popup.show_stats(game_stats)
 
@@ -691,6 +719,7 @@ func _on_hand_changed() -> void:
 
 
 func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, dice_total: int) -> void:
+	GameSignals.emit_player_rolled(local_player.player, dice_total)
 	turn_manager.advance_from_roll()
 	if game_config.has_robber() and dice_total == 7:
 		var hand_size := local_player.hand.total_resource_count()
@@ -717,6 +746,7 @@ func _on_bank_trade_confirmed(traded: Array[ResourceTypes.Type], received: Array
 		local_player.hand.remove_resource(resource)
 	for resource in received:
 		local_player.hand.add_resource(resource)
+	GameSignals.emit_bank_trade_completed(local_player.player, traded, received)
 	GameSignals.emit_hand_changed()
 
 

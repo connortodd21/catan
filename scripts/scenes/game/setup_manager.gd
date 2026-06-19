@@ -64,7 +64,7 @@ func _build_setup_order(player_count: int) -> Array[int]:
 #############################################
 ### SIGNALS
 #############################################
-func _on_piece_placed(piece_type: PieceTypes.Type, _world_pos: Vector2) -> void:
+func _on_piece_placed(_player: Player, piece_type: PieceTypes.Type, _world_pos: Vector2) -> void:
 	if turn_manager.current_phase != GamePhase.Phase.SETUP:
 		return
 

@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" path="res://scenes/action_panel.tscn" id="9_ap"]
 [ext_resource type="Texture2D" uid="uid://dn7ucr5poup0d" path="res://assets/buttons/settings.png" id="13_5newe"]
 [ext_resource type="Texture2D" uid="uid://ouxclww0s2at" path="res://assets/buttons/stats.png" id="13_37s47"]
+[ext_resource type="Texture2D" uid="uid://wy04emy83cv3" path="res://assets/buttons/activity_log.png" id="13_e1j6l"]
 [ext_resource type="Script" uid="uid://dawgwpjqtumrm" path="res://scripts/scenes/game/selection_popup.gd" id="13_kvuet"]
 [ext_resource type="PackedScene" uid="uid://8gowp5njylda" path="res://scenes/draggable_header.tscn" id="14_ca42v"]
 [ext_resource type="Script" uid="uid://ccjem18okc8cy" path="res://scripts/scenes/game/discard_popup.gd" id="14_trtic"]
@@ -23,6 +24,7 @@
 [ext_resource type="Script" uid="uid://ds4tty57qgpod" path="res://scripts/scenes/game/game_over_popup.gd" id="17_rysoc"]
 [ext_resource type="Script" uid="uid://cloe8kcib008c" path="res://scripts/scenes/game/settings_popup.gd" id="20_1kice"]
 [ext_resource type="Script" uid="uid://cfcsf7cxxyd27" path="res://scripts/scenes/game/stats_popup.gd" id="23_bt5mj"]
+[ext_resource type="Script" uid="uid://b8tslke6wfe5k" path="res://scripts/scenes/game/activity_log_popup.gd" id="25_pl11u"]
 
 [node name="Game" type="Node2D" unique_id=67801416]
 script = ExtResource("1_80nbo")
@@ -67,10 +69,14 @@ grow_horizontal = 2
 horizontal_alignment = 1
 
 [node name="MenuHbox" type="HBoxContainer" parent="UI" unique_id=323179013]
-offset_left = 1280.0
+offset_left = 1184.0
 offset_top = 16.0
-offset_right = 1484.0
+offset_right = 1492.0
 offset_bottom = 116.0
+
+[node name="ActivityLogButton" type="TextureButton" parent="UI/MenuHbox" unique_id=1543811657]
+layout_mode = 2
+texture_normal = ExtResource("13_e1j6l")
 
 [node name="StatsButton" type="TextureButton" parent="UI/MenuHbox" unique_id=1302516460]
 layout_mode = 2
@@ -337,6 +343,30 @@ text = "Resources by Player"
 [node name="PlayerResourcesTableContainer" type="HBoxContainer" parent="UI/StatsPopup/VBoxContainer/PlayerResourcesContainer" unique_id=1721241261]
 layout_mode = 2
 
+[node name="ActivityLogPopup" type="PopupPanel" parent="UI" unique_id=337826768]
+script = ExtResource("25_pl11u")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/ActivityLogPopup" unique_id=337826769]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 96.0
+offset_bottom = 96.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DraggableHeader" parent="UI/ActivityLogPopup/VBoxContainer" unique_id=337826770 instance=ExtResource("14_ca42v")]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/ActivityLogPopup/VBoxContainer" unique_id=337826771]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true
+
+[connection signal="pressed" from="UI/MenuHbox/ActivityLogButton" to="." method="_on_activity_log_button_pressed"]
 [connection signal="pressed" from="UI/MenuHbox/StatsButton" to="." method="_on_stats_button_pressed"]
 [connection signal="pressed" from="UI/MenuHbox/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="UI/GameMenu/TradePanel/BankTradeButton" to="." method="_on_bank_trade_button_pressed"]

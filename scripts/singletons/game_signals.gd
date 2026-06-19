@@ -62,9 +62,9 @@ func emit_hand_add_remove() -> void:
 	hand_add_remove.emit()
 
 
-signal piece_placed(piece_type: PieceTypes.Type, world_pos: Vector2)
-func emit_piece_placed(piece_type: PieceTypes.Type, world_pos: Vector2) -> void:
-	piece_placed.emit(piece_type, world_pos)
+signal piece_placed(player: Player, piece_type: PieceTypes.Type, world_pos: Vector2)
+func emit_piece_placed(player: Player, piece_type: PieceTypes.Type, world_pos: Vector2) -> void:
+	piece_placed.emit(player, piece_type, world_pos)
 
 
 signal card_clicked(card: CardDefinition)
@@ -103,6 +103,10 @@ signal dice_rolled(die1: DiceFaces.Type, die2: DiceFaces.Type, total: int)
 func roll_dice(die1: DiceFaces.Type, die2: DiceFaces.Type, total: int) -> void:
 	dice_rolled.emit(die1, die2, total)
 
+signal player_rolled(player: Player, total: int)
+func emit_player_rolled(player: Player, total: int) -> void:
+	player_rolled.emit(player, total)
+
 
 #############################################
 ### RESOURCE SIGNALS
@@ -110,3 +114,31 @@ func roll_dice(die1: DiceFaces.Type, die2: DiceFaces.Type, total: int) -> void:
 signal resource_collected(player: Player, resource: ResourceTypes.Type, amount: int)
 func emit_resource_collected(player: Player, resource: ResourceTypes.Type, amount: int = 1) -> void:
 	resource_collected.emit(player, resource, amount)
+
+signal resources_distributed(player: Player, resources: PlayerResources)
+func emit_resources_distributed(player: Player, resources: PlayerResources) -> void:
+	resources_distributed.emit(player, resources)
+
+
+#############################################
+### TRADE SIGNALS
+#############################################
+signal bank_trade_completed(player: Player, traded: Array[ResourceTypes.Type], received: Array[ResourceTypes.Type])
+func emit_bank_trade_completed(player: Player, traded: Array[ResourceTypes.Type], received: Array[ResourceTypes.Type]) -> void:
+	bank_trade_completed.emit(player, traded, received)
+
+
+#############################################
+### ROBBER SIGNALS
+#############################################
+signal resource_stolen(thief: Player, victim: Player, resource: ResourceTypes.Type)
+func emit_resource_stolen(thief: Player, victim: Player, resource: ResourceTypes.Type) -> void:
+	resource_stolen.emit(thief, victim, resource)
+
+
+#############################################
+### CARD SIGNALS
+#############################################
+signal dev_card_played(player: Player, card_type: CardTypes.Type)
+func emit_dev_card_played(player: Player, card_type: CardTypes.Type) -> void:
+	dev_card_played.emit(player, card_type)

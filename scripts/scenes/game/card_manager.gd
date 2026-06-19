@@ -26,6 +26,8 @@ func register_handler(type: CardTypes.Type, handler: Callable) -> void:
 #############################################
 func play_card(card: CardDefinition, player_state: PlayerState) -> void:
 	player_state.hand.remove_card(card)
+	if card.card_type != CardTypes.Type.VICTORY_POINT:
+		GameSignals.emit_dev_card_played(player_state.player, card.card_type)
 	if card.card_type in _handlers:
 		_handlers[card.card_type].call()
 
@@ -42,7 +44,7 @@ func begin_road_building() -> void:
 #############################################
 ### SIGNALS
 #############################################
-func _on_piece_placed(piece_type: PieceTypes.Type, _world_pos: Vector2) -> void:
+func _on_piece_placed(_player: Player, piece_type: PieceTypes.Type, _world_pos: Vector2) -> void:
 	if turn_manager.current_phase != GamePhase.Phase.PLAYING_CARD:
 		return
 	if piece_type == PieceTypes.Type.ROAD:

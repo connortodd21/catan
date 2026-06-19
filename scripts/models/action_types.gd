@@ -5,7 +5,7 @@ enum Type {
 	BUILD_ROAD,
 	BUILD_SETTLEMENT,
 	BUILD_CITY,
-	BUY_DEV_CARD,
+	BUY_DEVELOPMENT_CARD,
 	TRADE,
 
 	# Cities & Knights
@@ -28,7 +28,7 @@ static var _labels: Dictionary[Type, String] = {
 	Type.BUILD_ROAD: "Build Road",
 	Type.BUILD_SETTLEMENT: "Build Settlement",
 	Type.BUILD_CITY: "Build City",
-	Type.BUY_DEV_CARD: "Buy Development Card",
+	Type.BUY_DEVELOPMENT_CARD: "Buy Development Card",
 	Type.TRADE: "Trade",
 	Type.BUILD_KNIGHT: "Build Knight",
 	Type.ACTIVATE_KNIGHT: "Activate Knight",

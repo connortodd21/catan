@@ -9,7 +9,8 @@ func _init() -> void:
 	GameSignals.player_rolled.connect(_on_player_rolled)
 	GameSignals.resources_distributed.connect(_on_resources_distributed)
 	GameSignals.piece_placed.connect(_on_piece_placed)
-	GameSignals.dev_card_played.connect(_on_dev_card_played)
+	GameSignals.development_card_bought.connect(_on_development_card_bought)
+	GameSignals.development_card_played.connect(_on_development_card_played)
 	GameSignals.bank_trade_completed.connect(_on_bank_trade_completed)
 	GameSignals.resource_stolen.connect(_on_resource_stolen)
 	GameSignals.title_holder_changed.connect(_on_title_holder_changed)
@@ -37,8 +38,12 @@ func _on_piece_placed(player: Player, piece_type: PieceTypes.Type, _world_pos: V
 	_append(player, ActivityEvent.Type.PIECE_PLACED, { ActivityEntry.KEY_PIECE_TYPE: piece_type })
 
 
-func _on_dev_card_played(player: Player, card_type: CardTypes.Type) -> void:
-	_append(player, ActivityEvent.Type.DEV_CARD_PLAYED, { ActivityEntry.KEY_CARD_TYPE: card_type })
+func _on_development_card_bought(player: Player) -> void:
+	_append(player, ActivityEvent.Type.DEVELOPMENT_CARD_BOUGHT)
+
+
+func _on_development_card_played(player: Player, card_type: CardTypes.Type) -> void:
+	_append(player, ActivityEvent.Type.DEVELOPMENT_CARD_PLAYED, { ActivityEntry.KEY_CARD_TYPE: card_type })
 
 
 func _on_bank_trade_completed(player: Player, traded: Array[ResourceTypes.Type], received: Array[ResourceTypes.Type]) -> void:

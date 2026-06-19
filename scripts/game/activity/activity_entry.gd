@@ -33,7 +33,9 @@ func to_bbcode() -> String:
 			return "%s collected %s\n" % [_player_tag(player), _player_resources_to_str(activity_metadata[KEY_RESOURCES])]
 		ActivityEvent.Type.PIECE_PLACED:
 			return "%s built a %s\n" % [_player_tag(player), PieceTypes.type_to_str(activity_metadata[KEY_PIECE_TYPE])]
-		ActivityEvent.Type.DEV_CARD_PLAYED:
+		ActivityEvent.Type.DEVELOPMENT_CARD_BOUGHT:
+			return "%s bought a Development Card\n" % _player_tag(player)
+		ActivityEvent.Type.DEVELOPMENT_CARD_PLAYED:
 			return "%s played %s\n" % [_player_tag(player), CardTypes.type_to_str(activity_metadata[KEY_CARD_TYPE])]
 		ActivityEvent.Type.BANK_TRADE:
 			return "%s traded %s for %s\n" % [_player_tag(player), _resource_array_to_str(activity_metadata[KEY_TRADED]), _resource_array_to_str(activity_metadata[KEY_RECEIVED])]

@@ -169,12 +169,14 @@ func _load_dev_decks() -> void:
 		_draw_piles[deck.deck_type] = pile
 
 
-func _draw_dev_card(deck_type: Deck.Type) -> void:
+func _draw_development_card(deck_type: Deck.Type) -> void:
 	var pile: Array[CardDefinition] = _draw_piles.get(deck_type, [])
 	if not pile.is_empty():
 		var card: CardDefinition = pile.pop_back().duplicate()
 		card.set_meta(NEWLY_BOUGHT_CARD_META, true)
-		player_states[turn_manager.current_player_index].hand.add_card(card)
+		var player_state := player_states[turn_manager.current_player_index]
+		player_state.hand.add_card(card)
+		GameSignals.emit_development_card_bought(player_state.player)
 
 
 func _clear_newly_bought_cards(player_index: int) -> void:
@@ -427,7 +429,7 @@ func _register_action_validators() -> void:
 	action_manager.register_validator(ActionTypes.Type.BUILD_SETTLEMENT, _can_perform_settlement)
 	action_manager.register_validator(ActionTypes.Type.BUILD_ROAD, _can_perform_road)
 	action_manager.register_validator(ActionTypes.Type.BUILD_CITY, _can_perform_city)
-	action_manager.register_validator(ActionTypes.Type.BUY_DEV_CARD, _can_perform_buy_dev_card)
+	action_manager.register_validator(ActionTypes.Type.BUY_DEVELOPMENT_CARD, _can_perform_buy_development_card)
 	action_manager.register_validator(ActionTypes.Type.TRADE, _can_perform_trade)
 
 
@@ -444,7 +446,7 @@ func _can_perform_city() -> bool:
 	return board_state.has_valid_city_placement(turn_manager.current_player_index)
 
 
-func _can_perform_buy_dev_card() -> bool:
+func _can_perform_buy_development_card() -> bool:
 	return not _draw_piles.get(Deck.Type.STANDARD, []).is_empty()
 
 
@@ -469,8 +471,8 @@ func _on_action_executed(action: ActionTypes.Type, action_position: Vector2) -> 
 
 	if definition.placement == PlacementType.Type.NONE:
 		_deduct_cost(definition)
-		if action == ActionTypes.Type.BUY_DEV_CARD:
-			_draw_dev_card(Deck.Type.STANDARD)
+		if action == ActionTypes.Type.BUY_DEVELOPMENT_CARD:
+			_draw_development_card(Deck.Type.STANDARD)
 		return
 
 	var piece_type: PieceTypes.Type = _action_to_piece.get(action, PieceTypes.Type.UNKNOWN)

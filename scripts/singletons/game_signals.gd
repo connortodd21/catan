@@ -147,6 +147,10 @@ func emit_resource_stolen(thief: Player, victim: Player, resource: ResourceTypes
 #############################################
 ### CARD SIGNALS
 #############################################
-signal dev_card_played(player: Player, card_type: CardTypes.Type)
-func emit_dev_card_played(player: Player, card_type: CardTypes.Type) -> void:
-	dev_card_played.emit(player, card_type)
+signal development_card_bought(player: Player)
+func emit_development_card_bought(player: Player) -> void:
+	development_card_bought.emit(player)
+
+signal development_card_played(player: Player, card_type: CardTypes.Type)
+func emit_development_card_played(player: Player, card_type: CardTypes.Type) -> void:
+	development_card_played.emit(player, card_type)

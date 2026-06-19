@@ -36,6 +36,8 @@ func _on_resources_distributed(player: Player, resources: PlayerResources) -> vo
 
 func _on_piece_placed(player: Player, piece_type: PieceTypes.Type, _world_pos: Vector2) -> void:
 	_append(player, ActivityEvent.Type.PIECE_PLACED, { ActivityEntry.KEY_PIECE_TYPE: piece_type })
+	if piece_type == PieceTypes.Type.SETTLEMENT or piece_type == PieceTypes.Type.CITY:
+		_append(player, ActivityEvent.Type.VP_CHANGED, { ActivityEntry.KEY_AMOUNT: 1 })
 
 
 func _on_development_card_bought(player: Player) -> void:
@@ -56,3 +58,6 @@ func _on_resource_stolen(thief: Player, victim: Player, resource: ResourceTypes.
 
 func _on_title_holder_changed(title: TitleTypes.Type, new_holder: Player, previous_holder: Player) -> void:
 	_append(new_holder, ActivityEvent.Type.TITLE_CHANGED, { ActivityEntry.KEY_TITLE: title, ActivityEntry.KEY_PREVIOUS_HOLDER: previous_holder })
+	_append(new_holder, ActivityEvent.Type.VP_CHANGED, { ActivityEntry.KEY_AMOUNT: 2 })
+	if previous_holder:
+		_append(previous_holder, ActivityEvent.Type.VP_CHANGED, { ActivityEntry.KEY_AMOUNT: -2 })

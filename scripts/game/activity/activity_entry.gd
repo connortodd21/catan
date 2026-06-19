@@ -11,6 +11,7 @@ const KEY_VICTIM = "victim"
 const KEY_RESOURCE = "resource"
 const KEY_TITLE = "title"
 const KEY_PREVIOUS_HOLDER = "previous_holder"
+const KEY_AMOUNT = "amount"
 
 var player: Player
 var event_type: ActivityEvent.Type
@@ -47,6 +48,11 @@ func to_bbcode() -> String:
 			if previous:
 				return "%s took [b]%s[/b] from %s\n" % [_player_tag(player), title_str, _player_tag(previous)]
 			return "%s claimed [b]%s[/b]\n" % [_player_tag(player), title_str]
+		ActivityEvent.Type.VP_CHANGED:
+			var amount: int = activity_metadata[KEY_AMOUNT]
+			var sign := "+" if amount > 0 else ""
+			var label := "Victory Point" if absi(amount) == 1 else "Victory Points"
+			return "[indent]%s [b]%s%d[/b] %s[/indent]\n" % [_player_tag(player), sign, amount, label]
 	return ""
 
 

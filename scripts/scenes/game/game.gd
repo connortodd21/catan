@@ -538,9 +538,11 @@ func _check_longest_road(player_index: int) -> void:
 	
 	var player : PlayerState = player_states[player_index]
 	if player != _longest_road_holder:
-		_award_title(_longest_road_holder, player, player_index)
+		var previous_holder := _longest_road_holder
+		_award_title(previous_holder, player, player_index)
 		_longest_road_holder = player
 		GameSignals.emit_longest_road_holder_changed(player_index)
+		GameSignals.emit_title_holder_changed(TitleTypes.Type.LONGEST_ROAD, player.player, previous_holder.player if previous_holder else null)
 
 
 func _check_largest_army(player_index: int) -> void:
@@ -553,9 +555,11 @@ func _check_largest_army(player_index: int) -> void:
 
 	var player : PlayerState = player_states[player_index]
 	if player != _largest_army_holder:
-		_award_title(_largest_army_holder, player, player_index)
+		var previous_holder := _largest_army_holder
+		_award_title(previous_holder, player, player_index)
 		_largest_army_holder = player
 		GameSignals.emit_largest_army_holder_changed(player_index)
+		GameSignals.emit_title_holder_changed(TitleTypes.Type.LARGEST_ARMY, player.player, previous_holder.player if previous_holder else null)
 
 
 func _check_harbormaster(player_index: int) -> void:
@@ -571,9 +575,11 @@ func _check_harbormaster(player_index: int) -> void:
 
 	var player : PlayerState = player_states[player_index]
 	if player != _harbormaster_holder:
-		_award_title(_harbormaster_holder, player, player_index)
+		var previous_holder := _harbormaster_holder
+		_award_title(previous_holder, player, player_index)
 		_harbormaster_holder = player
 		GameSignals.emit_harbormaster_holder_changed(player_index)
+		GameSignals.emit_title_holder_changed(TitleTypes.Type.HARBORMASTER, player.player, previous_holder.player if previous_holder else null)
 
 
 func _award_title(old_holder: PlayerState, new_holder: PlayerState, new_index: int) -> void:

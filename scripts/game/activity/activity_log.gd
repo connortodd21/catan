@@ -12,6 +12,7 @@ func _init() -> void:
 	GameSignals.dev_card_played.connect(_on_dev_card_played)
 	GameSignals.bank_trade_completed.connect(_on_bank_trade_completed)
 	GameSignals.resource_stolen.connect(_on_resource_stolen)
+	GameSignals.title_holder_changed.connect(_on_title_holder_changed)
 
 
 func _append(player: Player, event_type: ActivityEvent.Type, activity_metadata: Dictionary = {}) -> void:
@@ -46,3 +47,7 @@ func _on_bank_trade_completed(player: Player, traded: Array[ResourceTypes.Type],
 
 func _on_resource_stolen(thief: Player, victim: Player, resource: ResourceTypes.Type) -> void:
 	_append(thief, ActivityEvent.Type.RESOURCE_STOLEN, { ActivityEntry.KEY_VICTIM: victim, ActivityEntry.KEY_RESOURCE: resource })
+
+
+func _on_title_holder_changed(title: TitleTypes.Type, new_holder: Player, previous_holder: Player) -> void:
+	_append(new_holder, ActivityEvent.Type.TITLE_CHANGED, { ActivityEntry.KEY_TITLE: title, ActivityEntry.KEY_PREVIOUS_HOLDER: previous_holder })

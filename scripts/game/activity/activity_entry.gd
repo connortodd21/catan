@@ -9,6 +9,8 @@ const KEY_TRADED = "traded"
 const KEY_RECEIVED = "received"
 const KEY_VICTIM = "victim"
 const KEY_RESOURCE = "resource"
+const KEY_TITLE = "title"
+const KEY_PREVIOUS_HOLDER = "previous_holder"
 
 var player: Player
 var event_type: ActivityEvent.Type
@@ -37,6 +39,12 @@ func to_bbcode() -> String:
 			return "%s traded %s for %s\n" % [_player_tag(player), _resource_array_to_str(activity_metadata[KEY_TRADED]), _resource_array_to_str(activity_metadata[KEY_RECEIVED])]
 		ActivityEvent.Type.RESOURCE_STOLEN:
 			return "%s stole %s from %s\n" % [_player_tag(player), ResourceTypes.type_to_str(activity_metadata[KEY_RESOURCE]), _player_tag(activity_metadata[KEY_VICTIM])]
+		ActivityEvent.Type.TITLE_CHANGED:
+			var title_str := TitleTypes.type_to_str(activity_metadata[KEY_TITLE])
+			var previous: Player = activity_metadata[KEY_PREVIOUS_HOLDER]
+			if previous:
+				return "%s took [b]%s[/b] from %s\n" % [_player_tag(player), title_str, _player_tag(previous)]
+			return "%s claimed [b]%s[/b]\n" % [_player_tag(player), title_str]
 	return ""
 
 

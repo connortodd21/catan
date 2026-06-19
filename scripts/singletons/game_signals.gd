@@ -50,6 +50,14 @@ func emit_harbormaster_holder_changed(player_index: int) -> void:
 
 
 #############################################
+### TITLE SIGNALS
+#############################################
+signal title_holder_changed(title: TitleTypes.Type, new_holder: Player, previous_holder: Player)
+func emit_title_holder_changed(title: TitleTypes.Type, new_holder: Player, previous_holder: Player) -> void:
+	title_holder_changed.emit(title, new_holder, previous_holder)
+
+
+#############################################
 ### HAND SIGNALS
 #############################################
 signal hand_changed()

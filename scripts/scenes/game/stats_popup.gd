@@ -14,6 +14,7 @@ const RESOURCE_COLORS: Dictionary = {
 @onready var _dice_chart_container: HBoxContainer = $VBoxContainer/DiceStatsContainer/ChartContainer
 @onready var _resource_chart_container: HBoxContainer = $VBoxContainer/ResourceStatsContainer/ResourceChartContainer
 @onready var _player_resource_table_container: HBoxContainer = $VBoxContainer/PlayerResourcesContainer/PlayerResourcesTableContainer
+@onready var _player_game_table_container: HBoxContainer = $VBoxContainer/PlayerGameContainer/PlayerGameTableContainer
 
 
 func _ready() -> void:
@@ -31,12 +32,15 @@ func _on_popup_hide() -> void:
 		child.queue_free()
 	for child in _player_resource_table_container.get_children():
 		child.queue_free()
+	for child in _player_game_table_container.get_children():
+		child.queue_free()
 
 
 func show_stats(stats: GameStats) -> void:
 	_build_dice_chart(stats.dice)
 	_build_resource_chart(stats.resources)
-	_build_player_resource_table(stats.player_resources)
+	_build_player_table(_player_resource_table_container, stats.player_resources)
+	_build_player_table(_player_game_table_container, stats.player_game_stats)
 	popup_centered()
 	reset_size.call_deferred()
 
@@ -50,19 +54,13 @@ func _build_dice_chart(dice_stats: DiceStats) -> void:
 	_dice_chart_container.add_child(chart)
 
 
-func _build_player_resource_table(player_resource_stats: PlayerResourceStats) -> void:
-	var headers: Array[String] = []
-	for resource in ResourceTypes.DISPLAY_ORDER:
-		headers.append(ResourceTypes.type_to_str(resource))
+func _build_player_table(container: HBoxContainer, stats: PlayerStatsInterface) -> void:
 	var rows: Array[Table.Row] = []
-	for player: Player in player_resource_stats.get_players():
-		var values: Array[int] = []
-		for resource in ResourceTypes.DISPLAY_ORDER:
-			values.append(player_resource_stats.get_resource_count(player, resource))
-		rows.append(Table.Row.new(player.player_name, player.get_color(), values))
+	for player: Player in stats.get_players():
+		rows.append(Table.Row.new(player.player_name, player.get_color(), stats.get_values(player)))
 	var table := Table.new()
-	table.set_data(headers, rows)
-	_player_resource_table_container.add_child(table)
+	table.set_data(stats.get_headers(), rows)
+	container.add_child(table)
 
 
 func _build_resource_chart(resource_stats: ResourceStats) -> void:

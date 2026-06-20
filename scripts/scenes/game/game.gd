@@ -122,6 +122,7 @@ func _init_players() -> void:
 	for player in game_config.players:
 		player_states.append(PlayerState.new(player))
 	player_hud.init(player_states)
+	game_stats.player_game_stats.register_players(game_config.players)
 	
 	player_hud.set_harbormaster_enabled(game_config.has_harbormaster())
 	local_player = player_states[0]

@@ -1,8 +1,8 @@
 class_name PlayerResourceStats
-extends RefCounted
+extends PlayerStatsInterface
 
 # Player -> resource_type -> count
-var _data: Dictionary = {}
+var _data: Dictionary[Player, Dictionary] = {}
 
 
 func _init() -> void:
@@ -22,5 +22,19 @@ func get_resource_count(player: Player, resource: ResourceTypes.Type) -> int:
 	return _data[player].get(resource, 0)
 
 
-func get_players() -> Array:
+func get_players() -> Array[Player]:
 	return _data.keys()
+
+
+func get_headers() -> Array[String]:
+	var headers: Array[String] = []
+	for resource in ResourceTypes.DISPLAY_ORDER:
+		headers.append(ResourceTypes.type_to_str(resource))
+	return headers
+
+
+func get_values(player: Player) -> Array[int]:
+	var values: Array[int] = []
+	for resource in ResourceTypes.DISPLAY_ORDER:
+		values.append(get_resource_count(player, resource))
+	return values

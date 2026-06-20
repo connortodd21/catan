@@ -343,6 +343,19 @@ text = "Resources by Player"
 [node name="PlayerResourcesTableContainer" type="HBoxContainer" parent="UI/StatsPopup/VBoxContainer/PlayerResourcesContainer" unique_id=1721241261]
 layout_mode = 2
 
+[node name="HSeparator3" type="HSeparator" parent="UI/StatsPopup/VBoxContainer" unique_id=1721241262]
+layout_mode = 2
+
+[node name="PlayerGameContainer" type="VBoxContainer" parent="UI/StatsPopup/VBoxContainer" unique_id=1721241263]
+layout_mode = 2
+
+[node name="PlayerGameLabel" type="Label" parent="UI/StatsPopup/VBoxContainer/PlayerGameContainer" unique_id=1721241264]
+layout_mode = 2
+text = "Game Stats"
+
+[node name="PlayerGameTableContainer" type="HBoxContainer" parent="UI/StatsPopup/VBoxContainer/PlayerGameContainer" unique_id=1721241265]
+layout_mode = 2
+
 [node name="ActivityLogPopup" type="PopupPanel" parent="UI" unique_id=337826768]
 script = ExtResource("25_pl11u")
 

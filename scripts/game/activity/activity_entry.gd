@@ -48,6 +48,9 @@ func to_bbcode() -> String:
 			if previous:
 				return "%s took [b]%s[/b] from %s\n" % [_player_tag(player), title_str, _player_tag(previous)]
 			return "%s claimed [b]%s[/b]\n" % [_player_tag(player), title_str]
+		ActivityEvent.Type.TITLE_LOST:
+			var title_str := TitleTypes.type_to_str(activity_metadata[KEY_TITLE])
+			return "%s lost [b]%s[/b]\n" % [_player_tag(player), title_str]
 		ActivityEvent.Type.VP_CHANGED:
 			var amount: int = activity_metadata[KEY_AMOUNT]
 			var sign := "+" if amount > 0 else ""

@@ -57,7 +57,10 @@ func _on_resource_stolen(thief: Player, victim: Player, resource: ResourceTypes.
 
 
 func _on_title_holder_changed(title: TitleTypes.Type, new_holder: Player, previous_holder: Player) -> void:
-	_append(new_holder, ActivityEvent.Type.TITLE_CHANGED, { ActivityEntry.KEY_TITLE: title, ActivityEntry.KEY_PREVIOUS_HOLDER: previous_holder })
-	_append(new_holder, ActivityEvent.Type.VP_CHANGED, { ActivityEntry.KEY_AMOUNT: 2 })
+	if new_holder:
+		_append(new_holder, ActivityEvent.Type.TITLE_CHANGED, { ActivityEntry.KEY_TITLE: title, ActivityEntry.KEY_PREVIOUS_HOLDER: previous_holder })
+		_append(new_holder, ActivityEvent.Type.VP_CHANGED, { ActivityEntry.KEY_AMOUNT: 2 })
+	else:
+		_append(previous_holder, ActivityEvent.Type.TITLE_LOST, { ActivityEntry.KEY_TITLE: title })
 	if previous_holder:
 		_append(previous_holder, ActivityEvent.Type.VP_CHANGED, { ActivityEntry.KEY_AMOUNT: -2 })

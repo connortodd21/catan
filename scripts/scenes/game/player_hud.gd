@@ -143,7 +143,8 @@ func _on_longest_road_holder_changed(player_index: int) -> void:
 	_longest_road_holder_index = player_index
 	if previous_holder != -1:
 		_refresh_title_highlights(previous_holder)
-	_refresh_title_highlights(player_index)
+	if player_index != -1:
+		_refresh_title_highlights(player_index)
 
 
 func _on_largest_army_holder_changed(player_index: int) -> void:

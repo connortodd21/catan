@@ -5,6 +5,7 @@ var player: Player
 var hand: Hand = Hand.new()
 
 var score: int = 0
+var vp_cards_played: int = 0
 var longest_road_length: int = 0
 var army_size: int = 0
 var harbormaster_count: int = 0

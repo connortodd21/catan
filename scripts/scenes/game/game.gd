@@ -382,6 +382,7 @@ func _register_card_handlers() -> void:
 
 func _on_play_victory_point() -> void:
 	var player_index := turn_manager.current_player_index
+	player_states[player_index].vp_cards_played += 1
 	player_states[player_index].score += 1
 	GameSignals.emit_score_changed(player_index, player_states[player_index].score)
 
@@ -517,6 +518,25 @@ func _update_score(action: ActionTypes.Type, player_index: int) -> void:
 	var victory_points_delta : int = GameUtils.action_to_victory_points(action)
 	player_states[player_index].score += victory_points_delta
 	GameSignals.emit_score_changed(player_index, player_states[player_index].score)
+
+
+func _recalculate_score(player_index: int) -> int:
+	var player_state := player_states[player_index]
+	var total_score := 0
+	# Calculate placed piece score
+	for entry in board_state.vertex_ownership.values():
+		if entry.player_index != player_index:
+			continue
+		match entry.piece_type:
+			PieceTypes.Type.SETTLEMENT: total_score += 1
+			PieceTypes.Type.CITY: total_score += 2
+	# Calculate title scores
+	if _longest_road_holder == player_state: total_score += 2
+	if _largest_army_holder == player_state: total_score += 2
+	if _harbormaster_holder == player_state: total_score += 2
+	# Calculate VP card score
+	total_score += player_state.vp_cards_played
+	return total_score
 
 
 #############################################
@@ -752,11 +772,21 @@ func _on_card_clicked(card: CardDefinition) -> void:
 
 func _on_player_changed(index: int) -> void:
 	_clear_newly_bought_cards(index)
+	_audit_scores()
 	local_player = player_states[index]
 	hand_manager.set_hand(local_player.hand)
 	player_hud.set_active_player(index)
 	action_panel.refresh(local_player.hand)
 	_update_debug_label()
+
+
+func _audit_scores() -> void:
+	for i in player_states.size():
+		var expected := _recalculate_score(i)
+		var actual := player_states[i].score
+		if expected != actual:
+			push_warning("Score drift detected for %s: expected %d, got %d" % [player_states[i].player.player_name, expected, actual])
+			player_states[i].score = expected
 
 
 func _on_phase_changed(_phase: GamePhase.Phase) -> void:

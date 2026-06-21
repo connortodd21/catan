@@ -118,6 +118,19 @@ func _unhandled_input(event: InputEvent) -> void:
 					action_manager.handle_board_click(mouse_pos)
 
 
+func _init_popup_manager() -> void:
+	var config := PopupManager.PopupManagerConfig.new()
+	config.selection_popup = selection_popup
+	config.activity_log_popup = activity_log_popup
+	config.stats_popup = stats_popup
+	config.settings_popup = settings_popup
+	config.bank_trade_popup = bank_trade_popup
+	config.discard_popup = discard_popup
+	config.game_over_popup = game_over_popup
+	config.resource_definitions = hand_manager.get_sorted_resource_definitions()
+	popup_manager.init(config)
+
+
 func _init_players() -> void:
 	for player in game_config.players:
 		player_states.append(PlayerState.new(player))
@@ -148,7 +161,7 @@ func _init_players() -> void:
 	setup_manager.init(action_manager, turn_manager, board_state)
 
 	popup_manager = PopupManager.new()
-	popup_manager.init(selection_popup, hand_manager.get_sorted_resource_definitions())
+	_init_popup_manager()
 
 	_register_card_handlers()
 
@@ -249,7 +262,7 @@ func _on_score_changed(player_index: int, score: int) -> void:
 func _game_over(winner_index: int) -> void:
 	var standings := player_states.duplicate()
 	standings.sort_custom(func(a, b): return a.score > b.score)
-	game_over_popup.init(player_states[winner_index], standings, _on_game_over_exit)
+	popup_manager.show_game_over(player_states[winner_index], standings, _on_game_over_exit)
 
 
 func _on_game_over_exit() -> void:
@@ -749,15 +762,15 @@ func _register_signals() -> void:
 
 func _on_activity_log_button_pressed() -> void:
 	var anchor := Vector2(activity_log_button.global_position.x, activity_log_button.global_position.y + activity_log_button.size.y)
-	activity_log_popup.show_log(activity_log, anchor)
+	popup_manager.show_activity_log(activity_log, anchor)
 
 
 func _on_stats_button_pressed() -> void:
-	stats_popup.show_stats(game_stats)
+	popup_manager.show_stats(game_stats)
 
 
 func _on_settings_button_pressed() -> void:
-	settings_popup.popup_centered()
+	popup_manager.show_settings()
 
 
 func _on_setup_phase_ended_for_player(player_index: int, settlement_pos: Vector2) -> void:
@@ -812,7 +825,7 @@ func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, dice_total: int) 
 		var hand_size := local_player.hand.total_resource_count()
 		if hand_size > robber_discard_hand_threshold:
 			hand_manager.disable_hover()
-			discard_popup.init(local_player.hand, hand_manager.get_sorted_resource_definitions(), floor(hand_size / 2.0), _on_discard_confirmed)
+			popup_manager.show_discard(local_player.hand, floor(hand_size / 2.0), _on_discard_confirmed)
 		turn_manager.enter_robber_phase()
 		return
 	_distribute_resources(dice_total)
@@ -821,7 +834,7 @@ func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, dice_total: int) 
 func _on_bank_trade_button_pressed() -> void:
 	hand_manager.disable_hover()
 	var trade_rates := board_state.get_bank_trade_rates_for_player(turn_manager.current_player_index)
-	bank_trade_popup.init(local_player.hand, hand_manager.get_sorted_resource_definitions(), trade_rates, _on_bank_trade_confirmed)
+	popup_manager.show_bank_trade(local_player.hand, trade_rates, _on_bank_trade_confirmed)
 
 
 func _on_popup_closed() -> void:

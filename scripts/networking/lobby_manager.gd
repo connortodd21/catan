@@ -41,6 +41,14 @@ func get_lobby_code() -> String:
 	return Steam.getLobbyData(_lobby_id, LOBBY_CODE)
 
 
+func get_members_in_lobby() -> Array[int]:
+	var members: Array[int] = []
+	var num_members_in_lobby := Steam.getNumLobbyMembers(_lobby_id)
+	for i in num_members_in_lobby:
+		members.append(Steam.getLobbyMemberByIndex(_lobby_id, i))
+	return members
+
+
 func set_config(game_config: GameConfig) -> void:
 	Steam.setLobbyData(_lobby_id, LOBBY_CONFIG, JSON.stringify(game_config.to_dict()))
 

@@ -21,6 +21,7 @@ EditorState="*uid://mm6ipoq4nuf1"
 GameSelectState="*uid://brywrrdvtjoov"
 GlobalSignals="*uid://do338snjlepb4"
 GameSignals="*uid://brkpxnwp4t82i"
+NetworkManager="*uid://dsxjyg06isuxj"
 
 [display]
 
@@ -35,3 +36,10 @@ window/size/viewport_height=1000
 
 textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
+
+[steam]
+
+initialization/app_id=480
+initialization/initialize_on_startup=true
+initialization/embed_callbacks=true
+multiplayer_peer/max_channels=4

@@ -38,11 +38,11 @@ func _on_back_to_menu() -> void:
 	main_menu.visible = true
 
 
-func _on_create_room_button_pressed() -> void:
+func _on_host_game_button_pressed() -> void:
 	print("Create Room clicked")
 
 
-func _on_join_room_button_pressed() -> void:
+func _on_join_game_button_pressed() -> void:
 	print("Join Room clicked")
 
 

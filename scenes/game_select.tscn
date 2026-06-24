@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://c2rllsjdui05u"]
 
 [ext_resource type="Script" uid="uid://c32kxahr4i61f" path="res://scripts/scenes/game_select/game_select.gd" id="1_gssel"]
+[ext_resource type="PackedScene" uid="uid://bglgtsjyrys3k" path="res://scenes/game_config_panel.tscn" id="2_l217c"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_back"]
 bg_color = Color(0.2, 0.2, 0.2, 1)
@@ -52,8 +53,9 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 12
-split_offsets = PackedInt32Array(0, 0)
+split_offsets = PackedInt32Array(220)
 dragging_enabled = false
+split_offset = 220
 
 [node name="PlayerPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body" unique_id=2000000001]
 custom_minimum_size = Vector2(220, 0)
@@ -84,79 +86,7 @@ size_flags_horizontal = 3
 disabled = true
 text = "START GAME"
 
-[node name="BoardPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body" unique_id=-2101119736]
-custom_minimum_size = Vector2(280, 0)
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="BoardLabel" type="Label" parent="MarginContainer/VBoxContainer/Body/BoardPanel" unique_id=1029384756]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "BOARD"
-horizontal_alignment = 1
-
-[node name="BoardScroll" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Body/BoardPanel" unique_id=-447405376]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="BoardList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body/BoardPanel/BoardScroll" unique_id=-1356491686]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="OptionsScroll" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Body" unique_id=1847362950]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="OptionsPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body/OptionsScroll" unique_id=-1265782540]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 10
-
-[node name="ExpansionsLabel" type="Label" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=-1447774240]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "EXPANSIONS"
-horizontal_alignment = 1
-
-[node name="ExpansionList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=1938475620]
-layout_mode = 2
-
-[node name="SepVP" type="HSeparator" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=-447675736]
-layout_mode = 2
-
-[node name="VictoryPointsHeader" type="Label" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=1000000006]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "VICTORY POINTS"
-horizontal_alignment = 1
-
-[node name="VictoryPointsRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=2093847516]
-layout_mode = 2
-
-[node name="VPLabel" type="Label" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel/VictoryPointsRow" unique_id=1847362059]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Points to win:"
-vertical_alignment = 1
-
-[node name="VictoryPointsSpinBox" type="SpinBox" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel/VictoryPointsRow" unique_id=-1265485540]
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-min_value = 6.0
-max_value = 20.0
-value = 10.0
-
-[node name="SepHR" type="HSeparator" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=-1447575736]
-layout_mode = 2
-
-[node name="HouseRulesLabel" type="Label" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=1938274056]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "HOUSE RULES"
-horizontal_alignment = 1
-
-[node name="HouseRuleList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body/OptionsScroll/OptionsPanel" unique_id=-1080400207]
+[node name="GameConfigPanel" parent="MarginContainer/VBoxContainer/Body" unique_id=1157905651 instance=ExtResource("2_l217c")]
 layout_mode = 2
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Header/BackButton" to="." method="_on_back_button_pressed"]

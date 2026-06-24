@@ -1,0 +1,81 @@
+[gd_scene format=3 uid="uid://bglgtsjyrys3k"]
+
+[ext_resource type="Script" uid="uid://cog4ffiwuekly" path="res://scripts/scenes/game_config_panel/game_config_panel.gd" id="1_qgv6x"]
+
+[node name="GameConfigPanel" type="HSplitContainer" unique_id=1157905651]
+script = ExtResource("1_qgv6x")
+
+[node name="BoardPanel" type="VBoxContainer" parent="." unique_id=366458805]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BoardLabel" type="Label" parent="BoardPanel" unique_id=448915127]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "BOARD"
+horizontal_alignment = 1
+
+[node name="BoardScroll" type="ScrollContainer" parent="BoardPanel" unique_id=685277524]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BoardList" type="VBoxContainer" parent="BoardPanel/BoardScroll" unique_id=491879007]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OptionsScroll" type="ScrollContainer" parent="." unique_id=1955114059]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="OptionsPanel" type="VBoxContainer" parent="OptionsScroll" unique_id=1274264305]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="ExpansionsLabel" type="Label" parent="OptionsScroll/OptionsPanel" unique_id=472295928]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "EXPANSIONS"
+horizontal_alignment = 1
+
+[node name="ExpansionList" type="VBoxContainer" parent="OptionsScroll/OptionsPanel" unique_id=1985877952]
+layout_mode = 2
+
+[node name="SepVP" type="HSeparator" parent="OptionsScroll/OptionsPanel" unique_id=768548640]
+layout_mode = 2
+
+[node name="VictoryPointsHeader" type="Label" parent="OptionsScroll/OptionsPanel" unique_id=139803761]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "VICTORY POINTS"
+horizontal_alignment = 1
+
+[node name="VictoryPointsRow" type="HBoxContainer" parent="OptionsScroll/OptionsPanel" unique_id=844962786]
+layout_mode = 2
+
+[node name="VPLabel" type="Label" parent="OptionsScroll/OptionsPanel/VictoryPointsRow" unique_id=910807700]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Points to win:"
+vertical_alignment = 1
+
+[node name="VictoryPointsSpinBox" type="SpinBox" parent="OptionsScroll/OptionsPanel/VictoryPointsRow" unique_id=1194740479]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+min_value = 6.0
+max_value = 20.0
+value = 10.0
+
+[node name="SepHR" type="HSeparator" parent="OptionsScroll/OptionsPanel" unique_id=1007963788]
+layout_mode = 2
+
+[node name="HouseRulesLabel" type="Label" parent="OptionsScroll/OptionsPanel" unique_id=2112009211]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "HOUSE RULES"
+horizontal_alignment = 1
+
+[node name="HouseRuleList" type="VBoxContainer" parent="OptionsScroll/OptionsPanel" unique_id=1666342560]
+layout_mode = 2

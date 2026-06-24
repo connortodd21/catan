@@ -45,13 +45,13 @@ label_settings = SubResource("LabelSettings_0wfyh")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CreateRoomButton" type="Button" parent="MainMenu/CenterContainer/VBoxContainer" unique_id=1799787077]
+[node name="HostGameButton" type="Button" parent="MainMenu/CenterContainer/VBoxContainer" unique_id=1799787077]
 custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "CREATE ROOM"
 
-[node name="JoinRoomButton" type="Button" parent="MainMenu/CenterContainer/VBoxContainer" unique_id=1687609308]
+[node name="JoinGameButton" type="Button" parent="MainMenu/CenterContainer/VBoxContainer" unique_id=1687609308]
 custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -69,7 +69,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "BOARD EDITOR"
 
-[connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/CreateRoomButton" to="." method="_on_create_room_button_pressed"]
-[connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/JoinRoomButton" to="." method="_on_join_room_button_pressed"]
+[connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/HostGameButton" to="." method="_on_host_game_button_pressed"]
+[connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/JoinGameButton" to="." method="_on_join_game_button_pressed"]
 [connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/LocalGameButton" to="." method="_on_local_game_button_pressed"]
 [connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/BoardEditorButton" to="." method="_on_board_editor_button_pressed"]

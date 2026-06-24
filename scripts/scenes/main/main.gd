@@ -1,11 +1,15 @@
 extends Node
 
 @export var board_editor_scene: PackedScene
-@export var game_select_scene: PackedScene
 @export var game_scene: PackedScene
+@export var game_select_scene: PackedScene
+@export var multiplayer_game_lobby_scene: PackedScene
 
-@onready var scene_container: Node2D = $SceneContainer
+@onready var join_game_popup: PopupPanel = $MainMenu/JoinGamePopup
+@onready var lobby_manager: LobbyManager = $LobbyManager
 @onready var main_menu: Control = $MainMenu
+@onready var room_code_line_edit: LineEdit = $MainMenu/JoinGamePopup/VBoxContainer/RoomCodeLineEdit
+@onready var scene_container: Node2D = $SceneContainer
 
 
 var active_scene: Node = null
@@ -19,6 +23,7 @@ func _ready() -> void:
 func _setup_signals() -> void:
 	GlobalSignals.back_to_menu.connect(_on_back_to_menu)
 	GameSelectState.game_started.connect(_on_game_start)
+	NetworkSignals.lobby_created.connect(_on_lobby_created)
 
 
 func _cleanup_active() -> void:
@@ -39,7 +44,15 @@ func _on_back_to_menu() -> void:
 
 
 func _on_host_game_button_pressed() -> void:
-	print("Create Room clicked")
+	lobby_manager.create_lobby()
+
+
+func _on_lobby_created(_lobby_id: int, _room_code: String) -> void:
+	main_menu.visible = false
+	active_ui = multiplayer_game_lobby_scene.instantiate()
+	add_child(active_ui)
+	active_ui.init(lobby_manager)
+	active_ui.setup_as_host()
 
 
 func _on_join_game_button_pressed() -> void:

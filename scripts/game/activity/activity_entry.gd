@@ -53,9 +53,9 @@ func to_bbcode() -> String:
 			return "%s lost [b]%s[/b]\n" % [_player_tag(player), title_str]
 		ActivityEvent.Type.VP_CHANGED:
 			var amount: int = activity_metadata[KEY_AMOUNT]
-			var sign := "+" if amount > 0 else ""
+			var number_sign := "+" if amount > 0 else ""
 			var label := "Victory Point" if absi(amount) == 1 else "Victory Points"
-			return "[indent]%s [b]%s%d[/b] %s[/indent]\n" % [_player_tag(player), sign, amount, label]
+			return "[indent]%s [b]%s%d[/b] %s[/indent]\n" % [_player_tag(player), number_sign, amount, label]
 	return ""
 
 

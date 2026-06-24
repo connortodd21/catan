@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://bbb8ds038wdwq" path="res://scripts/scenes/main/main.gd" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://d173wutt6c3x" path="res://scenes/board_editor_v_2.tscn" id="1_o5qli"]
 [ext_resource type="PackedScene" uid="uid://l0l6tmvgapip" path="res://scenes/game.tscn" id="4_jyhfs"]
+[ext_resource type="Script" uid="uid://cndjfrn6nsldu" path="res://scripts/networking/lobby_manager.gd" id="5_tbgi4"]
+[ext_resource type="PackedScene" uid="uid://ddhf7xckjvy8d" path="res://scenes/multiplayer_game_lobby.tscn" id="5_tefeu"]
 [ext_resource type="PackedScene" uid="uid://c2rllsjdui05u" path="res://scenes/game_select.tscn" id="gs_scene"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_0wfyh"]
@@ -11,8 +13,9 @@ font_size = 89
 [node name="Main" type="Node2D" unique_id=1298295548]
 script = ExtResource("1_0wfyh")
 board_editor_scene = ExtResource("1_o5qli")
-game_select_scene = ExtResource("gs_scene")
 game_scene = ExtResource("4_jyhfs")
+game_select_scene = ExtResource("gs_scene")
+multiplayer_game_lobby_scene = ExtResource("5_tefeu")
 
 [node name="SceneContainer" type="Node2D" parent="." unique_id=1322314173]
 
@@ -68,6 +71,36 @@ custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "BOARD EDITOR"
+
+[node name="JoinGamePopup" type="PopupPanel" parent="MainMenu" unique_id=1038169861]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/JoinGamePopup" unique_id=315548730]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 121.0
+offset_bottom = 97.0
+
+[node name="RoomCodeLabel" type="Label" parent="MainMenu/JoinGamePopup/VBoxContainer" unique_id=1688860640]
+layout_mode = 2
+text = "Lobby Code: "
+
+[node name="RoomCodeLineEdit" type="LineEdit" parent="MainMenu/JoinGamePopup/VBoxContainer" unique_id=715368739]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/JoinGamePopup/VBoxContainer" unique_id=182841314]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="MainMenu/JoinGamePopup/VBoxContainer/HBoxContainer" unique_id=64270052]
+layout_mode = 2
+text = "CANCEL"
+
+[node name="JoinButton" type="Button" parent="MainMenu/JoinGamePopup/VBoxContainer/HBoxContainer" unique_id=1449756181]
+layout_mode = 2
+text = "JOIN"
+
+[node name="LobbyManager" type="Node" parent="." unique_id=1871152040]
+script = ExtResource("5_tbgi4")
+metadata/_custom_type_script = "uid://cndjfrn6nsldu"
 
 [connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/HostGameButton" to="." method="_on_host_game_button_pressed"]
 [connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/JoinGameButton" to="." method="_on_join_game_button_pressed"]

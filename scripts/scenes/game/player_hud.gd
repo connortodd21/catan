@@ -28,9 +28,9 @@ func init(_player_states: Array[PlayerState]) -> void:
 	_refresh_highlights()
 
 
-func set_harbormaster_enabled(is_visible: bool) -> void:
+func set_harbormaster_enabled(is_harbormaster_visible: bool) -> void:
 	for row in _rows:
-		row.harbor_label.visible = is_visible
+		row.harbor_label.visible = is_harbormaster_visible
 
 
 func set_active_player(index: int) -> void:

@@ -12,6 +12,7 @@ var _lobby_manager: LobbyManager
 
 
 func init(lobby_manager: LobbyManager) -> void:
+	print("in MultiplayerGameLobby")
 	_lobby_manager = lobby_manager
 	lobby_label.text = "Lobby Code: " + _lobby_manager.get_lobby_code()
 	start_button.disabled = true
@@ -30,7 +31,6 @@ func _build_player_list() -> void:
 
 
 func _add_player_row(player_steam_id: int) -> void:
-	var is_local := player_steam_id == NetworkManager.local_steam_id
 	var hbox := HBoxContainer.new()
 	hbox.name = str(player_steam_id)
 	hbox.add_theme_constant_override("separation", 8)

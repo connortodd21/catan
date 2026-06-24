@@ -17,10 +17,14 @@ var _lobby_code: String = ""
 func _ready() -> void:
 	Steam.lobby_chat_update.connect(_on_lobby_chat_update)
 	Steam.lobby_data_update.connect(_on_lobby_data_update)
+	Steam.lobby_created.connect(_on_lobby_created)
+
+
+func _process(_delta: float) -> void:
+	Steam.run_callbacks()
 
 
 func create_lobby() -> void:
-	Steam.lobby_created.connect(_on_lobby_created, CONNECT_ONE_SHOT)
 	Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, MAX_PLAYERS)
 
 

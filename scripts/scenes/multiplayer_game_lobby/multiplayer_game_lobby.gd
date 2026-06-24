@@ -1,18 +1,18 @@
 class_name MultiplayerGameLobby
 extends CanvasLayer
 
+@onready var back_button: Button = $MarginContainer/VBoxContainer/Header/BackButton
+@onready var color_picker_popup: PopupPanel = $MarginContainer/VBoxContainer/Body/PlayerPanel/ColorPickerPopup
+@onready var config_panel: GameConfigPanel = $MarginContainer/VBoxContainer/Body/GameConfigPanel
 @onready var lobby_label: Label = $MarginContainer/VBoxContainer/Header/LobbyLabel
 @onready var player_list: VBoxContainer = $MarginContainer/VBoxContainer/Body/PlayerPanel/PlayerList
-@onready var color_picker_popup: PopupPanel = $MarginContainer/VBoxContainer/Body/PlayerPanel/ColorPickerPopup
 @onready var start_button: Button = $MarginContainer/VBoxContainer/Body/PlayerPanel/StartGameButton
-@onready var config_panel: GameConfigPanel = $MarginContainer/VBoxContainer/Body/GameConfigPanel
 
 var _is_lobby_host: bool = false
 var _lobby_manager: LobbyManager
 
 
 func init(lobby_manager: LobbyManager) -> void:
-	print("in MultiplayerGameLobby")
 	_lobby_manager = lobby_manager
 	lobby_label.text = "Lobby Code: " + _lobby_manager.get_lobby_code()
 	start_button.disabled = true
@@ -80,4 +80,9 @@ func _on_lobby_member_left(player_steam_id: int) -> void:
 
 
 func _on_lobby_destroyed() -> void:
+	GlobalSignals.go_back_to_menu()
+
+
+func _on_back_button_pressed() -> void:
+	_lobby_manager.leave_lobby()
 	GlobalSignals.go_back_to_menu()

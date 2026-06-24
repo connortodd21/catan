@@ -84,3 +84,5 @@ text = "START GAME"
 
 [node name="GameConfigPanel" parent="MarginContainer/VBoxContainer/Body" unique_id=1157905651 instance=ExtResource("1_yhat4")]
 layout_mode = 2
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Header/BackButton" to="." method="_on_back_button_pressed"]

@@ -1,0 +1,86 @@
+[gd_scene format=3 uid="uid://ddhf7xckjvy8d"]
+
+[ext_resource type="Script" uid="uid://bwx3hpv8wtlw6" path="res://scripts/scenes/multiplayer_game_lobby/multiplayer_game_lobby.gd" id="1_bro6o"]
+[ext_resource type="PackedScene" uid="uid://bglgtsjyrys3k" path="res://scenes/game_config_panel.tscn" id="1_yhat4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bro6o"]
+bg_color = Color(0.2, 0.2, 0.2, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="LabelSettings" id="LabelSettings_b5wjt"]
+font_size = 48
+
+[node name="MultiplayerGameLobby" type="CanvasLayer" unique_id=1513308322]
+script = ExtResource("1_bro6o")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=169844472]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1769980393]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Header" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=345205704]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/Header" unique_id=43697619]
+custom_minimum_size = Vector2(120, 60)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_bro6o")
+text = "< BACK"
+
+[node name="LobbyLabel" type="Label" parent="MarginContainer/VBoxContainer/Header" unique_id=1109017883]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Lobby Code: "
+label_settings = SubResource("LabelSettings_b5wjt")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Body" type="HSplitContainer" parent="MarginContainer/VBoxContainer" unique_id=134314463]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+split_offsets = PackedInt32Array(220)
+dragging_enabled = false
+split_offset = 220
+
+[node name="PlayerPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body" unique_id=358175773]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PlayersLabel" type="Label" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=1632357054]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "PLAYERS"
+horizontal_alignment = 1
+
+[node name="PlayerList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=309820463]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="ColorPickerPopup" type="PopupPanel" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=268733187]
+
+[node name="StartGameButton" type="Button" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=85059866]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "START GAME"
+
+[node name="GameConfigPanel" parent="MarginContainer/VBoxContainer/Body" unique_id=1157905651 instance=ExtResource("1_yhat4")]
+layout_mode = 2

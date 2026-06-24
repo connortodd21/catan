@@ -37,6 +37,10 @@ func leave_lobby() -> void:
 		_lobby_code = ""
 
 
+func get_lobby_code() -> String:
+	return Steam.getLobbyData(_lobby_id, LOBBY_CODE)
+
+
 func set_config(game_config: GameConfig) -> void:
 	Steam.setLobbyData(_lobby_id, LOBBY_CONFIG, JSON.stringify(game_config.to_dict()))
 

@@ -28,6 +28,25 @@ func has_harbormaster() -> bool:
 	return ExpansionTypes.Expansion.HARBORMASTER in expansions
 
 
+func to_dict() -> Dictionary:
+	return {
+		"board": board.to_dict() if board else null,
+		"expansions": expansions.map(func(e: ExpansionTypes.Expansion) -> int: return int(e)),
+		"house_rules": house_rules.map(func(r: HouseRules.RULE_NAMES) -> int: return int(r)),
+		"victory_points": victory_points
+	}
+
+
+func from_dict(dict: Dictionary) -> void:
+	if dict.board != null:
+		board = SerializedBoard.new().from_dict(dict.board)
+	for e in dict.expansions:
+		add_expansion(e as ExpansionTypes.Expansion)
+	for r in dict.house_rules:
+		add_house_rule(r as HouseRules.RULE_NAMES)
+	victory_points = dict.victory_points
+
+
 func _debug_print() -> void:
 	print("=== GameConfig ===")
 	print("  board: ", board.size if board else Vector2i.ZERO)

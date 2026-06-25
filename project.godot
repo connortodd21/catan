@@ -23,6 +23,7 @@ GlobalSignals="*uid://do338snjlepb4"
 GameSignals="*uid://brkpxnwp4t82i"
 NetworkManager="*uid://dsxjyg06isuxj"
 NetworkSignals="*uid://clxgjly75pwch"
+UISignals="*uid://c0urfymsif12s"
 
 [display]
 

@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://djga51xuuwukl"]
+
+[ext_resource type="Script" uid="uid://d1jyd6fqisai6" path="res://scripts/scenes/color_picker_popup.gd/color_picker_popup.gd" id="1_c1pmb"]
+
+[node name="ColorPickerPopup" type="PopupPanel" unique_id=819161875]
+oversampling_override = 1.0
+visible = true
+script = ExtResource("1_c1pmb")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1703552710]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 96.0
+offset_bottom = 96.0
+
+[node name="FlowContainer" type="FlowContainer" parent="MarginContainer" unique_id=1305817996]
+layout_mode = 2

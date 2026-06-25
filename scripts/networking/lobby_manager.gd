@@ -53,6 +53,19 @@ func get_members_in_lobby() -> Array[int]:
 	return members
 
 
+func get_available_colors() -> Array[int]:
+	var taken_colors: Array[int] = []
+	for member_id: int in get_members_in_lobby():
+		var player_color := get_player_color(member_id)
+		if player_color != -1:
+			taken_colors.append(player_color)
+	var available_colors: Array[int] = []
+	for color_index: int in Player.PlayerColor.values():
+		if color_index not in taken_colors:
+			available_colors.append(color_index)
+	return available_colors
+
+
 func set_config(game_config: GameConfig) -> void:
 	Steam.setLobbyData(_lobby_id, LOBBY_CONFIG, JSON.stringify(game_config.to_dict()))
 
@@ -74,6 +87,14 @@ func get_player_name(player_steam_id: int) -> String:
 func get_player_color(player_steam_id: int) -> int:
 	var raw := Steam.getLobbyMemberData(_lobby_id, player_steam_id, PLAYER_COLOR)
 	return int(raw) if raw != "" else -1
+
+
+func _auto_assign_player_defaults() -> void:
+	var my_id := NetworkManager.local_steam_id
+	set_player_name(my_id, Steam.getPersonaName())
+	var available_colors := get_available_colors()
+	if not available_colors.is_empty():
+		set_player_color(my_id, available_colors[0])
 
 
 func _generate_lobby_code() -> String:
@@ -99,6 +120,7 @@ func _on_steam_lobby_joined(lobby_id: int, _permissions: int, _locked: bool, res
 		NetworkSignals.emit_lobby_join_failed("Failed to join lobby")
 		return
 	_lobby_id = lobby_id
+	_auto_assign_player_defaults()
 	NetworkSignals.emit_lobby_joined(_lobby_id)
 
 
@@ -133,4 +155,5 @@ func _on_lobby_created(result: int, lobby_id: int) -> void:
 	_lobby_id = lobby_id
 	_lobby_code = _generate_lobby_code()
 	Steam.setLobbyData(_lobby_id, LOBBY_CODE, _lobby_code)
+	_auto_assign_player_defaults()
 	NetworkSignals.emit_lobby_created(_lobby_id, _lobby_code)

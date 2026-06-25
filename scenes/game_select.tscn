@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://c2rllsjdui05u"]
 
 [ext_resource type="Script" uid="uid://c32kxahr4i61f" path="res://scripts/scenes/game_select/game_select.gd" id="1_gssel"]
+[ext_resource type="PackedScene" uid="uid://djga51xuuwukl" path="res://scenes/color_picker_popup.tscn" id="2_flrbm"]
 [ext_resource type="PackedScene" uid="uid://bglgtsjyrys3k" path="res://scenes/game_config_panel.tscn" id="2_l217c"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_back"]
@@ -15,6 +16,8 @@ font_size = 48
 
 [node name="GameSelect" type="CanvasLayer" unique_id=17234057]
 script = ExtResource("1_gssel")
+min_players = null
+max_players = null
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1938274651]
 anchors_preset = 15
@@ -73,7 +76,7 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 6
 
-[node name="ColorPickerPopup" type="PopupPanel" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=519741552]
+[node name="ColorPickerPopup" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=819161875 instance=ExtResource("2_flrbm")]
 
 [node name="AddPlayerButton" type="Button" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=464561624]
 layout_mode = 2

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bwx3hpv8wtlw6" path="res://scripts/scenes/multiplayer_game_lobby/multiplayer_game_lobby.gd" id="1_bro6o"]
 [ext_resource type="PackedScene" uid="uid://bglgtsjyrys3k" path="res://scenes/game_config_panel.tscn" id="1_yhat4"]
+[ext_resource type="PackedScene" uid="uid://djga51xuuwukl" path="res://scenes/color_picker_popup.tscn" id="2_b5wjt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bro6o"]
 bg_color = Color(0.2, 0.2, 0.2, 1)
@@ -73,7 +74,7 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 6
 
-[node name="ColorPickerPopup" type="PopupPanel" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=268733187]
+[node name="ColorPickerPopup" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=819161875 instance=ExtResource("2_b5wjt")]
 
 [node name="StartGameButton" type="Button" parent="MarginContainer/VBoxContainer/Body/PlayerPanel" unique_id=85059866]
 custom_minimum_size = Vector2(0, 60)

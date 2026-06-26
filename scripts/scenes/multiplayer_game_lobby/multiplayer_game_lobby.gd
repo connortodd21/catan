@@ -11,6 +11,8 @@ extends CanvasLayer
 const NAME_DISPLAY = "NameDisplay"
 const COLOR_DISPLAY = "ColorDisplay"
 
+@export var min_lobby_size: int = 3
+
 var _is_lobby_host: bool = false
 var _lobby_manager: LobbyManager
 
@@ -118,15 +120,23 @@ func _remove_player_row(player_steam_id: int) -> void:
 #############################################
 ### SETUP
 #############################################
+func _update_start_button() -> void:
+	var does_lobby_have_enough_players := _lobby_manager.get_members_in_lobby().size() >= min_lobby_size
+	var is_board_selected := config_panel.selected_board != null
+	start_button.disabled = not (does_lobby_have_enough_players and is_board_selected)
+
+
 func setup_as_host() -> void:
 	_is_lobby_host = true
 	config_panel.interactive = true
 	GameSelectSignals.game_config_changed.connect(_on_game_config_changed)
+	_update_start_button()
 
 
 func setup_as_client() -> void:
 	_is_lobby_host = false
 	config_panel.interactive = false
+	start_button.visible = false
 
 
 #############################################
@@ -171,6 +181,7 @@ func _on_game_config_changed() -> void:
 	var game_config := GameConfig.new()
 	config_panel.apply_to_config(game_config)
 	_lobby_manager.set_config(game_config)
+	_update_start_button()
 
 
 func _on_lobby_config_updated(game_config: GameConfig) -> void:
@@ -183,10 +194,12 @@ func _on_lobby_player_updated(player_steam_id: int) -> void:
 
 func _on_lobby_member_joined(player_steam_id: int) -> void:
 	_add_opponent_row(player_steam_id)
+	_update_start_button()
 
 
 func _on_lobby_member_left(player_steam_id: int) -> void:
 	_remove_player_row(player_steam_id)
+	_update_start_button()
 
 
 func _on_lobby_destroyed() -> void:

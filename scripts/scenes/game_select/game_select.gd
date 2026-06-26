@@ -146,5 +146,5 @@ func _on_add_player_button_pressed() -> void:
 
 func _on_start_game_button_pressed() -> void:
 	var config = _generate_game_config()
-	GameSelectState.start_game(config)
+	GameSelectSignals.start_game(config)
 	visible = false

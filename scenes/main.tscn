@@ -73,6 +73,8 @@ size_flags_horizontal = 4
 text = "BOARD EDITOR"
 
 [node name="JoinGamePopup" type="PopupPanel" parent="MainMenu" unique_id=1038169861]
+oversampling_override = 1.0
+size = Vector2i(125, 101)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/JoinGamePopup" unique_id=315548730]
 offset_left = 4.0
@@ -106,3 +108,5 @@ metadata/_custom_type_script = "uid://cndjfrn6nsldu"
 [connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/JoinGameButton" to="." method="_on_join_game_button_pressed"]
 [connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/LocalGameButton" to="." method="_on_local_game_button_pressed"]
 [connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/BoardEditorButton" to="." method="_on_board_editor_button_pressed"]
+[connection signal="pressed" from="MainMenu/JoinGamePopup/VBoxContainer/HBoxContainer/CancelButton" to="." method="_on_join_game_cancel_button_pressed"]
+[connection signal="pressed" from="MainMenu/JoinGamePopup/VBoxContainer/HBoxContainer/JoinButton" to="." method="_on_join_game_join_button_pressed"]

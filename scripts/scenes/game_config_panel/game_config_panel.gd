@@ -25,6 +25,7 @@ func _ready() -> void:
 	_generate_board_previews()
 	_generate_expansions()
 	_generate_house_rules()
+	victory_points_spinbox.value_changed.connect(_on_victory_points_changed)
 
 
 #############################################
@@ -43,6 +44,20 @@ func _set_controls_interactive(value: bool) -> void:
 #############################################
 ### CONFIG
 #############################################
+func load_from_config(config: GameConfig) -> void:
+	for button: BaseButton in board_list.get_children():
+		var board: SerializedBoard = button.get_meta(BOARD)
+		var is_selected_board := config.board != null and board.equals(config.board)
+		button.set_pressed_no_signal(is_selected_board)
+		if is_selected_board:
+			selected_board = board
+	for checkbox: CheckBox in expansions_list.get_children():
+		checkbox.set_pressed_no_signal(checkbox.get_meta(EXPANSION) in config.expansions)
+	for checkbox: CheckBox in house_rules_list.get_children():
+		checkbox.set_pressed_no_signal(checkbox.get_meta(HOUSE_RULE) in config.house_rules)
+	victory_points_spinbox.value = config.victory_points
+
+
 func apply_to_config(config: GameConfig) -> void:
 	config.board = selected_board
 	_set_selected_expansions(config)
@@ -119,6 +134,7 @@ func _generate_expansions() -> void:
 		checkbox.text = ExpansionTypes.DISPLAY_NAMES[expansion]
 		checkbox.set_meta(EXPANSION, expansion)
 		checkbox.button_pressed = false
+		checkbox.toggled.connect(_on_option_toggled)
 		expansions_list.add_child(checkbox)
 
 
@@ -128,6 +144,7 @@ func _generate_house_rules() -> void:
 		checkbox.text = HouseRules.DISPLAY_NAMES[house_rule]
 		checkbox.set_meta(HOUSE_RULE, house_rule)
 		checkbox.button_pressed = false
+		checkbox.toggled.connect(_on_option_toggled)
 		house_rules_list.add_child(checkbox)
 
 
@@ -137,3 +154,12 @@ func _generate_house_rules() -> void:
 func _on_board_selected(button: BaseButton) -> void:
 	selected_board = button.get_meta(BOARD)
 	board_changed.emit(selected_board)
+	GameSelectSignals.emit_game_config_changed()
+
+
+func _on_option_toggled(_pressed: bool) -> void:
+	GameSelectSignals.emit_game_config_changed()
+
+
+func _on_victory_points_changed(_value: float) -> void:
+	GameSelectSignals.emit_game_config_changed()

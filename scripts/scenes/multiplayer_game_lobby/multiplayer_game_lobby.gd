@@ -28,6 +28,7 @@ func init(lobby_manager: LobbyManager) -> void:
 	NetworkSignals.lobby_member_left.connect(_on_lobby_member_left)
 	NetworkSignals.lobby_destroyed.connect(_on_lobby_destroyed)
 	NetworkSignals.lobby_player_updated.connect(_on_lobby_player_updated)
+	NetworkSignals.lobby_config_updated.connect(_on_lobby_config_updated)
 
 
 #############################################
@@ -120,6 +121,7 @@ func _remove_player_row(player_steam_id: int) -> void:
 func setup_as_host() -> void:
 	_is_lobby_host = true
 	config_panel.interactive = true
+	GameSelectSignals.game_config_changed.connect(_on_game_config_changed)
 
 
 func setup_as_client() -> void:
@@ -163,6 +165,16 @@ func _on_player_name_changed(new_name: String) -> void:
 		if member_id != NetworkManager.local_steam_id and _lobby_manager.get_player_name(member_id) == new_name:
 			return
 	_lobby_manager.set_player_name(NetworkManager.local_steam_id, new_name)
+
+
+func _on_game_config_changed() -> void:
+	var game_config := GameConfig.new()
+	config_panel.apply_to_config(game_config)
+	_lobby_manager.set_config(game_config)
+
+
+func _on_lobby_config_updated(game_config: GameConfig) -> void:
+	config_panel.load_from_config(game_config)
 
 
 func _on_lobby_player_updated(player_steam_id: int) -> void:

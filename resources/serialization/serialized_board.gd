@@ -46,6 +46,10 @@ func to_dict() -> Dictionary:
 	}
 
 
+func equals(other: SerializedBoard) -> bool:
+	return to_dict() == other.to_dict()
+
+
 func from_dict(dict: Dictionary) -> SerializedBoard:
 	size = Vector2i(dict.size.width, dict.size.height)
 	for t in dict.tiles:

@@ -5,12 +5,16 @@ extends Node
 @export var game_select_scene: PackedScene
 @export var multiplayer_game_lobby_scene: PackedScene
 
+@onready var join_button: Button = $MainMenu/JoinGamePopup/VBoxContainer/HBoxContainer/JoinButton
 @onready var join_game_popup: PopupPanel = $MainMenu/JoinGamePopup
 @onready var lobby_manager: LobbyManager = $LobbyManager
 @onready var main_menu: Control = $MainMenu
 @onready var room_code_line_edit: LineEdit = $MainMenu/JoinGamePopup/VBoxContainer/RoomCodeLineEdit
 @onready var scene_container: Node2D = $SceneContainer
 
+
+const JOIN_BUTTON_DEFAULT_TEXT = "JOIN"
+const JOIN_BUTTON_CONNECTING_TEXT = "Connecting..."
 
 var active_scene: Node = null
 var active_ui: Node = null
@@ -22,8 +26,10 @@ func _ready() -> void:
 
 func _setup_signals() -> void:
 	GlobalSignals.back_to_menu.connect(_on_back_to_menu)
-	GameSelectState.game_started.connect(_on_game_start)
+	GameSelectSignals.game_started.connect(_on_game_start)
 	NetworkSignals.lobby_created.connect(_on_lobby_created)
+	NetworkSignals.lobby_joined.connect(_on_lobby_joined)
+	NetworkSignals.lobby_join_failed.connect(_on_lobby_join_failed)
 
 
 func _cleanup_active() -> void:
@@ -56,7 +62,7 @@ func _on_lobby_created(_lobby_id: int, _room_code: String) -> void:
 
 
 func _on_join_game_button_pressed() -> void:
-	print("Join Room clicked")
+	join_game_popup.popup_centered()
 
 
 func _on_local_game_button_pressed() -> void:
@@ -82,3 +88,30 @@ func _on_game_start(game_config: GameConfig) -> void:
 	active_scene = game_scene.instantiate()
 	active_scene.game_config = game_config
 	scene_container.add_child(active_scene)
+
+
+func _on_join_game_cancel_button_pressed() -> void:
+	join_game_popup.hide()
+
+
+func _on_join_game_join_button_pressed() -> void:
+	var room_code := room_code_line_edit.text.strip_edges()
+	if not room_code.is_empty():
+		join_button.disabled = true
+		join_button.text = JOIN_BUTTON_CONNECTING_TEXT
+		lobby_manager.join_lobby(room_code)
+
+
+func _on_lobby_joined(_lobby_id: int) -> void:
+	join_game_popup.hide()
+	join_button.disabled = false
+	main_menu.visible = false
+	active_ui = multiplayer_game_lobby_scene.instantiate()
+	add_child(active_ui)
+	active_ui.init(lobby_manager)
+	active_ui.setup_as_client()
+
+
+func _on_lobby_join_failed(_reason: String) -> void:
+	join_button.disabled = false
+	join_button.text = JOIN_BUTTON_DEFAULT_TEXT

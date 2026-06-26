@@ -18,7 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 EditorState="*uid://mm6ipoq4nuf1"
-GameSelectState="*uid://brywrrdvtjoov"
+GameSelectSignals="*uid://brywrrdvtjoov"
 GlobalSignals="*uid://do338snjlepb4"
 GameSignals="*uid://brkpxnwp4t82i"
 NetworkManager="*uid://dsxjyg06isuxj"

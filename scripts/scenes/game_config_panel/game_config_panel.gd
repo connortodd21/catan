@@ -33,7 +33,7 @@ func _ready() -> void:
 #############################################
 func _set_controls_interactive(value: bool) -> void:
 	for button: BaseButton in board_list.get_children():
-		button.disabled = not value
+		button.mouse_filter = Control.MOUSE_FILTER_STOP if value else Control.MOUSE_FILTER_IGNORE
 	for checkbox: CheckBox in expansions_list.get_children():
 		checkbox.disabled = not value
 	for checkbox: CheckBox in house_rules_list.get_children():
@@ -84,15 +84,10 @@ func _generate_board_previews() -> void:
 	var button_group := ButtonGroup.new()
 	button_group.pressed.connect(_on_board_selected)
 
-	var dir := DirAccess.open(BOARDS_DIR)
-	if dir:
-		dir.list_dir_begin()
-		var file_name := dir.get_next()
-		while file_name:
-			if not dir.current_is_dir() and file_name.ends_with(".json"):
-				_create_board_preview(file_name, button_group)
-			file_name = dir.get_next()
-		dir.list_dir_end()
+	var board_file_names := FileUtils.get_files_in_dir_with_extension(BOARDS_DIR, FileUtils.JSON_EXTENSION)
+	board_file_names.sort()
+	for file_name: String in board_file_names:
+		_create_board_preview(file_name, button_group)
 
 
 func _create_board_preview(path: String, button_group: ButtonGroup) -> void:

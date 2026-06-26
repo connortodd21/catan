@@ -136,8 +136,15 @@ func _on_lobby_chat_update(lobby_id: int, changed_id: int, _making_change_id: in
 
 
 func _on_lobby_data_update(success: bool, lobby_id: int, member_id: int) -> void:
-	if not success or lobby_id != _lobby_id or member_id != 0:
+	if not success or lobby_id != _lobby_id:
 		return
+	if member_id == _lobby_id:
+		_on_lobby_config_data_updated()
+	else:
+		_on_lobby_member_data_updated(member_id)
+
+
+func _on_lobby_config_data_updated() -> void:
 	var config_json_string := Steam.getLobbyData(_lobby_id, LOBBY_CONFIG)
 	if config_json_string.is_empty():
 		return
@@ -146,6 +153,10 @@ func _on_lobby_data_update(success: bool, lobby_id: int, member_id: int) -> void
 		var game_config := GameConfig.new()
 		game_config.from_dict(game_config_dict)
 		NetworkSignals.emit_lobby_config_updated(game_config)
+
+
+func _on_lobby_member_data_updated(member_steam_id: int) -> void:
+	NetworkSignals.emit_lobby_player_updated(member_steam_id)
 
 
 func _on_lobby_created(result: int, lobby_id: int) -> void:

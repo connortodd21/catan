@@ -62,6 +62,9 @@ func _on_lobby_created(_lobby_id: int, _room_code: String) -> void:
 
 
 func _on_join_game_button_pressed() -> void:
+	room_code_line_edit.clear()
+	join_button.disabled = false
+	join_button.text = JOIN_BUTTON_DEFAULT_TEXT
 	join_game_popup.popup_centered()
 
 

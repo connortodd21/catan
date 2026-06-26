@@ -1,5 +1,23 @@
 class_name FileUtils
 
+const JSON_EXTENSION: String = ".json"
+
+#############################################
+### SEARCH
+#############################################
+static func get_files_in_dir_with_extension(dir_path: String, extension: String = "") -> Array[String]:
+	var file_names: Array[String] = []
+	var dir := DirAccess.open(dir_path)
+	if dir:
+		dir.list_dir_begin()
+		var file_name := dir.get_next()
+		while file_name:
+			if not dir.current_is_dir() and (extension.is_empty() or file_name.ends_with(extension)):
+				file_names.append(file_name)
+			file_name = dir.get_next()
+		dir.list_dir_end()
+	return file_names
+
 
 #############################################
 ### LOAD

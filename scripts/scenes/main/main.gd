@@ -28,6 +28,7 @@ func _ready() -> void:
 func _setup_signals() -> void:
 	GlobalSignals.back_to_menu.connect(_on_back_to_menu)
 	GameSelectSignals.game_started.connect(_on_game_start)
+	NetworkSignals.game_starting.connect(_on_multiplayer_game_start)
 	NetworkSignals.lobby_created.connect(_on_lobby_created)
 	NetworkSignals.lobby_joined.connect(_on_lobby_joined)
 	NetworkSignals.lobby_join_failed.connect(_on_lobby_join_failed)
@@ -83,6 +84,15 @@ func _on_board_editor_button_pressed() -> void:
 	active_ui = active_scene.get_node("UI")
 	active_scene.remove_child(active_ui)
 	add_child(active_ui)
+
+
+func _on_multiplayer_game_start(game_config: GameConfig) -> void:
+	if active_ui:
+		active_ui.queue_free()
+		active_ui = null
+	active_scene = game_scene.instantiate()
+	active_scene.game_config = game_config
+	scene_container.add_child(active_scene)
 
 
 func _on_game_start(game_config: GameConfig) -> void:

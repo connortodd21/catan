@@ -16,6 +16,7 @@ font_size = 48
 
 [node name="MultiplayerGameLobby" type="CanvasLayer" unique_id=1513308322]
 script = ExtResource("1_bro6o")
+min_lobby_size = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=169844472]
 anchors_preset = 15

@@ -213,8 +213,8 @@ func _on_start_game_button_pressed() -> void:
 	var steam_ids := _lobby_manager.get_members_in_lobby()
 	var game_config := GameConfig.new()
 	config_panel.apply_to_config(game_config)
-	_game_manager.start_multiplayer_session()
-	_game_manager.notify_game_start.rpc(steam_ids, game_config.to_dict())
+	_lobby_manager.start_game_init()
+	_game_manager.start_multiplayer_session(steam_ids, game_config.to_dict())
 
 
 func _on_back_button_pressed() -> void:

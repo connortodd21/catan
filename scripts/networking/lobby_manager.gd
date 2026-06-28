@@ -5,6 +5,8 @@ const MAX_PLAYERS: int = 4
 const LOBBY_CODE_PERMITTED_CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 const LOBBY_CODE_LENGTH: int = 6
 
+const GAME_STARTING = "game_starting"
+const GAME_STARTING_VALUE = "true"
 const LOBBY_CODE = "lobby_code"
 const LOBBY_CONFIG = "lobby_config"
 const PLAYER_COLOR = "player_color"
@@ -64,6 +66,11 @@ func get_available_colors() -> Array[int]:
 		if color_index not in taken_colors:
 			available_colors.append(color_index)
 	return available_colors
+
+
+func start_game_init() -> void:
+	Steam.setLobbyData(_lobby_id, GAME_STARTING, GAME_STARTING_VALUE)
+	NetworkSignals.emit_session_created(Steam.getLobbyOwner(_lobby_id))
 
 
 func set_config(game_config: GameConfig) -> void:
@@ -145,6 +152,9 @@ func _on_lobby_data_update(success: bool, lobby_id: int, member_id: int) -> void
 
 
 func _on_lobby_config_data_updated() -> void:
+	if Steam.getLobbyData(_lobby_id, GAME_STARTING) == GAME_STARTING_VALUE:
+		NetworkSignals.emit_session_created(Steam.getLobbyOwner(_lobby_id))
+		return
 	var config_json_string := Steam.getLobbyData(_lobby_id, LOBBY_CONFIG)
 	if config_json_string.is_empty():
 		return

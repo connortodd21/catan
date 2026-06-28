@@ -46,3 +46,11 @@ func emit_lobby_player_updated(player_steam_id: int) -> void:
 signal lobby_config_updated(game_config: GameConfig)
 func emit_lobby_config_updated(game_config: GameConfig) -> void:
 	lobby_config_updated.emit(game_config)
+
+
+#############################################
+### GAME SIGNALS
+#############################################
+signal game_starting(game_config: GameConfig)
+func emit_game_starting(game_config: GameConfig) -> void:
+	game_starting.emit(game_config)

@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://l0l6tmvgapip" path="res://scenes/game.tscn" id="4_jyhfs"]
 [ext_resource type="Script" uid="uid://cndjfrn6nsldu" path="res://scripts/networking/lobby_manager.gd" id="5_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://ddhf7xckjvy8d" path="res://scenes/multiplayer_game_lobby.tscn" id="5_tefeu"]
+[ext_resource type="Script" uid="uid://03calfdtc5oh" path="res://scripts/networking/game_manager.gd" id="6_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://c2rllsjdui05u" path="res://scenes/game_select.tscn" id="gs_scene"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_0wfyh"]
@@ -100,7 +101,13 @@ text = "CANCEL"
 layout_mode = 2
 text = "JOIN"
 
-[node name="LobbyManager" type="Node" parent="." unique_id=1871152040]
+[node name="Networking" type="Node2D" parent="." unique_id=1814020401]
+
+[node name="GameManager" type="Node" parent="Networking" unique_id=596315668]
+script = ExtResource("6_o6xl0")
+metadata/_custom_type_script = "uid://03calfdtc5oh"
+
+[node name="LobbyManager" type="Node" parent="Networking" unique_id=1871152040]
 script = ExtResource("5_tbgi4")
 metadata/_custom_type_script = "uid://cndjfrn6nsldu"
 

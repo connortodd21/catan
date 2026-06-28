@@ -14,6 +14,8 @@ const COLOR_DISPLAY = "ColorDisplay"
 @export var min_lobby_size: int = 3
 
 var _is_lobby_host: bool = false
+
+var _game_manager: GameManager
 var _lobby_manager: LobbyManager
 
 
@@ -21,8 +23,9 @@ func _ready() -> void:
 	UISignals.color_selected_from_color_picker.connect(_on_color_selected_from_color_picker)
 
 
-func init(lobby_manager: LobbyManager) -> void:
+func init(lobby_manager: LobbyManager, game_manager: GameManager) -> void:
 	_lobby_manager = lobby_manager
+	_game_manager = game_manager
 	lobby_label.text = "Lobby Code: " + _lobby_manager.get_lobby_code()
 	start_button.disabled = true
 	_build_player_list()
@@ -204,6 +207,14 @@ func _on_lobby_member_left(player_steam_id: int) -> void:
 
 func _on_lobby_destroyed() -> void:
 	GlobalSignals.go_back_to_menu()
+
+
+func _on_start_game_button_pressed() -> void:
+	var steam_ids := _lobby_manager.get_members_in_lobby()
+	var game_config := GameConfig.new()
+	config_panel.apply_to_config(game_config)
+	_game_manager.start_multiplayer_session()
+	_game_manager.notify_game_start.rpc(steam_ids, game_config.to_dict())
 
 
 func _on_back_button_pressed() -> void:

@@ -5,9 +5,10 @@ extends Node
 @export var game_select_scene: PackedScene
 @export var multiplayer_game_lobby_scene: PackedScene
 
+@onready var game_manager: GameManager = $Networking/GameManager
 @onready var join_button: Button = $MainMenu/JoinGamePopup/VBoxContainer/HBoxContainer/JoinButton
 @onready var join_game_popup: PopupPanel = $MainMenu/JoinGamePopup
-@onready var lobby_manager: LobbyManager = $LobbyManager
+@onready var lobby_manager: LobbyManager = $Networking/LobbyManager
 @onready var main_menu: Control = $MainMenu
 @onready var room_code_line_edit: LineEdit = $MainMenu/JoinGamePopup/VBoxContainer/RoomCodeLineEdit
 @onready var scene_container: Node2D = $SceneContainer
@@ -57,7 +58,7 @@ func _on_lobby_created(_lobby_id: int, _room_code: String) -> void:
 	main_menu.visible = false
 	active_ui = multiplayer_game_lobby_scene.instantiate()
 	add_child(active_ui)
-	active_ui.init(lobby_manager)
+	active_ui.init(lobby_manager, game_manager)
 	active_ui.setup_as_host()
 
 
@@ -111,7 +112,7 @@ func _on_lobby_joined(_lobby_id: int) -> void:
 	main_menu.visible = false
 	active_ui = multiplayer_game_lobby_scene.instantiate()
 	add_child(active_ui)
-	active_ui.init(lobby_manager)
+	active_ui.init(lobby_manager, game_manager)
 	active_ui.setup_as_client()
 
 

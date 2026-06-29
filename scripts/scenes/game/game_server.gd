@@ -243,6 +243,137 @@ func _deduct_cost(definition: ActionDefinition) -> void:
 
 
 #############################################
+### TITLE CHECKS
+#############################################
+func _check_titles(action: ActionTypes.Type, player_index: int) -> void:
+	match action:
+		ActionTypes.Type.BUILD_ROAD:
+			_check_longest_road(player_index)
+		ActionTypes.Type.BUILD_SETTLEMENT:
+			_check_harbormaster(player_index)
+			_recheck_longest_road_on_settlement(player_index)
+		ActionTypes.Type.BUILD_CITY:
+			_check_harbormaster(player_index)
+
+
+func _check_longest_road(player_index: int) -> void:
+	var player_longest_road := board_state.calculate_longest_road(player_index)
+	player_states[player_index].longest_road_length = player_longest_road
+	GameSignals.emit_player_stats_changed(player_index)
+
+	var current_best := _longest_road_holder.longest_road_length if _longest_road_holder else 0
+	if player_longest_road < min_longest_road or player_longest_road <= current_best:
+		return
+
+	var previous_holder_index := player_states.find(_longest_road_holder) if _longest_road_holder else -1
+	_update_longest_road_holder(previous_holder_index, player_index)
+
+
+func _recheck_longest_road_on_settlement(player_index: int) -> void:
+	if _longest_road_holder == null:
+		return
+	var holder_index := player_states.find(_longest_road_holder)
+	if holder_index == player_index:
+		return
+	_recalculate_road_lengths_excluding(player_index)
+	var new_leader := _find_longest_road_holder()
+	if new_leader == holder_index:
+		return
+	_update_longest_road_holder(holder_index, new_leader)
+
+
+func _recalculate_road_lengths_excluding(player_to_exclude_idx: int) -> void:
+	for i in player_states.size():
+		if i == player_to_exclude_idx:
+			continue
+		player_states[i].longest_road_length = board_state.calculate_longest_road(i)
+		GameSignals.emit_player_stats_changed(i)
+
+
+func _find_longest_road_holder() -> int:
+	var best_length := 0
+	var best_index := -1
+
+	for i in player_states.size():
+		var length := player_states[i].longest_road_length
+		if length > best_length:
+			best_length = length
+			best_index = i
+		elif length == best_length:
+			best_index = -1
+
+	return best_index if best_length >= min_longest_road else -1
+
+
+func _update_longest_road_holder(previous_holder_index: int, new_holder_index: int) -> void:
+	var previous_player: Player = null
+
+	if previous_holder_index != -1:
+		player_states[previous_holder_index].score -= 2
+		GameSignals.emit_score_changed(previous_holder_index, player_states[previous_holder_index].score)
+		previous_player = player_states[previous_holder_index].player
+
+	_longest_road_holder = null
+
+	if new_holder_index == -1:
+		GameSignals.emit_longest_road_holder_changed(-1)
+		GameSignals.emit_title_holder_changed(TitleTypes.Type.LONGEST_ROAD, null, previous_player)
+	else:
+		player_states[new_holder_index].score += 2
+		GameSignals.emit_score_changed(new_holder_index, player_states[new_holder_index].score)
+		_longest_road_holder = player_states[new_holder_index]
+		GameSignals.emit_longest_road_holder_changed(new_holder_index)
+		GameSignals.emit_title_holder_changed(TitleTypes.Type.LONGEST_ROAD, player_states[new_holder_index].player, previous_player)
+
+
+func _check_largest_army(player_index: int) -> void:
+	var player_army_size: int = player_states[player_index].army_size
+	GameSignals.emit_player_stats_changed(player_index)
+
+	var largest_army: int = _largest_army_holder.army_size if _largest_army_holder else 0
+	if player_army_size < min_largest_army or player_army_size <= largest_army:
+		return
+
+	var player: PlayerState = player_states[player_index]
+	if player != _largest_army_holder:
+		var previous_holder := _largest_army_holder
+		_award_title(previous_holder, player, player_index)
+		_largest_army_holder = player
+		GameSignals.emit_largest_army_holder_changed(player_index)
+		GameSignals.emit_title_holder_changed(TitleTypes.Type.LARGEST_ARMY, player.player, previous_holder.player if previous_holder else null)
+
+
+func _check_harbormaster(player_index: int) -> void:
+	if not game_config.has_harbormaster():
+		return
+
+	var player_harbor_count: int = board_state.calculate_harbormaster_count(player_index)
+	player_states[player_index].harbormaster_count = player_harbor_count
+	GameSignals.emit_player_stats_changed(player_index)
+
+	var harbormaster_count: int = _harbormaster_holder.harbormaster_count if _harbormaster_holder else 0
+	if player_harbor_count < min_harbormaster or player_harbor_count <= harbormaster_count:
+		return
+
+	var player: PlayerState = player_states[player_index]
+	if player != _harbormaster_holder:
+		var previous_holder := _harbormaster_holder
+		_award_title(previous_holder, player, player_index)
+		_harbormaster_holder = player
+		GameSignals.emit_harbormaster_holder_changed(player_index)
+		GameSignals.emit_title_holder_changed(TitleTypes.Type.HARBORMASTER, player.player, previous_holder.player if previous_holder else null)
+
+
+func _award_title(old_holder: PlayerState, new_holder: PlayerState, new_holder_index: int) -> void:
+	if old_holder != null:
+		var previous_holder_index := player_states.find(old_holder)
+		old_holder.score -= 2
+		GameSignals.emit_score_changed(previous_holder_index, old_holder.score)
+	new_holder.score += 2
+	GameSignals.emit_score_changed(new_holder_index, new_holder.score)
+
+
+#############################################
 ### RESOURCE DISTRIBUTION
 #############################################
 func _distribute_resources(dice_total: int) -> void:

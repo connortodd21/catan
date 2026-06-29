@@ -25,6 +25,8 @@
 [ext_resource type="Script" uid="uid://cloe8kcib008c" path="res://scripts/scenes/game/settings_popup.gd" id="20_1kice"]
 [ext_resource type="Script" uid="uid://cfcsf7cxxyd27" path="res://scripts/scenes/game/stats_popup.gd" id="23_bt5mj"]
 [ext_resource type="Script" uid="uid://b8tslke6wfe5k" path="res://scripts/scenes/game/activity_log_popup.gd" id="25_pl11u"]
+[ext_resource type="Script" uid="uid://csvh1gjtpj3kc" path="res://scripts/scenes/game/game_server.gd" id="26_qnb83"]
+[ext_resource type="Script" uid="uid://dnm3b76ft8yqw" path="res://scripts/scenes/game/game_client.gd" id="27_sww3w"]
 
 [node name="Game" type="Node2D" unique_id=67801416]
 script = ExtResource("1_80nbo")
@@ -272,7 +274,7 @@ metadata/_custom_type_script = "uid://cloe8kcib008c"
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/SettingsPopup" unique_id=1679787055]
 offset_left = 4.0
 offset_top = 4.0
-offset_right = 96.0
+offset_right = 110.0
 offset_bottom = 96.0
 
 [node name="DraggableHeader" parent="UI/SettingsPopup/VBoxContainer" unique_id=625641396 instance=ExtResource("14_ca42v")]
@@ -297,8 +299,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 4.0
 offset_top = 4.0
-offset_right = 96.0
-offset_bottom = 96.0
+offset_right = 159.0
+offset_bottom = 175.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -378,6 +380,12 @@ layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 scroll_following = true
+
+[node name="GameServer" type="Node" parent="." unique_id=174898348]
+script = ExtResource("26_qnb83")
+
+[node name="GameClient" type="Node" parent="." unique_id=338392254]
+script = ExtResource("27_sww3w")
 
 [connection signal="pressed" from="UI/MenuHbox/ActivityLogButton" to="." method="_on_activity_log_button_pressed"]
 [connection signal="pressed" from="UI/MenuHbox/StatsButton" to="." method="_on_stats_button_pressed"]

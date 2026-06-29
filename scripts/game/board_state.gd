@@ -22,6 +22,9 @@ var _edge_to_vertices: Dictionary[Vector2i, Array] = {}
 ## Used to look up terrain types when collecting initial resources.
 var _vertex_to_coords: Dictionary[Vector2i, Array] = {}
 
+## Maps each tile's axial coord to the vertex keys surrounding it.
+var coord_to_vertex_keys: Dictionary[Vector2i, Array] = {}
+
 ## Maps each port-adjacent vertex key to its port type.
 ## Used for trade rates and harbormaster.
 var _vertex_to_port: Dictionary[Vector2i, PortTypes.Type] = {}
@@ -93,6 +96,12 @@ func _build_graph(board: SerializedBoard, board_tile_map: TileMapLayer) -> void:
 
 			if edge not in _edge_to_vertices:
 				_edge_to_vertices[edge] = [left_vertex, right_vertex]
+
+	for vertex_key: Vector2i in _vertex_to_coords:
+		for coord: Vector2i in _vertex_to_coords[vertex_key]:
+			if coord not in coord_to_vertex_keys:
+				coord_to_vertex_keys[coord] = []
+			coord_to_vertex_keys[coord].append(vertex_key)
 
 
 func _build_ports(board: SerializedBoard, board_tile_map: TileMapLayer) -> void:

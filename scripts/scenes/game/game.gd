@@ -170,7 +170,6 @@ func _init_players() -> void:
 
 func start_game() -> void:
 	setup_manager.begin(player_states.size())
-	
 
 
 #############################################

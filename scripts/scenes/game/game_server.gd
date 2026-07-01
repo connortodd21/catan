@@ -7,6 +7,11 @@ const NEWLY_BOUGHT_CARD_META = "newly_bought"
 @export var action_database: ActionDatabaseResource
 @export var decks: Array[CardDeck] = []
 
+# Titles
+@export var min_harbormaster: int = 3
+@export var min_largest_army: int = 3
+@export var min_longest_road: int = 5
+
 # Config
 var game_config: GameConfig
 
@@ -22,12 +27,6 @@ var turn_manager: TurnManager
 # Players
 var player_states: Array[PlayerState] = []
 
-# Actions
-static var _action_to_piece: Dictionary = {
-	ActionTypes.Type.BUILD_ROAD: PieceTypes.Type.ROAD,
-	ActionTypes.Type.BUILD_SETTLEMENT: PieceTypes.Type.SETTLEMENT,
-	ActionTypes.Type.BUILD_CITY: PieceTypes.Type.CITY,
-}
 
 # Game state
 var _draw_piles: Dictionary = {}
@@ -56,6 +55,12 @@ func _init_board(board_tile_map: TileMapLayer) -> void:
 	board_state.build(game_config.board, board_tile_map)
 	if game_config.has_robber():
 		_place_robber_on_desert()
+
+
+func start_game() -> void:
+	if not multiplayer.is_server():
+		return
+	setup_manager.begin(player_states.size())
 
 
 func _place_robber_on_desert() -> void:
@@ -371,6 +376,68 @@ func _award_title(old_holder: PlayerState, new_holder: PlayerState, new_holder_i
 		GameSignals.emit_score_changed(previous_holder_index, old_holder.score)
 	new_holder.score += 2
 	GameSignals.emit_score_changed(new_holder_index, new_holder.score)
+
+
+#############################################
+### ROBBER
+#############################################
+func _steal_resource(target_index: int) -> void:
+	var target := player_states[target_index]
+	var thief := player_states[turn_manager.current_player_index]
+	var available_resources: Array[ResourceTypes.Type] = []
+
+	for resource_type: ResourceTypes.Type in target.hand.resource_counts:
+		for _i in target.hand.resource_count(resource_type):
+			available_resources.append(resource_type)
+
+	if available_resources.is_empty():
+		return
+
+	var stolen_resource: ResourceTypes.Type = ArrayUtils.get_random_item(available_resources)
+	target.hand.remove_resource(stolen_resource)
+	thief.hand.add_resource(stolen_resource)
+	GameSignals.emit_resource_stolen(thief.player, target.player, stolen_resource)
+	GameSignals.emit_hand_changed()
+
+
+func _finish_robber_phase() -> void:
+	turn_manager.advance_from_robber()
+
+
+#############################################
+### BANK TRADE
+#############################################
+func _execute_bank_trade(traded: Array[ResourceTypes.Type], received: Array[ResourceTypes.Type]) -> void:
+	var player_state := player_states[turn_manager.current_player_index]
+	for resource in traded:
+		player_state.hand.remove_resource(resource)
+	for resource in received:
+		player_state.hand.add_resource(resource)
+	GameSignals.emit_bank_trade_completed(player_state.player, traded, received)
+	GameSignals.emit_hand_changed()
+
+
+#############################################
+### GAME OVER
+#############################################
+func _check_game_over(player_index: int, score: int) -> void:
+	if score >= target_vp:
+		_game_over(player_index)
+
+
+func _game_over(_winner_index: int) -> void:
+	var standings := player_states.duplicate()
+	standings.sort_custom(func(a: PlayerState, b: PlayerState) -> bool: return a.score > b.score)
+	pass # TODO: notify all clients via RPC with winner_index and standings
+
+
+func _audit_scores() -> void:
+	for i in player_states.size():
+		var expected := _recalculate_score(i)
+		var actual := player_states[i].score
+		if expected != actual:
+			push_warning("Score drift detected for %s: expected %d, got %d" % [player_states[i].player.player_name, expected, actual])
+			player_states[i].score = expected
 
 
 #############################################

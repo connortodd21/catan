@@ -2,8 +2,14 @@
 
 [ext_resource type="Script" uid="uid://tfwlfkjft5fy" path="res://scripts/scenes/game/game_v2.gd" id="1_264po"]
 [ext_resource type="PackedScene" uid="uid://dbro2ruekwy4c" path="res://scenes/board_view.tscn" id="2_e2o6t"]
+[ext_resource type="Resource" uid="uid://i0k4rjpemdnx" path="res://resources/terrain/terrain_database.tres" id="2_fc0e3"]
+[ext_resource type="Resource" uid="uid://dlk1rll7vemno" path="res://resources/numbers/number_database.tres" id="3_lbhrr"]
+[ext_resource type="Resource" uid="uid://dcrup1kpiwxdw" path="res://resources/pieces/piece_database.tres" id="4_iywne"]
 [ext_resource type="PackedScene" uid="uid://d26hbf0pdv6yl" path="res://scenes/dice_roller.tscn" id="5_dice"]
+[ext_resource type="Resource" uid="uid://brdcbi8ajmttf" path="res://resources/game/actions/action_database.tres" id="5_kvpfn"]
+[ext_resource type="PackedScene" uid="uid://djyt554w7rwkq" path="res://scenes/port.tscn" id="6_264po"]
 [ext_resource type="PackedScene" uid="uid://b3q7m8xnp0yvw" path="res://scenes/hand_manager.tscn" id="6_hm"]
+[ext_resource type="Resource" uid="uid://cc6vat0immq2h" path="res://resources/ports/deck/base_port_deck.tres" id="7_1kice"]
 [ext_resource type="PackedScene" path="res://scenes/player_hud.tscn" id="7_phud"]
 [ext_resource type="PackedScene" path="res://scenes/action_panel.tscn" id="9_ap"]
 [ext_resource type="Texture2D" uid="uid://dn7ucr5poup0d" path="res://assets/buttons/settings.png" id="13_5newe"]
@@ -366,9 +372,15 @@ scroll_following = true
 
 [node name="GameServer" type="Node" parent="." unique_id=174898348]
 script = ExtResource("26_qnb83")
+action_database = ExtResource("5_kvpfn")
 
 [node name="GameClient" type="Node" parent="." unique_id=338392254]
 script = ExtResource("27_sww3w")
+number_database = ExtResource("3_lbhrr")
+piece_database = ExtResource("4_iywne")
+port_deck = ExtResource("7_1kice")
+terrain_database = ExtResource("2_fc0e3")
+port_scene = ExtResource("6_264po")
 
 [connection signal="pressed" from="UI/MenuHbox/ActivityLogButton" to="." method="_on_activity_log_button_pressed"]
 [connection signal="pressed" from="UI/MenuHbox/StatsButton" to="." method="_on_stats_button_pressed"]

@@ -16,8 +16,8 @@ extends Node
 @export var port_scene: PackedScene
 
 # Rendering config
-@export var number_offset: Vector2 = Vector2.ZERO
-@export var number_scale: float = 1.0
+@export var number_offset: Vector2 = Vector2(-25, -25)
+@export var number_scale: float = 1.6
 @export var robber_offset: Vector2 = Vector2(-40, 0)
 
 

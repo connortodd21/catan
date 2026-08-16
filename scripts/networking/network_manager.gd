@@ -1,5 +1,7 @@
 extends Node
 
+const HOST_PEER_ID = 1
+
 signal steam_initialized(steam_id: int)
 signal steam_failed(reason: String)
 

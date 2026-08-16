@@ -92,6 +92,7 @@ func _on_multiplayer_game_start(game_config: GameConfig) -> void:
 		active_ui = null
 	active_scene = game_scene.instantiate()
 	active_scene.game_config = game_config
+	active_scene.local_player_index = game_manager.local_player_index
 	scene_container.add_child(active_scene)
 
 

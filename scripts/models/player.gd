@@ -37,3 +37,16 @@ func get_color() -> Color:
 
 func get_player_name() -> String:
 	return player_name
+
+
+func to_dict() -> Dictionary:
+	return {
+		"player_name": player_name,
+		"player_color": int(player_color)
+	}
+
+
+func from_dict(dict: Dictionary) -> Player:
+	player_name = dict.player_name
+	player_color = dict.player_color as PlayerColor
+	return self

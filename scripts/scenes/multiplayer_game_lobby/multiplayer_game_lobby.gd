@@ -213,8 +213,18 @@ func _on_start_game_button_pressed() -> void:
 	var steam_ids := _lobby_manager.get_members_in_lobby()
 	var game_config := GameConfig.new()
 	config_panel.apply_to_config(game_config)
+	_apply_players_to_config(game_config)
 	_lobby_manager.start_game_init()
 	_game_manager.start_multiplayer_session(steam_ids, game_config.to_dict())
+
+
+func _apply_players_to_config(game_config: GameConfig) -> void:
+	for steam_id: int in _lobby_manager.get_members_in_lobby():
+		var player := Player.new()
+		player.player_name = _lobby_manager.get_player_name(steam_id)
+		var color := _lobby_manager.get_player_color(steam_id)
+		player.player_color = color as Player.PlayerColor if color != -1 else Player.PlayerColor.RED
+		game_config.add_player(player)
 
 
 func _on_back_button_pressed() -> void:

@@ -25,6 +25,9 @@ extends Node
 ### NODES
 #############################################
 
+# Server
+@onready var game_server: GameServer = $"../GameServer"
+
 # Board
 @onready var board_tile_map: TileMapLayer = $"../BoardView/BoardTileMap"
 @onready var board_view: Node2D = $"../BoardView"
@@ -256,12 +259,12 @@ func show_game_over(winner_index: int, standings: Array[PlayerState]) -> void:
 
 func show_discard(discard_count: int) -> void:
 	hand_manager.disable_hover()
-	popup_manager.show_discard(player_states[local_player_index].hand, discard_count, _on_discard_confirmed)
+	popup_manager.show_discard(player_states[local_player_index].hand, discard_count, _on_discard_confirmed_button_pressed)
 
 
 func show_bank_trade(trade_rates: Dictionary) -> void:
 	hand_manager.disable_hover()
-	popup_manager.show_bank_trade(player_states[local_player_index].hand, trade_rates, _on_bank_trade_confirmed)
+	popup_manager.show_bank_trade(player_states[local_player_index].hand, trade_rates, on_bank_trade_button_pressed)
 
 
 func show_player_select(stealable_players: Array[int]) -> void:
@@ -283,6 +286,7 @@ func notify_game_start(p_player_states: Array[PlayerState], p_board: SerializedB
 	board = p_board
 
 
+@rpc("authority", "reliable", "call_local")
 func notify_turn_changed(new_player_index: int, phase: GamePhase.Phase) -> void:
 	current_player_index = new_player_index
 	current_phase = phase
@@ -291,9 +295,12 @@ func notify_turn_changed(new_player_index: int, phase: GamePhase.Phase) -> void:
 	refresh_hud()
 
 
+@rpc("authority", "reliable", "call_local")
 func notify_dice_rolled(player_index: int, d1: DiceFaces.Type, d2: DiceFaces.Type) -> void:
 	GameSignals.emit_player_rolled(player_states[player_index].player, d1)
-	dice_roller.show_result(d1, d2)
+	await dice_roller.play_result(d1, d2)
+	if player_index == local_player_index:
+		game_server.request_resolve_dice.rpc_id(NetworkManager.HOST_PEER_ID)
 
 
 func notify_settlement_placed(player_index: int, world_pos: Vector2, rotation: float) -> void:
@@ -361,30 +368,13 @@ func notify_game_over(winner_index: int, standings: Array[PlayerState]) -> void:
 #############################################
 
 func _register_signals() -> void:
-	GameSignals.phase_changed.connect(_on_phase_changed)
-	GameSignals.player_changed.connect(_on_player_changed)
 	GameSignals.hand_changed.connect(_on_hand_changed)
 	GameSignals.card_clicked.connect(_on_card_clicked)
 	GameSignals.action_button_pressed.connect(_on_action_button_pressed)
-	GameSignals.dice_rolled.connect(_on_dice_rolled)
+	dice_roller.roll_requested.connect(_on_roll_requested)
 	GameSignals.setup_phase_ended_for_player.connect(_on_setup_phase_ended_for_player)
-	activity_log_button.pressed.connect(_on_activity_log_button_pressed)
-	bank_trade_button.pressed.connect(_on_bank_trade_button_pressed)
 	settings_button.pressed.connect(_on_settings_button_pressed)
 	stats_button.pressed.connect(_on_stats_button_pressed)
-
-
-func _on_phase_changed(phase: GamePhase.Phase) -> void:
-	current_phase = phase
-	refresh_hud()
-
-
-func _on_player_changed(player_index: int) -> void:
-	current_player_index = player_index
-	player_hud.set_active_player(player_index)
-	hand_manager.set_hand(player_states[local_player_index].hand)
-	action_panel.refresh(player_states[local_player_index].hand)
-	update_debug_label()
 
 
 func _on_hand_changed() -> void:
@@ -399,8 +389,8 @@ func _on_action_button_pressed(_action_type: ActionTypes.Type) -> void:
 	pass # request action selection — wired in Task 14
 
 
-func _on_dice_rolled(_d1: DiceFaces.Type, _d2: DiceFaces.Type, _dice_total: int) -> void:
-	pass # notify_dice_rolled handles display — wired in Task 14
+func _on_roll_requested() -> void:
+	game_server.request_roll_dice.rpc_id(NetworkManager.HOST_PEER_ID)
 
 
 func _on_setup_phase_ended_for_player(_player_index: int, _settlement_pos: Vector2) -> void:
@@ -412,10 +402,6 @@ func _on_activity_log_button_pressed() -> void:
 	popup_manager.show_activity_log(activity_log, anchor)
 
 
-func _on_bank_trade_button_pressed() -> void:
-	pass # request_bank_trade_rates RPC — wired in Task 14
-
-
 func _on_settings_button_pressed() -> void:
 	popup_manager.show_settings()
 
@@ -424,15 +410,27 @@ func _on_stats_button_pressed() -> void:
 	popup_manager.show_stats(game_stats)
 
 
+func _on_bank_trade_button_pressed() -> void:
+	pass # request_bank_trade_rates RPC — wired in Task 14
+
+
+func _on_bank_trade_clear_button_pressed() -> void:
+	pass
+
+
+func _on_bank_trade_cancel_button_pressed() -> void:
+	pass
+
+
 func _on_robber_target_selected(_target_index: int) -> void:
 	pass # request_steal_resource RPC — wired in Task 14
 
 
-func _on_discard_confirmed(_resources_after_discard: Array[ResourceTypes.Type]) -> void:
+func _on_discard_confirmed_button_pressed(_resources_after_discard: Array[ResourceTypes.Type]) -> void:
 	pass # request_discard RPC — wired in Task 14
 
 
-func _on_bank_trade_confirmed(_traded: Array[ResourceTypes.Type], _received: Array[ResourceTypes.Type]) -> void:
+func on_bank_trade_button_pressed(_traded: Array[ResourceTypes.Type], _received: Array[ResourceTypes.Type]) -> void:
 	pass # request_bank_trade RPC — wired in Task 14
 
 
@@ -443,6 +441,13 @@ func _on_game_over_exit() -> void:
 func _on_popup_closed() -> void:
 	hand_manager.enable_hover()
 
+
+func _on_end_turn_button_pressed() -> void:
+	game_server.request_end_turn.rpc_id(NetworkManager.HOST_PEER_ID)
+
+
+func _on_player_trade_button_pressed() -> void:
+	pass # Replace with function body.
 
 #############################################
 ### INPUT

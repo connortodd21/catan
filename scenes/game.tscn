@@ -21,6 +21,9 @@
 [ext_resource type="Script" uid="uid://d1aum84kl2jf5" path="res://scripts/scenes/game/bank_trade_popup.gd" id="15_ir15t"]
 [ext_resource type="Script" uid="uid://ds4tty57qgpod" path="res://scripts/scenes/game/game_over_popup.gd" id="17_rysoc"]
 [ext_resource type="Script" uid="uid://cloe8kcib008c" path="res://scripts/scenes/game/settings_popup.gd" id="20_1kice"]
+[ext_resource type="Script" uid="uid://cuwof50fumx4a" path="res://resources/dice/dice.gd" id="20_sww3w"]
+[ext_resource type="Resource" uid="uid://pftnx57m7tpi" path="res://resources/dice/yellow_numeric.tres" id="21_suyxu"]
+[ext_resource type="Resource" uid="uid://bhxh4gpiid1u0" path="res://resources/dice/red_numeric.tres" id="22_sgl2t"]
 [ext_resource type="Script" uid="uid://cfcsf7cxxyd27" path="res://scripts/scenes/game/stats_popup.gd" id="23_bt5mj"]
 [ext_resource type="Script" uid="uid://b8tslke6wfe5k" path="res://scripts/scenes/game/activity_log_popup.gd" id="25_pl11u"]
 [ext_resource type="Script" uid="uid://csvh1gjtpj3kc" path="res://scripts/scenes/game/game_server.gd" id="26_qnb83"]
@@ -373,6 +376,7 @@ scroll_following = true
 [node name="GameServer" type="Node" parent="." unique_id=174898348]
 script = ExtResource("26_qnb83")
 action_database = ExtResource("5_kvpfn")
+dice = Array[ExtResource("20_sww3w")]([ExtResource("21_suyxu"), ExtResource("22_sgl2t")])
 
 [node name="GameClient" type="Node" parent="." unique_id=338392254]
 script = ExtResource("27_sww3w")
@@ -382,9 +386,9 @@ port_deck = ExtResource("7_1kice")
 terrain_database = ExtResource("2_fc0e3")
 port_scene = ExtResource("6_264po")
 
-[connection signal="pressed" from="UI/MenuHbox/ActivityLogButton" to="." method="_on_activity_log_button_pressed"]
-[connection signal="pressed" from="UI/MenuHbox/StatsButton" to="." method="_on_stats_button_pressed"]
-[connection signal="pressed" from="UI/MenuHbox/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="UI/MenuHbox/ActivityLogButton" to="GameClient" method="_on_activity_log_button_pressed"]
+[connection signal="pressed" from="UI/MenuHbox/StatsButton" to="GameClient" method="_on_stats_button_pressed"]
+[connection signal="pressed" from="UI/MenuHbox/SettingsButton" to="GameClient" method="_on_settings_button_pressed"]
 [connection signal="pressed" from="UI/GameMenu/TradePanel/BankTradeButton" to="." method="_on_bank_trade_button_pressed"]
 [connection signal="pressed" from="UI/GameMenu/TradePanel/PlayerTradeButton" to="." method="_on_player_trade_button_pressed"]
 [connection signal="popup_hide" from="UI/SelectionPopup" to="." method="_on_popup_closed"]

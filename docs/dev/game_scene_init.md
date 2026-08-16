@@ -75,9 +75,9 @@ Owns all authority and state:
 Dormant on non-hosts:
 ```gdscript
 func _ready() -> void:
-    if not multiplayer.is_server():
-        return
-    _initialize()
+	if not multiplayer.is_server():
+		return
+	_initialize()
 ```
 
 Receives `@rpc("any_peer")` requests from clients → validates → mutates state → broadcasts `notify_*` RPCs to all peers.
@@ -108,11 +108,11 @@ Receives `@rpc("authority")` notifications from server → updates display → e
 # In GameServer — receives requests
 @rpc("any_peer", "reliable")
 func request_roll_dice() -> void:
-    var sender_index := NetworkManager.peer_to_player_index(multiplayer.get_remote_sender_id())
-    if not _is_valid_action(sender_index):
-        return
-    var result := _roll_dice()
-    notify_dice_rolled.rpc(sender_index, result.d1, result.d2)
+	var sender_index := NetworkManager.peer_to_player_index(multiplayer.get_remote_sender_id())
+	if not _is_valid_action(sender_index):
+		return
+	var result := _roll_dice()
+	notify_dice_rolled.rpc(sender_index, result.d1, result.d2)
 
 # Client sends:
 game_server.request_roll_dice.rpc_id(1)  # peer_id 1 = host always
@@ -124,7 +124,7 @@ game_server.request_roll_dice.rpc_id(1)  # peer_id 1 = host always
 # In GameServer — broadcasts outcome
 @rpc("authority", "reliable", "call_local")
 func notify_dice_rolled(player_index: int, d1: int, d2: int) -> void:
-    pass  # implementation in GameClient
+	pass  # implementation in GameClient
 
 # call_local = also runs on host's GameClient automatically
 ```
@@ -147,6 +147,7 @@ Same code paths. With no `multiplayer.multiplayer_peer` set, Godot's offline mod
 | Client Request | Server Notify |
 |---|---|
 | `request_roll_dice` | `notify_dice_rolled(player_index, d1, d2)` |
+| `request_resolve_dice` | `notify_turn_changed(new_player_index, phase)` |
 | `request_place_settlement(vertex_key)` | `notify_settlement_placed(player_index, vertex_key)` |
 | `request_place_road(edge_key)` | `notify_road_placed(player_index, edge_key)` |
 | `request_place_city(vertex_key)` | `notify_city_placed(player_index, vertex_key)` |
@@ -154,6 +155,17 @@ Same code paths. With no `multiplayer.multiplayer_peer` set, Godot's offline mod
 | `request_play_dev_card(card_type, args)` | `notify_dev_card_played(player_index, card_type)` |
 | `request_end_turn` | `notify_turn_changed(new_player_index, phase)` |
 | `request_trade_bank(offer, want)` | `notify_trade_completed(player_index)` + private `notify_hand_updated(hand_dict)` |
+
+### Roll dice — two-phase flow
+
+Rolling is split into two RPCs to ensure animation completes before resources are distributed:
+
+1. `request_roll_dice` — server rolls d1/d2, stores result, broadcasts `notify_dice_rolled` to all peers. Phase does not advance yet.
+2. All clients animate via `await dice_roller.play_result(d1, d2)`. Only the rolling player's client then sends `request_resolve_dice`.
+3. `request_resolve_dice` — server distributes resources (non-7), advances phase, broadcasts `notify_turn_changed`.
+
+**7 rolled — DISCARD phase (Feature I, not yet implemented):**
+When a 7 is rolled, `request_resolve_dice` must check if any player holds >7 cards. If so, the server enters a DISCARD phase and waits for all affected players to submit `request_discard` before entering the ROBBER phase. Feature B stubs this as a direct `enter_robber_phase()` call; the full discard gate will be added when Feature I is implemented.
 
 Init (host → all, no client request):
 - `notify_game_start(player_assignments, board_json)` — all peers transition to game scene

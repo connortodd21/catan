@@ -42,9 +42,9 @@ Path: `scripts/scenes/game_config_panel/game_config_panel.gd`
 signal board_changed(board: SerializedBoard)  # emitted when selection changes (null if deselected)
 
 var interactive: bool:                         # false = all controls disabled (non-host in lobby)
-    set(value):
-        interactive = value
-        _set_controls_interactive(value)
+	set(value):
+		interactive = value
+		_set_controls_interactive(value)
 
 var selected_board: SerializedBoard            # read by parent to validate Start button
 
@@ -69,17 +69,17 @@ GameConfigPanel (HSplitContainer)  ←  game_config_panel.gd
 │   └── BoardScroll
 │       └── BoardList
 └── OptionsScroll (ScrollContainer)
-    └── OptionsPanel (VBoxContainer)
-        ├── ExpansionsLabel
-        ├── ExpansionList
-        ├── SepVP
-        ├── VictoryPointsHeader
-        ├── VictoryPointsRow
-        │   ├── VPLabel
-        │   └── VictoryPointsSpinBox
-        ├── SepHR
-        ├── HouseRulesLabel
-        └── HouseRuleList
+	└── OptionsPanel (VBoxContainer)
+		├── ExpansionsLabel
+		├── ExpansionList
+		├── SepVP
+		├── VictoryPointsHeader
+		├── VictoryPointsRow
+		│   ├── VPLabel
+		│   └── VictoryPointsSpinBox
+		├── SepHR
+		├── HouseRulesLabel
+		└── HouseRuleList
 ```
 
 ## Updated: `game_select.tscn`

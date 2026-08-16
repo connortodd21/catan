@@ -5,6 +5,8 @@ const ANIMATION_DURATION : float = 1.0
 const INITIAL_INTERVAL : float = 0.05
 const FINAL_INTERVAL : float = 0.18
 
+signal roll_requested
+
 @onready var die1: Die = %Die1
 @onready var die2: Die = %Die2
 @onready var roll_button: Button = %RollButton
@@ -15,26 +17,21 @@ func set_roll_enabled(val: bool) -> void:
 
 
 func _on_roll_button_pressed() -> void:
-	if not die1.dice or not die2.dice:
-		return
-
-	var idx1 := randi() % die1.dice.sides.size()
-	var idx2 := randi() % die2.dice.sides.size()
-	var face1: DiceFace = die1.dice.sides[idx1]
-	var face2: DiceFace = die2.dice.sides[idx2]
-
 	roll_button.disabled = true
+	roll_requested.emit()
+
+
+func play_result(d1: DiceFaces.Type, d2: DiceFaces.Type) -> void:
 	await _animate_roll()
+	die1.show_face(_find_face_index(die1, d1))
+	die2.show_face(_find_face_index(die2, d2))
 
-	die1.show_face(idx1)
-	die2.show_face(idx2)
 
-	var val1 : int = DiceFaces.type_to_int(face1.dice_face)
-	var val2 : int = DiceFaces.type_to_int(face2.dice_face)
-	var total : int = val1 + val2 if val1 != -1 and val2 != -1 else -1
-
-	roll_button.disabled = false
-	GameSignals.roll_dice(face1.dice_face, face2.dice_face, total)
+func _find_face_index(die: Die, face_type: DiceFaces.Type) -> int:
+	for i in die.dice.sides.size():
+		if die.dice.sides[i].dice_face == face_type:
+			return i
+	return 0
 
 
 func _animate_roll() -> void:

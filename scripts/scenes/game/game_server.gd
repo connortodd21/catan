@@ -3,9 +3,13 @@ extends Node
 
 const NEWLY_BOUGHT_CARD_META = "newly_bought"
 
+# Nodes
+@onready var game_client: GameClient = $"../GameClient"
+
 # Databases
 @export var action_database: ActionDatabaseResource
 @export var decks: Array[CardDeck] = []
+@export var dice: Array[Dice] = []
 
 # Titles
 @export var min_harbormaster: int = 3
@@ -35,6 +39,10 @@ var _largest_army_holder: PlayerState = null
 var _longest_road_holder: PlayerState = null
 var _robber_coord: Vector2i = Vector2i(-999, -999)
 var target_vp: int = 10
+
+# Game phase
+var _awaiting_roll_resolution: bool = false
+var _pending_roll: Array[DiceFaces.Type] = []
 
 
 #############################################
@@ -500,3 +508,67 @@ func _collect_resources_at_vertex(player_index: int, world_pos: Vector2) -> void
 		GameSignals.emit_resources_distributed(ps.player, resources)
 
 	GameSignals.emit_hand_changed()
+
+
+#############################################
+### RPC REQUESTS
+#############################################
+
+func _get_sender_player_index() -> int:
+	var sender_id := multiplayer.get_remote_sender_id()
+	if sender_id == 0:
+		return turn_manager.current_player_index
+	return NetworkManager.peer_to_player_index(sender_id)
+
+
+@rpc("any_peer", "reliable")
+func request_roll_dice() -> void:
+	var player_index := _get_sender_player_index()
+	if player_index != turn_manager.current_player_index:
+		return
+	if turn_manager.current_phase != GamePhase.Phase.ROLL:
+		return
+	if _awaiting_roll_resolution:
+		return
+	var d1 := _roll_die(dice[0])
+	var d2 := _roll_die(dice[1])
+	_pending_roll = [d1, d2]
+	_awaiting_roll_resolution = true
+	game_client.notify_dice_rolled.rpc(player_index, d1, d2)
+
+
+@rpc("any_peer", "reliable")
+func request_resolve_dice() -> void:
+	var player_index := _get_sender_player_index()
+	if player_index != turn_manager.current_player_index:
+		return
+	if not _awaiting_roll_resolution:
+		return
+	var d1: DiceFaces.Type = _pending_roll[0]
+	var d2: DiceFaces.Type = _pending_roll[1]
+	_pending_roll = []
+	_awaiting_roll_resolution = false
+	var dice_total := DiceFaces.type_to_int(d1) + DiceFaces.type_to_int(d2)
+	if game_config.has_robber() and dice_total == 7:
+		turn_manager.enter_robber_phase()
+	else:
+		_distribute_resources(dice_total)
+		turn_manager.advance_from_roll()
+	game_client.notify_turn_changed.rpc(turn_manager.current_player_index, turn_manager.current_phase)
+
+
+func _roll_die(die_config: Dice) -> DiceFaces.Type:
+	return die_config.sides[randi() % die_config.sides.size()].dice_face
+
+
+@rpc("any_peer", "reliable")
+func request_end_turn() -> void:
+	var player_index := _get_sender_player_index()
+	if player_index != turn_manager.current_player_index:
+		return
+	if turn_manager.current_phase != GamePhase.Phase.ACTION:
+		return
+	_clear_newly_bought_cards(player_index)
+	_audit_scores()
+	turn_manager.end_turn()
+	game_client.notify_turn_changed.rpc(turn_manager.current_player_index, turn_manager.current_phase)
